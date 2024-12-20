@@ -8,6 +8,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace EcoState.Controllers;
 
+/// <summary>
+/// Контроллер выбросов
+/// </summary>
 public class EmissionController : ControllerBase
 {
     private readonly ApplicationDbContext _dbContext;

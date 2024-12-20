@@ -5,18 +5,18 @@ using EcoState.ViewModels.Concentration;
 
 namespace EcoState.Services;
 
+/// <summary>
+/// Сервис выбросов
+/// </summary>
 public class EmissionService : IEmissionService
 {
     private double H; 
     private double F; 
-    //private double u;
     private double D; 
     private double A; 
     private double w0; 
     private double Tgam; 
     private double Ta; 
-    //private double x; 
-    //private double y;
 
     private double deltaT;
     private double V1;
@@ -24,34 +24,16 @@ public class EmissionService : IEmissionService
     private double vm_s;
     private double f;
     private double f_e;
-
-    private double h0;
-    private double a0;
-    private double ridge;
-    private double hollow;
-    private double ledge;
-    private bool upperPlateau;
-    private Landform landform;
     
     public void Setup(ConcentrationListCalculateModel model)
     {
         H = model.H;
         F = (int)model.F;
-        //u = model.u;
         D = model.D;
         A = (int)model.A;
         w0 = model.w0;
         Tgam = model.Tgam;
         Ta = model.Ta;
-        //x = model.x;
-        //y = model.y;
-        a0 = model.a0;
-        h0 = model.h0;
-        ridge = model.ridge;
-        hollow = model.hollow;
-        ledge = model.ledge;
-        upperPlateau = model.upperPlateau;
-        landform = model.landform;
         
         deltaT = Tgam - Ta;
         V1 = (Math.PI * Math.Pow(D, 2) / 4 * w0); 
@@ -113,7 +95,7 @@ public class EmissionService : IEmissionService
     {
         double c_m = 0;
 
-        double nu = GetReliefCorrectionFactor();
+        double nu = 1;//GetReliefCorrectionFactor();
 
         double m = 0;
         double n = 0;
@@ -219,11 +201,11 @@ public class EmissionService : IEmissionService
             x.Add(i);
         }
 
-        ConcentrationMasses().TryGetValue("SO2", out var mSO2);
-        ConcentrationMasses().TryGetValue("NO", out var mNO);
-        ConcentrationMasses().TryGetValue("NO2", out var mNO2);
-        ConcentrationMasses().TryGetValue("CO2", out var mCO2);
-        ConcentrationMasses().TryGetValue("SP", out var mSP);
+        ConcentrationMasses().TryGetValue(1, out var mSO2);
+        ConcentrationMasses().TryGetValue(2, out var mNO);
+        ConcentrationMasses().TryGetValue(3, out var mNO2);
+        ConcentrationMasses().TryGetValue(4, out var mCO2);
+        ConcentrationMasses().TryGetValue(5, out var mSP);
         
         var concentrationsSO2 = GetNormalSurfaceConcentration(x, mSO2); 
         var concentrationsNO = GetNormalSurfaceConcentration(x, mNO); 
@@ -243,7 +225,7 @@ public class EmissionService : IEmissionService
         return result;
     }
     
-    public ConcentrationViewModel CalculateConcentration(string concentration)
+    public ConcentrationViewModel CalculateConcentration(ConcentrationType concentration)
     {
         var maxDistance = 1025;
 
@@ -253,7 +235,7 @@ public class EmissionService : IEmissionService
             x.Add(i);
         }
 
-        ConcentrationMasses().TryGetValue(concentration, out var m);
+        ConcentrationMasses().TryGetValue((int)concentration, out var m);
 
         var concentrations = GetNormalSurfaceConcentration(x, m);
 
@@ -264,201 +246,16 @@ public class EmissionService : IEmissionService
 
         return result;
     }
-    
-    public double GetReliefCorrectionFactor()
+
+    private Dictionary<int, double> ConcentrationMasses()
     {
-        double fi1 = GetFi1();
-        double nu_m = GetNuM();
-        double nu = 1 + fi1 * (nu_m - 1);
-        return nu;
-    }
-    
-    public double GetFi1()
-    {
-        List<double> current = new List<double>() { ridge, hollow, ledge };
-
-        if (GetTable1().TryGetValue(current, out var value))
+        return new Dictionary<int, double>()
         {
-            if (upperPlateau)
-            {
-                return -value;
-            }
-
-            return value;
-        }
-
-        return -1;
-    }
-
-    private double GetNuM()
-        {
-            var array_ridge = new double[4, 5];
-            array_ridge[0, 0] = 3.0f;
-            array_ridge[0, 1] = 2.2f;
-            array_ridge[0, 2] = 1.4f;
-            array_ridge[0, 3] = 1.2f;
-            array_ridge[0, 4] = 1.0f;
-            array_ridge[1, 0] = 1.5f;
-            array_ridge[1, 1] = 1.4f;
-            array_ridge[1, 2] = 1.3f;
-            array_ridge[1, 3] = 1.2f;
-            array_ridge[1, 4] = 1.0f;
-            array_ridge[2, 0] = 1.4f;
-            array_ridge[2, 1] = 1.3f;
-            array_ridge[2, 2] = 1.2f;
-            array_ridge[2, 3] = 1.1f;
-            array_ridge[2, 4] = 1.0f;
-            array_ridge[3, 0] = 1.2f;
-            array_ridge[3, 1] = 1.0f;
-            array_ridge[3, 2] = 1.0f;
-            array_ridge[3, 3] = 1.0f;
-            array_ridge[3, 4] = 1.0f;
-
-            var array_hollow = new double[4, 5];
-            array_hollow[0, 0] = 4.0f;
-            array_hollow[0, 1] = 3.0f;
-            array_hollow[0, 2] = 1.8f;
-            array_hollow[0, 3] = 1.4f;
-            array_hollow[0, 4] = 1.0f;
-            array_hollow[1, 0] = 2.0f;
-            array_hollow[1, 1] = 1.6f;
-            array_hollow[1, 2] = 1.5f;
-            array_hollow[1, 3] = 1.3f;
-            array_hollow[1, 4] = 1.0f;
-            array_hollow[2, 0] = 1.6f;
-            array_hollow[2, 1] = 1.5f;
-            array_hollow[2, 2] = 1.4f;
-            array_hollow[2, 3] = 1.2f;
-            array_hollow[2, 4] = 1.0f;
-            array_hollow[3, 0] = 1.3f;
-            array_hollow[3, 1] = 1.2f;
-            array_hollow[3, 2] = 1.1f;
-            array_hollow[3, 3] = 1.0f;
-            array_hollow[3, 4] = 1.0f;
-
-            var array_ledge = new double[4, 5];
-            array_ledge[0, 0] = 3.5f;
-            array_ledge[0, 1] = 2.7f;
-            array_ledge[0, 2] = 1.6f;
-            array_ledge[0, 3] = 1.3f;
-            array_ledge[0, 4] = 1.0f;
-            array_ledge[1, 0] = 1.8f;
-            array_ledge[1, 1] = 1.5f;
-            array_ledge[1, 2] = 1.4f;
-            array_ledge[1, 3] = 1.2f;
-            array_ledge[1, 4] = 1.0f;
-            array_ledge[2, 0] = 1.5f;
-            array_ledge[2, 1] = 1.3f;
-            array_ledge[2, 2] = 1.2f;
-            array_ledge[2, 3] = 1.1f;
-            array_ledge[2, 4] = 1.0f;
-            array_ledge[3, 0] = 1.2f;
-            array_ledge[3, 1] = 1.2f;
-            array_ledge[3, 2] = 1.1f;
-            array_ledge[3, 3] = 1.0f;
-            array_ledge[3, 4] = 1.0f;
-
-            double n1 = H / h0;
-            double n2 = a0 / h0;
-
-            int i, j = 0;
-            if (n1 <= 0.55f)
-            {
-                j = 0;
-            }
-            else if (n1 < 1.05f)
-            {
-                j = 1;
-            }
-            else if (n1 <= 2.95f)
-            {
-                j = 2;
-            }
-            else if (n1 <= 5)
-            {
-                j = 3;
-            }
-            else
-            {
-                j = 4;
-            }
-
-            if (n2 > 4f && n2 <= 5.5f)
-            {
-                i = 0;
-            }
-            else if (n2 <= 9.5f)
-            {
-                i = 1;
-            }
-            else if (n2 <= 15.5f)
-            {
-                i = 2;
-            }
-            else
-            {
-                i = 3;
-            }
-
-            if (n2 > 20)
-            {
-                //MessageBox.Show("n2 больше 20");
-            }
-
-            if (landform == Landform.Ridge)
-            {
-                return array_ridge[i, j];
-            }
-
-            if (landform == Landform.Hollow)
-            {
-                return array_hollow[i, j];
-            }
-
-            return array_ledge[i, j];
-        }
-
-    private Dictionary<string, double> ConcentrationMasses()
-    {
-        return new Dictionary<string, double>()
-        {
-            { "SO2", 1.0528 },
-            { "NO", 0.0444 },
-            { "NO2", 0.2695 },
-            { "CO2", 4.9 },
-            { "SP", 15.72 },
-        };
-    }
-
-    private Dictionary<List<double>, double> GetTable1()
-    {
-        return new Dictionary<List<double>, double>(new ListComparer())
-        {
-            { new List<double>() { 0.025, 0.000, 0.000 }, -4.00 },
-            { new List<double>() { 0.050, 0.000, 0.000 }, -3.50 },
-            { new List<double>() { 0.100, 0.000, 0.000 }, -3.00 },
-            { new List<double>() { 0.150, 0.000, 0.000 }, -2.50 },
-            { new List<double>() { 0.250, 0.000, 0.000 }, -2.00 },
-            { new List<double>() { 0.300, 0.000, 0.000 }, -1.75 },
-            { new List<double>() { 0.500, 0.000, 0.000 }, -1.50 },
-            { new List<double>() { 0.800, 0.000, 0.000 }, -1.25 },
-            { new List<double>() { 1.000, 0.000, 0.000 }, -1.00 },
-            { new List<double>() { 0.800, 0.250, 0.000 }, -0.75 },
-            { new List<double>() { 0.400, 0.600, 0.000 }, -0.50 },
-            { new List<double>() { 0.100, 0.900, 0.000 }, -0.25 },
-            { new List<double>() { 0.000, 1.000, 0.000 }, 0.00 },
-            { new List<double>() { 0.100, 0.900, 0.100 }, 0.25 },
-            { new List<double>() { 0.400, 0.600, 0.400 }, 0.50 },
-            { new List<double>() { 0.800, 0.250, 0.800 }, 0.75 },
-            { new List<double>() { 1.000, 0.000, 1.000 }, 1.00 },
-            { new List<double>() { 0.800, 0.000, 0.800 }, 1.25 },
-            { new List<double>() { 0.500, 0.000, 0.500 }, 1.50 },
-            { new List<double>() { 0.300, 0.000, 0.350 }, 1.75 },
-            { new List<double>() { 0.250, 0.000, 0.250 }, 2.00 },
-            { new List<double>() { 0.150, 0.000, 0.150 }, 2.50 },
-            { new List<double>() { 0.100, 0.000, 0.100 }, 3.00 },
-            { new List<double>() { 0.050, 0.000, 0.075 }, 3.50 },
-            { new List<double>() { 0.025, 0.000, 0.075 }, 4.00 }
+            { 1, 1.0528 },
+            { 2, 0.0444 },
+            { 3, 0.2695 },
+            { 4, 4.9 },
+            { 5, 15.72 },
         };
     }
 }
