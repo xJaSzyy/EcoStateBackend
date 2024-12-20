@@ -7,6 +7,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace EcoState.Controllers;
 
+/// <summary>
+/// Контроллер погоды
+/// </summary>
 public class WeatherController : ControllerBase
 {
     private readonly ApplicationDbContext _dbContext;
