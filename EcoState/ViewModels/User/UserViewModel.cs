@@ -3,6 +3,11 @@ namespace EcoState.ViewModels.User;
 public class UserViewModel
 {
     /// <summary>
+    /// Идентификатор пользователя
+    /// </summary>
+    public int Id { get; set; }
+    
+    /// <summary>
     /// Роль
     /// </summary>
     public string Role { get; set; }

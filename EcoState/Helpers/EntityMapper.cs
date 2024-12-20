@@ -34,7 +34,7 @@ public class EntityMapper : Profile
         CreateMap<User, UserViewModel>()
             .ForAllMembers(o => o.ExplicitExpansion());
         
-        CreateMap<User, UserAddModel>()
+        CreateMap<UserAddModel, User>()
             .ForAllMembers(o => o.ExplicitExpansion());
     }
 }

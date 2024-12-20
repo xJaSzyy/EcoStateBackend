@@ -11,4 +11,9 @@ public class UserAddModel
     /// Пароль
     /// </summary>
     public string Password { get; set; }
+    
+    /// <summary>
+    /// Почтовый адрес
+    /// </summary>
+    public string Email { get; set; }
 }

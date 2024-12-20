@@ -2,9 +2,29 @@
 
 services:
   ecostate:
-    image: ecostate_api
+    container_name: ecostate_api
     build:
       context: .
       dockerfile: EcoState/Dockerfile
+    depends_on:
+      - postgres
     ports:
       - "5000:80"
+    networks:
+      - test
+  
+  postgres:
+    container_name: ecostate_db
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: "ecostatedb"
+      POSTGRES_USER: "stepan"
+      POSTGRES_PASSWORD: "semen"
+    ports:
+      - "5432:5432"
+    networks:
+      - test
+  
+networks:
+  test:
+    driver: bridge

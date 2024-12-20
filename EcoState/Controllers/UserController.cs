@@ -107,7 +107,8 @@ public class UserController : ControllerBase
                 ReturnCode = 13
             });
         }
-
+        
+        user.Role = model.Role;
         user.Name = model.Name;
         user.Password = model.Password;
         user.Email = model.Email;
