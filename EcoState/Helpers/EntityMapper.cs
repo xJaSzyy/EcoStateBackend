@@ -10,7 +10,7 @@ public class EntityMapper : Profile
 {
     public EntityMapper()
     {
-        CreateMap<ConcentrationListCalculateModel, ConcentrationCalculateModel>()
+        CreateMap<ConcentrationCalculateModel, ConcentrationListCalculateModel>()
             .ForAllMembers(o => o.ExplicitExpansion());
         
         CreateMap<Concentration, ConcentrationSaveModel>()

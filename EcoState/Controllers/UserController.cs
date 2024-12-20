@@ -7,10 +7,13 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace EcoState.Controllers;
 
+/// <summary>
+/// Контроллер пользователей
+/// </summary>
 public class UserController : ControllerBase
 {
-    private ApplicationDbContext _dbContext;
-    private IMapper _mapper;
+    private readonly ApplicationDbContext _dbContext;
+    private readonly IMapper _mapper;
 
     public UserController(ApplicationDbContext dbContext, IMapper mapper)
     {
