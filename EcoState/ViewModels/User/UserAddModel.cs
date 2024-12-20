@@ -15,5 +15,5 @@ public class UserAddModel
     /// <summary>
     /// Почтовый адрес
     /// </summary>
-    public string Email { get; set; }
+    public string? Email { get; set; }
 }
