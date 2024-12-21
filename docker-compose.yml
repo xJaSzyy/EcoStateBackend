@@ -1,0 +1,36 @@
+﻿version: "3.8"
+
+services:
+  ecostate:
+    container_name: ecostate_api
+    build:
+      context: .
+      dockerfile: EcoState/Dockerfile
+    depends_on:
+      - postgres
+    ports:
+      - "5000:80"
+    networks:
+      - test
+  
+  postgres:
+    container_name: ecostate_db
+    image: postgres:latest
+    restart: always
+    environment:
+      POSTGRES_DB: "ecostatedb"
+      POSTGRES_USER: "stepan"
+      POSTGRES_PASSWORD: "semen"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+    networks:
+      - test
+  
+networks:
+  test:
+    driver: bridge
+    
+volumes:
+  db_data:

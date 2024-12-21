@@ -40,19 +40,10 @@ public class UserController : ControllerBase
         return Ok(new Result<UserViewModel>(result));
     }
 
-    [HttpGet("userList-get")]
-    public async Task<IActionResult> GetUserList(UserListGetModel model)
+    [HttpGet("user-getAll")]
+    public async Task<IActionResult> GetAllUsers()
     {
-        var userList = _dbContext.Users.Where(x => model.Ids.Contains(x.Id)).ToList();
-        
-        if (userList.Count < 1)
-        {
-            return Ok(new Result()
-            {
-                ErrorMessage = "Пользователи не найдены",
-                ReturnCode = 13
-            });
-        }
+        var userList = _dbContext.Users.ToList();
 
         var result = _mapper.Map<List<UserViewModel>>(userList);
 
@@ -108,10 +99,11 @@ public class UserController : ControllerBase
             });
         }
 
-        user.Name = model.Name;
-        user.Password = model.Password;
-        user.Email = model.Email;
-        
+        if (model.Role != null) user.Role = model.Role;
+        if (model.Name != null) user.Name = model.Name;
+        if (model.Password != null) user.Password = model.Password;
+        if (model.Email != null) user.Email = model.Email;
+
         _dbContext.Users.Update(user);
         await _dbContext.SaveChangesAsync();
         
