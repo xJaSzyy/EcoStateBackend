@@ -5,7 +5,7 @@ public class UserViewModel
     /// <summary>
     /// Идентификатор пользователя
     /// </summary>
-    public int Id { get; set; }
+    public Guid Id { get; set; }
     
     /// <summary>
     /// Роль
@@ -20,7 +20,7 @@ public class UserViewModel
     /// <summary>
     /// Пароль
     /// </summary>
-    public string Password { get; set; }
+    public string PasswordHash { get; set; }
     
     /// <summary>
     /// Почтовый адрес

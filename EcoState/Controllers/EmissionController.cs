@@ -49,6 +49,7 @@ public class EmissionController : ControllerBase
     {
         var concentrationList = _mapper.Map<ConcentrationList>(model);
         concentrationList.Date = DateTime.Now;
+        concentrationList.Id = Guid.NewGuid();
 
         _dbContext.ConcentrationLists.Add(concentrationList);
         await _dbContext.SaveChangesAsync();
@@ -63,6 +64,7 @@ public class EmissionController : ControllerBase
     {
         var concentration = _mapper.Map<Concentration>(model);
         concentration.Date = DateTime.Now;
+        concentration.Id = Guid.NewGuid();
 
         _dbContext.Concentrations.Add(concentration);
         await _dbContext.SaveChangesAsync();
