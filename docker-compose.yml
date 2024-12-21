@@ -21,11 +21,16 @@ services:
       POSTGRES_DB: "ecostatedb"
       POSTGRES_USER: "stepan"
       POSTGRES_PASSWORD: "semen"
+    volumes:
+      - db_data:/var/lib/postgresql/data
     ports:
-      - "5432:5432"
+      - "5433:5432"
     networks:
       - test
   
 networks:
   test:
     driver: bridge
+    
+volumes:
+  db_data:
