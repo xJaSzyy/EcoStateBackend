@@ -1,15 +1,9 @@
-using System.Reflection;
-using System.Text;
 using EcoState.Context;
 using EcoState.Extensions;
 using EcoState.Helpers;
 using EcoState.Interfaces;
 using EcoState.Services;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -36,8 +30,10 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddTransient<IEmissionService, EmissionService>();
 builder.Services.AddTransient<IUserService, UserService>();
 
-builder.Services.AddSwagger(builder.Configuration);
+builder.Services.Configure<WeatherSettings>(builder.Configuration.GetSection("WeatherSettings"));
+builder.Services.AddSwagger();
 builder.Services.AddAuth(builder.Configuration);
+builder.Services.AddHttpClient();
 
 var app = builder.Build();
 
