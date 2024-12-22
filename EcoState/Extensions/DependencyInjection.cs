@@ -30,8 +30,7 @@ public static class DependencyInjection
         });
     }
 
-    public static void AddSwagger(this IServiceCollection serviceCollection,
-        IConfiguration configuration)
+    public static void AddSwagger(this IServiceCollection serviceCollection)
     {
         serviceCollection.AddSwaggerGen(options =>
         {

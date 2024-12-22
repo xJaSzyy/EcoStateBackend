@@ -14,4 +14,6 @@ public class Weather
     public int WindDirection { get; set; }
     
     public float WindSpeed { get; set; }
+    
+    public string IconUrl { get; set; }
 }

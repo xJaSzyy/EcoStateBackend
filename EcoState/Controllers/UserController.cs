@@ -1,6 +1,5 @@
 using AutoMapper;
 using EcoState.Context;
-using EcoState.Domain;
 using EcoState.Extensions;
 using EcoState.Interfaces;
 using EcoState.ViewModels.User;

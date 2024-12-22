@@ -28,6 +28,9 @@ public class EntityMapper : Profile
         CreateMap<Weather, WeatherViewModel>()
             .ForAllMembers(o => o.ExplicitExpansion());
         
+        CreateMap<WeatherResponse, WeatherViewModel>()
+            .ForAllMembers(o => o.ExplicitExpansion());
+        
         CreateMap<WeatherSaveModel, Weather>()
             .ForAllMembers(o => o.ExplicitExpansion());
         
