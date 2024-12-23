@@ -4,6 +4,7 @@ using EcoState.Helpers;
 using EcoState.Interfaces;
 using EcoState.Services;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -51,4 +52,12 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.Run();
+if (args.Contains("--migrate"))
+{
+    Log.Information("Запускается миграция");
+    app.RunMigration();
+}
+else
+{
+    app.Run();
+}
