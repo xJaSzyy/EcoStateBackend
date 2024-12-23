@@ -37,7 +37,7 @@ public class EmissionController : ControllerBase
     [HttpGet("concentraion-calc")]
     public async Task<IActionResult> CalculateConcentration(ConcentrationCalculateModel model)
     {
-        _service.Setup(_mapper.Map<ConcentrationListCalculateModel>(model));
+        _service.Setup(model);
         
         var result = _service.CalculateConcentration(model.Concentration);
         
