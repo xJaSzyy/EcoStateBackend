@@ -14,10 +14,10 @@ namespace EcoState.Services;
 
 public class UserService : IUserService
 {
-    private readonly ApplicationDbContext _dbContext;
+    private readonly IDbContext _dbContext;
     private readonly IOptions<AuthSettings> _options;
 
-    public UserService(ApplicationDbContext dbContext, IOptions<AuthSettings> options)
+    public UserService(IDbContext dbContext, IOptions<AuthSettings> options)
     {
         _dbContext = dbContext;
         _options = options;

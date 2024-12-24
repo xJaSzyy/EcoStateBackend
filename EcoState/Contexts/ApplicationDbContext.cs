@@ -1,9 +1,10 @@
 using EcoState.Domain;
+using EcoState.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace EcoState.Context;
 
-public class ApplicationDbContext : DbContext
+public class ApplicationDbContext : DbContext, IDbContext
 {
     public virtual DbSet<Concentration> Concentrations { get; set; } = null!;
     
