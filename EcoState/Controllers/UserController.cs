@@ -105,6 +105,15 @@ public class UserController : ControllerBase
     public async Task<IActionResult> Login([FromBody] LoginModel model)
     {
         var token = _service.Login(model);
+
+        if (token == string.Empty)
+        {
+            return Ok(new Result()
+            {
+                ErrorMessage = "Неверный логин или пароль",
+                ReturnCode = 13
+            });
+        }
         
         return Ok(new Result<string>(token));
     }
