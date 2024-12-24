@@ -14,18 +14,10 @@ builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddAutoMapper(cfg=>cfg.AddProfile(new EntityMapper()));
 
-builder.Configuration
-    .SetBasePath(Directory.GetCurrentDirectory())
-    .AddJsonFile("appsettings.json")
-    .AddEnvironmentVariables();
-
 builder.Configuration.AddEnvironmentVariables();
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
-
-/*builder.Services.AddDbContext<DbContext>(opt =>
-    opt.UseNpgsql(connectionString));*/
 
 builder.Services.AddTransient<IEmissionService, EmissionService>();
 builder.Services.AddTransient<IUserService, UserService>();
