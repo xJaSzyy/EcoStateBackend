@@ -5,6 +5,7 @@ using EcoState.Domain;
 using EcoState.Extensions;
 using EcoState.Helpers;
 using EcoState.ViewModels.Weather;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 
@@ -79,6 +80,7 @@ public class WeatherController : ControllerBase
         return Ok(new Result<List<WeatherViewModel>>(result));
     }
 
+    [Authorize(Roles = "admin")]
     [HttpPost("weather-save")]
     public async Task<IActionResult> SaveWeather(WeatherSaveModel model)
     {
