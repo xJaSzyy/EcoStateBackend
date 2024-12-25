@@ -41,7 +41,7 @@ public class UserController : ControllerBase
 
         return Ok(new Result<UserViewModel>(result));
     }
-
+    
     [HttpGet("user-getAll")]
     public async Task<IActionResult> GetAllUsers()
     {
@@ -88,7 +88,7 @@ public class UserController : ControllerBase
             });
         }
 
-        if (model.Role != null) user.Role = model.Role;
+        if (model.RoleId != null) user.RoleId = (int)model.RoleId;
         if (model.Name != null) user.Name = model.Name;
         if (model.Password != null) user.PasswordHash = model.Password;
         if (model.Email != null) user.Email = model.Email;
