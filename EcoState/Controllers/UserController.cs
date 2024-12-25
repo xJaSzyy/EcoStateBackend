@@ -3,6 +3,7 @@ using EcoState.Context;
 using EcoState.Extensions;
 using EcoState.Interfaces;
 using EcoState.ViewModels.User;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EcoState.Controllers;
@@ -41,7 +42,7 @@ public class UserController : ControllerBase
 
         return Ok(new Result<UserViewModel>(result));
     }
-
+    
     [HttpGet("user-getAll")]
     public async Task<IActionResult> GetAllUsers()
     {
@@ -52,6 +53,7 @@ public class UserController : ControllerBase
         return Ok(new Result<List<UserViewModel>>(result));
     }
 
+    [Authorize(Roles = "admin")]
     [HttpPost("user-delete")]
     public async Task<IActionResult> DeleteUser([FromBody] UserDeleteModel model)
     {
@@ -74,6 +76,7 @@ public class UserController : ControllerBase
         return Ok(new Result<UserViewModel>(result));
     }
 
+    [Authorize(Roles = "admin")]
     [HttpPost("user-update")]
     public async Task<IActionResult> UpdateUser([FromBody] UserUpdateModel model)
     {
@@ -88,7 +91,7 @@ public class UserController : ControllerBase
             });
         }
 
-        if (model.Role != null) user.Role = model.Role;
+        if (model.RoleId != null) user.RoleId = (int)model.RoleId;
         if (model.Name != null) user.Name = model.Name;
         if (model.Password != null) user.PasswordHash = model.Password;
         if (model.Email != null) user.Email = model.Email;

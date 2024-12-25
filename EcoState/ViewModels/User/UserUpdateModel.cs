@@ -8,9 +8,9 @@ public class UserUpdateModel
     public Guid Id { get; set; }
     
     /// <summary>
-    /// Роль
+    /// Идентификатор роли
     /// </summary>
-    public string? Role { get; set; }
+    public int? RoleId { get; set; }
     
     /// <summary>
     /// Логин/никнейм

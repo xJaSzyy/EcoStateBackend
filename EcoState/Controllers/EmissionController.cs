@@ -4,6 +4,7 @@ using EcoState.Domain;
 using EcoState.Extensions;
 using EcoState.Interfaces;
 using EcoState.ViewModels.Concentration;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EcoState.Controllers;
@@ -44,6 +45,7 @@ public class EmissionController : ControllerBase
         return Ok(new Result<ConcentrationViewModel>(result));
     }
 
+    [Authorize(Roles = "admin")]
     [HttpPost("concentraionList-save")]
     public async Task<IActionResult> SaveConcentrationList(ConcentrationListSaveModel model)
     {
@@ -59,6 +61,7 @@ public class EmissionController : ControllerBase
         return Ok(new Result<ConcentrationListViewModel>(result));
     }
 
+    [Authorize(Roles = "admin")]
     [HttpPost("concentraion-save")]
     public async Task<IActionResult> SaveConcentration(ConcentrationSaveModel model)
     {
