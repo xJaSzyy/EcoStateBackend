@@ -9,7 +9,7 @@ public interface IEmissionService
     /// Установить стартовые значения для дальнейших расчетов
     /// </summary>
     /// <param name="model"></param>
-    public void Setup(ConcentrationListCalculateModel model);
+    public void Setup(ConcentrationCalculateModel model);
     
     /// <summary>
     /// Рассчитать концентрации всех частиц

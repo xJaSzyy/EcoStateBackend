@@ -25,7 +25,7 @@ public class EmissionService : IEmissionService
     private double f;
     private double f_e;
     
-    public void Setup(ConcentrationListCalculateModel model)
+    public void Setup(ConcentrationCalculateModel model)
     {
         H = model.H;
         F = (int)model.F;

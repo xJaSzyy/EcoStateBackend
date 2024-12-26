@@ -1,6 +1,7 @@
 using AutoMapper;
 using EcoState.Context;
 using EcoState.Domain;
+using EcoState.Enums;
 using EcoState.Extensions;
 using EcoState.Interfaces;
 using EcoState.ViewModels.Concentration;
@@ -26,7 +27,7 @@ public class EmissionController : ControllerBase
     }
 
     [HttpGet("concentraionList-calc")]
-    public async Task<IActionResult> CalculateConcentrationList(ConcentrationListCalculateModel model)
+    public async Task<IActionResult> CalculateConcentrationList(ConcentrationCalculateModel model)
     {
         _service.Setup(model);
         
@@ -36,11 +37,11 @@ public class EmissionController : ControllerBase
     }
 
     [HttpGet("concentraion-calc")]
-    public async Task<IActionResult> CalculateConcentration(ConcentrationCalculateModel model)
+    public async Task<IActionResult> CalculateConcentration(ConcentrationCalculateModel model, ConcentrationType concentration)
     {
         _service.Setup(model);
         
-        var result = _service.CalculateConcentration(model.Concentration);
+        var result = _service.CalculateConcentration(concentration);
         
         return Ok(new Result<ConcentrationViewModel>(result));
     }

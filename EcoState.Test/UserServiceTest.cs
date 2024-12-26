@@ -19,6 +19,7 @@ public class UserServiceTest
         //Arrange
         var dbContextMock = new Mock<IDbContext>();
         dbContextMock.Setup<DbSet<User>>(x => x.Users).ReturnsDbSet(_testUsers);
+        dbContextMock.Setup<DbSet<Role>>(x => x.Roles).ReturnsDbSet(_testRoles);
 
         var authOptions = Options.Create(_testAuthSettings);
         
@@ -36,14 +37,14 @@ public class UserServiceTest
     {
         //Arrange
         var dbContextMock = new Mock<IDbContext>();
-        dbContextMock.Setup<DbSet<User>>(x => x.Users).ReturnsDbSet(_testUsers);
+        dbContextMock.Setup<DbSet<Role>>(x => x.Roles).ReturnsDbSet(_testRoles);
 
         var authOptions = Options.Create(_testAuthSettings);
         
-        var _service = new UserService(dbContextMock.Object, authOptions);
+        var service = new UserService(dbContextMock.Object, authOptions);
         
         //Act
-        var user = _service.Register(_registerModel);
+        var user = service.Register(_registerModel);
         
         //Assert
         Assert.NotEmpty(user.PasswordHash);
@@ -56,8 +57,23 @@ public class UserServiceTest
     {
         new User()
         {
+            RoleId = 2,
             Name = "Stepan",
             PasswordHash = "AQAAAAIAAYagAAAAEB6tRGXiPSzX9P/ufgjBMNqZp5OiniQssvADa5xeTOxv3rXuDBDA8RVkySJOU4uHPw=="
+        },
+    };
+    
+    private readonly List<Role> _testRoles = new List<Role>()
+    {
+        new Role()
+        {
+            Id = 1,
+            Name = "admin"
+        },
+        new Role()
+        {
+            Id = 2,
+            Name = "user"
         },
     };
     

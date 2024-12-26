@@ -32,7 +32,7 @@ public class EmissionServiceTest
 
         //Act
         _service.Setup(_calculateModel);
-        var actual = _service.CalculateConcentration(_calculateModel.Concentration);
+        var actual = _service.CalculateConcentration(ConcentrationType.SP);
 
         //Assert
         Assert.Equivalent(expected, actual);
@@ -42,7 +42,6 @@ public class EmissionServiceTest
 
     private readonly ConcentrationCalculateModel _calculateModel = new ConcentrationCalculateModel()
     {
-        Concentration = ConcentrationType.SP,
         Tgam = 235,
         Ta = 10,
         w0 = 15,
