@@ -6,8 +6,8 @@ namespace EcoState.Context;
 
 public class ApplicationDbContext : DbContext, IDbContext
 {
+    public DbSet<Emission> Emissions { get; set; } = null!;
     public DbSet<Concentration> Concentrations { get; set; } = null!;
-    public DbSet<ConcentrationList> ConcentrationLists { get; set; } = null!;
     public DbSet<User> Users { get; set; } = null!;
     public DbSet<Weather> Weathers { get; set; } = null!;
     
