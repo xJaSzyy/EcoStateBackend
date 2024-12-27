@@ -16,10 +16,7 @@ public class EntityMapper : Profile
         CreateMap<Concentration, ConcentrationViewModel>()
             .ForAllMembers(o => o.ExplicitExpansion());
         
-        CreateMap<ConcentrationListSaveModel, ConcentrationList>()
-            .ForAllMembers(o => o.ExplicitExpansion());
-        
-        CreateMap<ConcentrationList, ConcentrationListViewModel>()
+        CreateMap<Emission, EmissionViewModel>()
             .ForAllMembers(o => o.ExplicitExpansion());
         
         CreateMap<Weather, WeatherViewModel>()

@@ -1,5 +1,5 @@
+using EcoState.Domain;
 using EcoState.Enums;
-using EcoState.Extensions;
 using EcoState.Interfaces;
 using EcoState.ViewModels.Concentration;
 
@@ -25,7 +25,7 @@ public class EmissionService : IEmissionService
     private double f;
     private double f_e;
     
-    public void Setup(ConcentrationCalculateModel model)
+    public void Setup(EmissionCalculateModel model)
     {
         H = model.H;
         F = (int)model.F;
@@ -191,7 +191,7 @@ public class EmissionService : IEmissionService
         return x_m;
     }
     
-    public ConcentrationListViewModel CalculateConcentrationList()
+    public EmissionViewModel CalculateEmission()
     {
         var maxDistance = 1025;
 
@@ -211,21 +211,29 @@ public class EmissionService : IEmissionService
         var concentrationsNO = GetNormalSurfaceConcentration(x, mNO); 
         var concentrationsNO2 = GetNormalSurfaceConcentration(x, mNO2); 
         var concentrationsCO2 = GetNormalSurfaceConcentration(x, mCO2); 
-        var concentrationsSP = GetNormalSurfaceConcentration(x, mSP); 
-        
-        var result = new ConcentrationListViewModel
+        var concentrationsSP = GetNormalSurfaceConcentration(x, mSP);
+
+        var result = new EmissionViewModel
         {
-            ConcentrationsCO2 = concentrationsCO2,
-            ConcentrationsNO = concentrationsNO,
-            ConcentrationsNO2 = concentrationsNO2,
-            ConcentrationsSP = concentrationsSP,
-            ConcentrationsSO2 = concentrationsSO2
+            Concentrations = new List<Concentration>()
+            {
+                new Concentration()
+                    { Type = ConcentrationType.SO2, Concentrations = concentrationsSO2 },
+                new Concentration()
+                    { Type = ConcentrationType.NO, Concentrations = concentrationsNO },
+                new Concentration()
+                    { Type = ConcentrationType.NO2, Concentrations = concentrationsNO2 },
+                new Concentration()
+                    { Type = ConcentrationType.CO2, Concentrations = concentrationsCO2 },
+                new Concentration()
+                    { Type = ConcentrationType.SP, Concentrations = concentrationsSP }
+            }
         };
 
         return result;
     }
     
-    public ConcentrationViewModel CalculateConcentration(ConcentrationType concentration)
+    public ConcentrationViewModel CalculateConcentration(ConcentrationType type)
     {
         var maxDistance = 1025;
 
@@ -235,12 +243,13 @@ public class EmissionService : IEmissionService
             x.Add(i);
         }
 
-        ConcentrationMasses().TryGetValue((int)concentration, out var m);
+        ConcentrationMasses().TryGetValue((int)type, out var m);
 
         var concentrations = GetNormalSurfaceConcentration(x, m);
-
-        var result = new ConcentrationViewModel
+        
+        var result = new ConcentrationViewModel()
         {
+            Type = type,
             Concentrations = concentrations
         };
 
