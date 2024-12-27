@@ -1,4 +1,3 @@
-using EcoState.Context;
 using EcoState.Domain;
 using EcoState.Helpers;
 using EcoState.Interfaces;
@@ -19,7 +18,6 @@ public class UserServiceTest
         //Arrange
         var dbContextMock = new Mock<IDbContext>();
         dbContextMock.Setup<DbSet<User>>(x => x.Users).ReturnsDbSet(_testUsers);
-        dbContextMock.Setup<DbSet<Role>>(x => x.Roles).ReturnsDbSet(_testRoles);
 
         var authOptions = Options.Create(_testAuthSettings);
         
@@ -37,7 +35,6 @@ public class UserServiceTest
     {
         //Arrange
         var dbContextMock = new Mock<IDbContext>();
-        dbContextMock.Setup<DbSet<Role>>(x => x.Roles).ReturnsDbSet(_testRoles);
 
         var authOptions = Options.Create(_testAuthSettings);
         
@@ -57,23 +54,9 @@ public class UserServiceTest
     {
         new User()
         {
-            RoleId = 2,
+            Role = Role.User,
             Name = "Stepan",
             PasswordHash = "AQAAAAIAAYagAAAAEB6tRGXiPSzX9P/ufgjBMNqZp5OiniQssvADa5xeTOxv3rXuDBDA8RVkySJOU4uHPw=="
-        },
-    };
-    
-    private readonly List<Role> _testRoles = new List<Role>()
-    {
-        new Role()
-        {
-            Id = 1,
-            Name = "admin"
-        },
-        new Role()
-        {
-            Id = 2,
-            Name = "user"
         },
     };
     

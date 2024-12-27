@@ -46,7 +46,7 @@ public class EmissionController : ControllerBase
         return Ok(new Result<ConcentrationViewModel>(result));
     }
 
-    [Authorize(Roles = "admin")]
+    [EnumAuthorize(Role.Admin)]
     [HttpPost("concentraionList-save")]
     public async Task<IActionResult> SaveConcentrationList(ConcentrationListSaveModel model)
     {
@@ -62,7 +62,7 @@ public class EmissionController : ControllerBase
         return Ok(new Result<ConcentrationListViewModel>(result));
     }
 
-    [Authorize(Roles = "admin")]
+    [EnumAuthorize(Role.Admin)]
     [HttpPost("concentraion-save")]
     public async Task<IActionResult> SaveConcentration(ConcentrationSaveModel model)
     {

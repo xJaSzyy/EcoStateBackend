@@ -9,5 +9,4 @@ public interface IDbContext
     public DbSet<ConcentrationList> ConcentrationLists { get; set; } 
     public DbSet<User> Users { get; set; } 
     public DbSet<Weather> Weathers { get; set; }
-    public DbSet<Role> Roles { get; set; }
 }

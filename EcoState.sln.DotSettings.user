@@ -7,5 +7,6 @@
     &lt;TestId&gt;xUnit::C9CCF45B-E5BD-4CF8-91C0-76B145C2257E::net7.0::EcoState.Test.UserServiceTest.GetCustomer_Mocked_With_Extension_ShouldyAssertion&lt;/TestId&gt;
     &lt;TestId&gt;xUnit::C9CCF45B-E5BD-4CF8-91C0-76B145C2257E::net7.0::EcoState.Test.UserServiceTest.Login_WithLoginModel_ShouldReturnNotEmptyToken&lt;/TestId&gt;
     &lt;TestId&gt;xUnit::C9CCF45B-E5BD-4CF8-91C0-76B145C2257E::net7.0::EcoState.Test.UserServiceTest.Register_WithRegisterModel_ShouldReturnUser&lt;/TestId&gt;
+    &lt;TestId&gt;xUnit::C9CCF45B-E5BD-4CF8-91C0-76B145C2257E::net7.0::EcoState.Test.UserServiceTest&lt;/TestId&gt;
   &lt;/TestAncestor&gt;
 &lt;/SessionState&gt;</s:String></wpf:ResourceDictionary>

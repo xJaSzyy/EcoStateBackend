@@ -31,11 +31,9 @@ public class UserService : IUserService
 
         if (result == PasswordVerificationResult.Success)
         {
-            var role = _dbContext.Roles.FirstOrDefault(x => x.Id == user.RoleId);
-            
             var claims = new List<Claim>()
             {
-                new Claim(ClaimsIdentity.DefaultRoleClaimType, role.Name),
+                new Claim(ClaimsIdentity.DefaultRoleClaimType, user.Role.ToString()),
                 new Claim(ClaimsIdentity.DefaultNameClaimType, user.Name),
                 new Claim("Id", user.Id.ToString())
             };
@@ -61,8 +59,7 @@ public class UserService : IUserService
             Email = model.Email 
         };
 
-        var role = _dbContext.Roles.FirstOrDefault(x => x.Name == "user");
-        user.RoleId = role.Id;
+        user.Role = Role.User;
 
         var passwordHash = new PasswordHasher<User>().HashPassword(user, model.Password);
         user.PasswordHash = passwordHash;

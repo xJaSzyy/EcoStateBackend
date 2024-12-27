@@ -1,3 +1,5 @@
+using EcoState.Domain;
+
 namespace EcoState.ViewModels.User;
 
 public class UserViewModel
@@ -8,9 +10,9 @@ public class UserViewModel
     public Guid Id { get; set; }
     
     /// <summary>
-    /// Идентификатор роли
+    /// Роль
     /// </summary>
-    public int RoleId { get; set; }
+    public Role Role { get; set; }
     
     /// <summary>
     /// Логин/никнейм
