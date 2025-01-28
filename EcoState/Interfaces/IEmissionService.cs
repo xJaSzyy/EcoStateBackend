@@ -5,9 +5,22 @@ namespace EcoState.Interfaces;
 
 public interface IEmissionService
 {
-    public void Setup(ConcentrationListCalculateModel model);
+    /// <summary>
+    /// Установить стартовые значения для дальнейших расчетов
+    /// </summary>
+    /// <param name="model"></param>
+    public void Setup(EmissionCalculateModel model);
     
-    public ConcentrationListViewModel CalculateConcentrationList();
+    /// <summary>
+    /// Рассчитать концентрации всех частиц
+    /// </summary>
+    /// <returns></returns>
+    public EmissionViewModel CalculateEmission();
 
-    public ConcentrationViewModel CalculateConcentration(string concentration);
+    /// <summary>
+    /// Рассчитать концентрации выбранной частицы
+    /// </summary>
+    /// <param name="type"></param>
+    /// <returns></returns>
+    public ConcentrationViewModel CalculateConcentration(ConcentrationType type);
 }

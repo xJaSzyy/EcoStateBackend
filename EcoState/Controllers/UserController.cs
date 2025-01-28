@@ -2,24 +2,30 @@ using AutoMapper;
 using EcoState.Context;
 using EcoState.Domain;
 using EcoState.Extensions;
+using EcoState.Interfaces;
 using EcoState.ViewModels.User;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EcoState.Controllers;
 
+/// <summary>
+/// Контроллер пользователей
+/// </summary>
 public class UserController : ControllerBase
 {
-    private ApplicationDbContext _dbContext;
-    private IMapper _mapper;
+    private readonly ApplicationDbContext _dbContext;
+    private readonly IMapper _mapper;
+    private readonly IUserService _service;
 
-    public UserController(ApplicationDbContext dbContext, IMapper mapper)
+    public UserController(ApplicationDbContext dbContext, IMapper mapper, IUserService service)
     {
         _dbContext = dbContext;
         _mapper = mapper;
+        _service = service;
     }
 
     [HttpGet("user-get")]
-    public async Task<IActionResult> GetUser(UserGetModel model)
+    public async Task<IActionResult> GetUser([FromBody] UserGetModel model)
     {
         var user = await _dbContext.Users.FindAsync(model.Id);
         
@@ -36,41 +42,20 @@ public class UserController : ControllerBase
 
         return Ok(new Result<UserViewModel>(result));
     }
-
-    [HttpGet("userList-get")]
-    public async Task<IActionResult> GetUserList(UserListGetModel model)
+    
+    [HttpGet("user-getAll")]
+    public async Task<IActionResult> GetAllUsers()
     {
-        var userList = _dbContext.Users.Where(x => model.Ids.Contains(x.Id)).ToList();
-        
-        if (userList.Count < 1)
-        {
-            return Ok(new Result()
-            {
-                ErrorMessage = "Пользователи не найдены",
-                ReturnCode = 13
-            });
-        }
+        var userList = _dbContext.Users.ToList();
 
         var result = _mapper.Map<List<UserViewModel>>(userList);
 
         return Ok(new Result<List<UserViewModel>>(result));
     }
-
-    [HttpPost("user-add")]
-    public async Task<IActionResult> AddUser(UserAddModel model)
-    {
-        var user = _mapper.Map<User>(model);
-
-        _dbContext.Users.Add(user);
-        await _dbContext.SaveChangesAsync();
-
-        var result = _mapper.Map<UserViewModel>(user);
-
-        return Ok(new Result<UserViewModel>(result));
-    }
-
+    
+    [EnumAuthorize(Role.Admin)]
     [HttpPost("user-delete")]
-    public async Task<IActionResult> DeleteUser(UserDeleteModel model)
+    public async Task<IActionResult> DeleteUser([FromBody] UserDeleteModel model)
     {
         var user = await _dbContext.Users.FindAsync(model.Id);
 
@@ -91,8 +76,9 @@ public class UserController : ControllerBase
         return Ok(new Result<UserViewModel>(result));
     }
 
+    [EnumAuthorize(Role.Admin)]
     [HttpPost("user-update")]
-    public async Task<IActionResult> UpdateUser(UserUpdateModel model)
+    public async Task<IActionResult> UpdateUser([FromBody] UserUpdateModel model)
     {
         var user = await _dbContext.Users.FindAsync(model.Id);
 
@@ -105,10 +91,11 @@ public class UserController : ControllerBase
             });
         }
 
-        user.Name = model.Name;
-        user.Password = model.Password;
-        user.Email = model.Email;
-        
+        if (model.Role != null) user.Role = (Role)model.Role;
+        if (model.Name != null) user.Name = model.Name;
+        if (model.Password != null) user.PasswordHash = model.Password;
+        if (model.Email != null) user.Email = model.Email;
+
         _dbContext.Users.Update(user);
         await _dbContext.SaveChangesAsync();
         
@@ -117,15 +104,33 @@ public class UserController : ControllerBase
         return Ok(new Result<UserViewModel>(result));
     }
 
-    /*[HttpPost("user-login")]
-    public async Task<IActionResult> Login(LoginModel model)
+    [HttpPost("user-login")]
+    public async Task<IActionResult> Login([FromBody] LoginModel model)
     {
+        var token = _service.Login(model);
+
+        if (token == string.Empty)
+        {
+            return Ok(new Result()
+            {
+                ErrorMessage = "Неверный логин или пароль",
+                ReturnCode = 13
+            });
+        }
         
+        return Ok(new Result<string>(token));
     }
 
     [HttpPost("user-register")]
-    public async Task<IActionResult> Register(RegisterModel model)
+    public async Task<IActionResult> Register([FromBody] RegisterModel model)
     {
+        var user = _service.Register(model);
         
-    }*/
+        _dbContext.Users.Add(user);
+        await _dbContext.SaveChangesAsync();
+
+        var result = _mapper.Map<UserViewModel>(user);
+
+        return Ok(new Result<UserViewModel>(result));
+    }
 }

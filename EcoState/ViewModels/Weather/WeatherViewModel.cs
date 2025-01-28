@@ -21,4 +21,9 @@ public class WeatherViewModel
     /// Скорость ветра
     /// </summary>
     public float WindSpeed { get; set; }
+    
+    /// <summary>
+    /// Ссылка на иконку
+    /// </summary>
+    public string IconUrl { get; set; }
 }

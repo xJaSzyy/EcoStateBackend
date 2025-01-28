@@ -2,10 +2,10 @@ using System.ComponentModel.DataAnnotations;
 
 namespace EcoState.Domain;
 
-public class ConcentrationList
+public class Emission
 {
     [Key]
-    public int Id { get; set; }
+    public Guid Id { get; set; }
     
     public DateTime Date { get; set; }
     

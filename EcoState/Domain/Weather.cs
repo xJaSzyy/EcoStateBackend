@@ -5,7 +5,7 @@ namespace EcoState.Domain;
 public class Weather
 {
     [Key] 
-    public int Id { get; set; }
+    public Guid Id { get; set; }
     
     public DateTime Date { get; set; }
     
@@ -14,4 +14,6 @@ public class Weather
     public int WindDirection { get; set; }
     
     public float WindSpeed { get; set; }
+    
+    public string IconUrl { get; set; }
 }

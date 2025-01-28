@@ -1,15 +1,36 @@
+using EcoState.Context;
+using EcoState.Extensions;
+using EcoState.Helpers;
+using EcoState.Interfaces;
+using EcoState.Services;
+using Microsoft.EntityFrameworkCore;
+
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+
+builder.Services.AddAutoMapper(cfg=>cfg.AddProfile(new EntityMapper()));
+
+builder.Configuration.AddEnvironmentVariables();
+
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddTransient<IEmissionService, EmissionService>();
+builder.Services.AddTransient<IUserService, UserService>();
+builder.Services.AddTransient<IDbContext, ApplicationDbContext>();
+
+builder.Services.Configure<WeatherSettings>(builder.Configuration.GetSection("WeatherSettings"));
+builder.Services.AddSwagger();
+builder.Services.AddAuth(builder.Configuration);
+builder.Services.AddHttpClient();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -18,6 +39,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

@@ -1,11 +1,18 @@
+using EcoState.Domain;
+
 namespace EcoState.ViewModels.User;
 
 public class UserViewModel
 {
     /// <summary>
+    /// Идентификатор пользователя
+    /// </summary>
+    public Guid Id { get; set; }
+    
+    /// <summary>
     /// Роль
     /// </summary>
-    public string Role { get; set; }
+    public Role Role { get; set; }
     
     /// <summary>
     /// Логин/никнейм
@@ -15,7 +22,7 @@ public class UserViewModel
     /// <summary>
     /// Пароль
     /// </summary>
-    public string Password { get; set; }
+    public string PasswordHash { get; set; }
     
     /// <summary>
     /// Почтовый адрес
