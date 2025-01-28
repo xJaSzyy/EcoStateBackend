@@ -235,7 +235,7 @@ public class EmissionService : IEmissionService
     
     public ConcentrationViewModel CalculateConcentration(ConcentrationType type)
     {
-        var maxDistance = 1025;
+        var maxDistance = 10000;
 
         var x = new List<double>();
         for (var i = 5; i <= maxDistance; i += 5)

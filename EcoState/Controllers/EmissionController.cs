@@ -91,7 +91,77 @@ public class EmissionController : ControllerBase
         
         return Ok(new Result<List<EmissionViewModel>>(result));
     }
-    
+
+    [HttpGet("concentration-rnd")]
+    public async Task<IActionResult> GetRandomConcentration()
+    {
+        var model = new EmissionCalculateModel()
+        {
+            Tgam = RandomDouble(235, 265),
+            Ta = RandomDouble(-30, -20),
+            w0 = RandomDouble(15, 25),
+            D = RandomDouble(1, 7),
+            H = RandomDouble(13, 65),
+            A = CoefficientRegion.SouthernPart,
+            F = CoefficientDegreePurification.High,
+        };
+
+        _service.Setup(model);
+
+        var calculateConcentration = _service.CalculateConcentration(ConcentrationType.SP);
+
+        int maxIndex = -1;
+        double maxValue = -1;
+        int maxDistance = -1;
+
+        List<double> range = new List<double>();
+
+        for (int i = 0; i < calculateConcentration.Concentrations.Count; i++)
+        {
+            range.Add(calculateConcentration.Concentrations[i]);
+
+            if (calculateConcentration.Concentrations.Max() == calculateConcentration.Concentrations[i])
+            {
+                maxValue = calculateConcentration.Concentrations[i];
+                maxIndex = i;
+                maxDistance = (i + 1) * 5;
+                break;
+            }
+        }
+
+        double med = 0;
+
+        range.Sort();
+        if (range.Count % 2 == 0)
+        {
+            med = (range[(range.Count / 2)] + range[(range.Count / 2) - 1]) / 2;
+        }
+        else
+        {
+            med = range[(range.Count / 2)];
+        }
+
+
+        int minDistance = -1;
+        for (int i = maxIndex; i < calculateConcentration.Concentrations.Count; i++)
+        {
+            if (calculateConcentration.Concentrations[i] < med)
+            {
+                minDistance = (i + 1) * 5;
+                break;
+            }
+        }
+
+        var result = new ConcentrationRandomViewModel()
+        {
+            DangerZoneLength = minDistance,
+            DangerZoneHalfWidth = (minDistance - maxDistance),
+            Concentrations = calculateConcentration.Concentrations
+        };
+
+        return Ok(new Result<ConcentrationRandomViewModel>(result));
+    }
+
     [HttpGet("concentraion-getByDate")]
     public async Task<IActionResult> GetConcentrationByDate(ConcentrationGetByDateModel model)
     {
@@ -113,4 +183,11 @@ public class EmissionController : ControllerBase
         
         return Ok(new Result<List<ConcentrationViewModel>>(result));
     }
+    
+    public static double RandomDouble(double min, double max)
+    {
+        Random random = new Random();
+        return min + random.NextDouble() * (max - min);
+    }
 }
+
