@@ -1,6 +1,7 @@
 using AutoMapper;
 using EcoState.Context;
 using EcoState.Domain;
+using EcoState.Enums;
 using EcoState.Extensions;
 using EcoState.Interfaces;
 using EcoState.ViewModels.Concentration;
@@ -24,7 +25,7 @@ public class EmissionController : ControllerBase
         _service = service;
     }
 
-    [HttpGet("concentraionList-calc")]
+    [HttpGet("concentrationList-calc")]
     public async Task<IActionResult> CalculateConcentrationList(ConcentrationListCalculateModel model)
     {
         _service.Setup(model);
@@ -34,7 +35,7 @@ public class EmissionController : ControllerBase
         return Ok(new Result<ConcentrationListViewModel>(result));
     }
 
-    [HttpGet("concentraion-calc")]
+    [HttpGet("concentration-calc")]
     public async Task<IActionResult> CalculateConcentration(ConcentrationCalculateModel model)
     {
         _service.Setup(model);
@@ -43,8 +44,79 @@ public class EmissionController : ControllerBase
         
         return Ok(new Result<ConcentrationViewModel>(result));
     }
+    
+    [HttpGet("concentration-rnd")]
+    public async Task<IActionResult> RandomConcentration()
+    {
+        var model = new ConcentrationCalculateModel()
+        {
+            Concentration = ConcentrationType.SP,
+            Tgam = 235,
+            Ta = 10,
+            w0 = 15,
+            H = 13,
+            D = 2,
+            A = CoefficientRegion.SouthernPart,
+            F = CoefficientDegreePurification.High
+        };
+        
+        _service.Setup(_mapper.Map<ConcentrationListCalculateModel>(model));
+        
+        var result = _service.CalculateConcentration(model.Concentration);
+        
+        int maxIndex = -1;
+        double maxValue = -1;
+        int maxDistance = -1;
 
-    [HttpPost("concentraionList-save")]
+        List<double> range = new List<double>();
+
+        for (int i = 0; i < result.Concentrations.Count; i++)
+        {
+            range.Add(result.Concentrations[i]);
+
+            if (result.Concentrations.Max() == result.Concentrations[i])
+            {
+                maxValue = result.Concentrations[i];
+                maxIndex = i;
+                maxDistance = (i + 1) * 5;
+                break;
+            }
+        }
+
+        double med = 0;
+
+        range.Sort();
+        if (range.Count % 2 == 0)
+        {
+            med = (range[(range.Count / 2)] + range[(range.Count / 2) - 1]) / 2;
+        }
+        else
+        {
+            med = range[(range.Count / 2)];
+        }
+
+
+        int minDistance = -1;
+        for (int i = maxIndex; i < result.Concentrations.Count; i++)
+        {
+            if (result.Concentrations[i] < med)
+            {
+                minDistance = (i + 1) * 5;
+                break;
+            }
+        }
+
+        var randomViewModel = new ConcentrationRandomViewModel()
+        {
+            DangerZoneLength = minDistance,
+            DangerZoneHalfWidth = minDistance - maxDistance,
+            Concentrations = result.Concentrations
+        };
+        
+        return Ok(new Result<ConcentrationRandomViewModel>(randomViewModel));
+    }
+
+    [HttpPost("concentrationList-save")]
     public async Task<IActionResult> SaveConcentrationList(ConcentrationListSaveModel model)
     {
         var concentrationList = _mapper.Map<ConcentrationList>(model);
@@ -59,7 +131,7 @@ public class EmissionController : ControllerBase
         return Ok(new Result<ConcentrationListViewModel>(result));
     }
 
-    [HttpPost("concentraion-save")]
+    [HttpPost("concentration-save")]
     public async Task<IActionResult> SaveConcentration(ConcentrationSaveModel model)
     {
         var concentration = _mapper.Map<Concentration>(model);
@@ -74,7 +146,7 @@ public class EmissionController : ControllerBase
         return Ok(new Result<ConcentrationViewModel>(result));
     }
 
-    [HttpGet("concentraionList-get")]
+    [HttpGet("concentrationList-get")]
     public async Task<IActionResult> GetConcentrationList(ConcentrationListGetModel model)
     {
         var concentrationLists = _dbContext.ConcentrationLists.Where(x => x.Date == model.Date).ToList();
@@ -84,7 +156,7 @@ public class EmissionController : ControllerBase
         return Ok(new Result<List<ConcentrationListViewModel>>(result));
     }
 
-    [HttpGet("concentraion-get")]
+    [HttpGet("concentration-get")]
     public async Task<IActionResult> GetConcentration(ConcentrationGetModel model)
     {
         var concentrations = _dbContext.Concentrations.Where(x => x.Date == model.Date).ToList();
