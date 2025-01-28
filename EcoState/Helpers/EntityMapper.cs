@@ -10,19 +10,13 @@ public class EntityMapper : Profile
 {
     public EntityMapper()
     {
-        CreateMap<ConcentrationCalculateModel, ConcentrationListCalculateModel>()
-            .ForAllMembers(o => o.ExplicitExpansion());
-        
         CreateMap<ConcentrationSaveModel, Concentration>()
             .ForAllMembers(o => o.ExplicitExpansion());
         
         CreateMap<Concentration, ConcentrationViewModel>()
             .ForAllMembers(o => o.ExplicitExpansion());
         
-        CreateMap<ConcentrationListSaveModel, ConcentrationList>()
-            .ForAllMembers(o => o.ExplicitExpansion());
-        
-        CreateMap<ConcentrationList, ConcentrationListViewModel>()
+        CreateMap<Emission, EmissionViewModel>()
             .ForAllMembers(o => o.ExplicitExpansion());
         
         CreateMap<Weather, WeatherViewModel>()

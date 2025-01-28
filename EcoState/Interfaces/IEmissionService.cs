@@ -9,18 +9,18 @@ public interface IEmissionService
     /// Установить стартовые значения для дальнейших расчетов
     /// </summary>
     /// <param name="model"></param>
-    public void Setup(ConcentrationListCalculateModel model);
+    public void Setup(EmissionCalculateModel model);
     
     /// <summary>
     /// Рассчитать концентрации всех частиц
     /// </summary>
     /// <returns></returns>
-    public ConcentrationListViewModel CalculateConcentrationList();
+    public EmissionViewModel CalculateEmission();
 
     /// <summary>
     /// Рассчитать концентрации выбранной частицы
     /// </summary>
-    /// <param name="concentration"></param>
+    /// <param name="type"></param>
     /// <returns></returns>
-    public ConcentrationViewModel CalculateConcentration(ConcentrationType concentration);
+    public ConcentrationViewModel CalculateConcentration(ConcentrationType type);
 }

@@ -1,6 +1,6 @@
 namespace EcoState.ViewModels.Concentration;
 
-public class ConcentrationListGetModel
+public class ConcentrationGetByDateModel
 {
     /// <summary>
     /// Дата и время, когда были получены концентрации

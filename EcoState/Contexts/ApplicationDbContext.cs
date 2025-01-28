@@ -6,13 +6,10 @@ namespace EcoState.Context;
 
 public class ApplicationDbContext : DbContext, IDbContext
 {
-    public virtual DbSet<Concentration> Concentrations { get; set; } = null!;
-    
-    public virtual DbSet<ConcentrationList> ConcentrationLists { get; set; } = null!;
-    
-    public virtual DbSet<User> Users { get; set; } = null!;
-    
-    public virtual DbSet<Weather> Weathers { get; set; } = null!;
+    public DbSet<Emission> Emissions { get; set; } = null!;
+    public DbSet<Concentration> Concentrations { get; set; } = null!;
+    public DbSet<User> Users { get; set; } = null!;
+    public DbSet<Weather> Weathers { get; set; } = null!;
     
     public ApplicationDbContext(DbContextOptions options) : base(options)
     {

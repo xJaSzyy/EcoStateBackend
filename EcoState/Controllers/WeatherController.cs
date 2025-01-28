@@ -79,6 +79,7 @@ public class WeatherController : ControllerBase
         return Ok(new Result<List<WeatherViewModel>>(result));
     }
 
+    [EnumAuthorize(Role.Admin)]
     [HttpPost("weather-save")]
     public async Task<IActionResult> SaveWeather(WeatherSaveModel model)
     {

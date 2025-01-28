@@ -1,7 +1,6 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using EcoState.Context;
 using EcoState.Domain;
 using EcoState.Helpers;
 using EcoState.Interfaces;
@@ -34,8 +33,8 @@ public class UserService : IUserService
         {
             var claims = new List<Claim>()
             {
-                new Claim("Role", user.Role),
-                new Claim("Name", user.Name),
+                new Claim(ClaimsIdentity.DefaultRoleClaimType, user.Role.ToString()),
+                new Claim(ClaimsIdentity.DefaultNameClaimType, user.Name),
                 new Claim("Id", user.Id.ToString())
             };
 
@@ -56,10 +55,11 @@ public class UserService : IUserService
     {
         var user = new User()
         {
-            Role = "User",
             Name = model.Name,
             Email = model.Email 
         };
+
+        user.Role = Role.User;
 
         var passwordHash = new PasswordHasher<User>().HashPassword(user, model.Password);
         user.PasswordHash = passwordHash;

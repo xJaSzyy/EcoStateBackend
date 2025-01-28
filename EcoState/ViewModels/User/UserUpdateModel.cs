@@ -1,3 +1,5 @@
+using EcoState.Domain;
+
 namespace EcoState.ViewModels.User;
 
 public class UserUpdateModel
@@ -10,7 +12,7 @@ public class UserUpdateModel
     /// <summary>
     /// Роль
     /// </summary>
-    public string? Role { get; set; }
+    public Role? Role { get; set; }
     
     /// <summary>
     /// Логин/никнейм

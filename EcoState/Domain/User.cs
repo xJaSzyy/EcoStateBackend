@@ -7,7 +7,7 @@ public class User
     [Key]
     public Guid Id { get; set; }
 
-    public string Role { get; set; } = "User";
+    public Role Role { get; set; }
     
     public string Name { get; set; }
     

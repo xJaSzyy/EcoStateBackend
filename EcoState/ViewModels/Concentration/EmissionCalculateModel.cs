@@ -3,7 +3,7 @@ using EcoState.Enums;
 
 namespace EcoState.ViewModels.Concentration;
 
-public class ConcentrationListCalculateModel
+public class EmissionCalculateModel
 {
     /// <summary>
     /// Температура выбрасываемой ГВС

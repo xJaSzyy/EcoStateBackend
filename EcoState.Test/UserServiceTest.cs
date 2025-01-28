@@ -1,4 +1,3 @@
-using EcoState.Context;
 using EcoState.Domain;
 using EcoState.Helpers;
 using EcoState.Interfaces;
@@ -36,14 +35,13 @@ public class UserServiceTest
     {
         //Arrange
         var dbContextMock = new Mock<IDbContext>();
-        dbContextMock.Setup<DbSet<User>>(x => x.Users).ReturnsDbSet(_testUsers);
 
         var authOptions = Options.Create(_testAuthSettings);
         
-        var _service = new UserService(dbContextMock.Object, authOptions);
+        var service = new UserService(dbContextMock.Object, authOptions);
         
         //Act
-        var user = _service.Register(_registerModel);
+        var user = service.Register(_registerModel);
         
         //Assert
         Assert.NotEmpty(user.PasswordHash);
@@ -56,6 +54,7 @@ public class UserServiceTest
     {
         new User()
         {
+            Role = Role.User,
             Name = "Stepan",
             PasswordHash = "AQAAAAIAAYagAAAAEB6tRGXiPSzX9P/ufgjBMNqZp5OiniQssvADa5xeTOxv3rXuDBDA8RVkySJOU4uHPw=="
         },
