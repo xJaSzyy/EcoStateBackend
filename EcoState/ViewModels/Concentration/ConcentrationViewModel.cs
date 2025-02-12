@@ -23,4 +23,14 @@ public class ConcentrationViewModel
     /// Концентрации на дистанции некоторой
     /// </summary>
     public List<double> Concentrations { get; set; }
+    
+    /// <summary>
+    /// Длина зоны выброса
+    /// </summary>
+    public double DangerZoneLength { get; set; }
+    
+    /// <summary>
+    /// Ширина зоны выброса
+    /// </summary>
+    public double DangerZoneWidth { get; set; }
 }
