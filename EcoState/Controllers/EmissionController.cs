@@ -18,7 +18,7 @@ public class EmissionController : ControllerBase
     private readonly ApplicationDbContext _dbContext;
     private readonly IMapper _mapper;
     private readonly IEmissionService _service;
-
+    
     public EmissionController(ApplicationDbContext dbContext, IMapper mapper, IEmissionService service)
     {
         _dbContext = dbContext;
@@ -26,6 +26,11 @@ public class EmissionController : ControllerBase
         _service = service;
     }
 
+    /// <summary>
+    /// Метод расчета нескольких концентраций выброса
+    /// </summary>
+    /// <param name="model"></param>
+    /// <returns></returns>
     [HttpGet("emission-calc")]
     public async Task<IActionResult> CalculateEmission(EmissionCalculateModel model)
     {
@@ -36,6 +41,12 @@ public class EmissionController : ControllerBase
         return Ok(new Result<EmissionViewModel>(result));
     }
 
+    /// <summary>
+    /// Метод расчета конкретной концентрации выброса
+    /// </summary>
+    /// <param name="model"></param>
+    /// <param name="concentration"></param>
+    /// <returns></returns>
     [HttpGet("concentraion-calc")]
     public async Task<IActionResult> CalculateConcentration(EmissionCalculateModel model, ConcentrationType concentration)
     {
@@ -46,6 +57,11 @@ public class EmissionController : ControllerBase
         return Ok(new Result<ConcentrationViewModel>(result));
     }
 
+    /// <summary>
+    /// Метод сохранения нескольких концентраций выброса в базу данных
+    /// </summary>
+    /// <param name="concentrations"></param>
+    /// <returns></returns>
     [EnumAuthorize(Role.Admin)]
     [HttpPost("emission-save")]
     public async Task<IActionResult> SaveEmission([FromBody] List<Concentration> concentrations)
@@ -65,6 +81,11 @@ public class EmissionController : ControllerBase
         return Ok(new Result<EmissionViewModel>(result));
     }
 
+    /// <summary>
+    /// Метод сохранения конкретной концентрации выброса в базу данных
+    /// </summary>
+    /// <param name="model"></param>
+    /// <returns></returns>
     [EnumAuthorize(Role.Admin)]
     [HttpPost("concentraion-save")]
     public async Task<IActionResult> SaveConcentration(ConcentrationSaveModel model)
@@ -80,6 +101,11 @@ public class EmissionController : ControllerBase
         return Ok(new Result<ConcentrationViewModel>(result));
     }
 
+    /// <summary>
+    /// Метод получения данных о выбросе в конкретную дату
+    /// </summary>
+    /// <param name="model"></param>
+    /// <returns></returns>
     [HttpGet("emission-getByDate")]
     public async Task<IActionResult> GetEmissionByDate(EmissionGetByDateModel model)
     {
@@ -92,6 +118,10 @@ public class EmissionController : ControllerBase
         return Ok(new Result<List<EmissionViewModel>>(result));
     }
 
+    /// <summary>
+    /// Метод расчета концентраций твердых частиц при случайных входных данных
+    /// </summary>
+    /// <returns></returns>
     [HttpGet("concentration-rnd")]
     public async Task<IActionResult> GetRandomConcentration()
     {
@@ -104,64 +134,28 @@ public class EmissionController : ControllerBase
             H = RandomDouble(13, 65),
             A = CoefficientRegion.SouthernPart,
             F = CoefficientDegreePurification.High,
+            WindSpeed = RandomDouble(0, 13)
         };
 
         _service.Setup(model);
 
         var calculateConcentration = _service.CalculateConcentration(ConcentrationType.SP);
-
-        int maxIndex = -1;
-        double maxValue = -1;
-        int maxDistance = -1;
-
-        List<double> range = new List<double>();
-
-        for (int i = 0; i < calculateConcentration.Concentrations.Count; i++)
-        {
-            range.Add(calculateConcentration.Concentrations[i]);
-
-            if (calculateConcentration.Concentrations.Max() == calculateConcentration.Concentrations[i])
-            {
-                maxValue = calculateConcentration.Concentrations[i];
-                maxIndex = i;
-                maxDistance = (i + 1) * 5;
-                break;
-            }
-        }
-
-        double med = 0;
-
-        range.Sort();
-        if (range.Count % 2 == 0)
-        {
-            med = (range[(range.Count / 2)] + range[(range.Count / 2) - 1]) / 2;
-        }
-        else
-        {
-            med = range[(range.Count / 2)];
-        }
-
-
-        int minDistance = -1;
-        for (int i = maxIndex; i < calculateConcentration.Concentrations.Count; i++)
-        {
-            if (calculateConcentration.Concentrations[i] < med)
-            {
-                minDistance = (i + 1) * 5;
-                break;
-            }
-        }
-
+        
         var result = new ConcentrationRandomViewModel()
         {
-            DangerZoneLength = minDistance,
-            DangerZoneHalfWidth = (minDistance - maxDistance),
+            DangerZoneLength = calculateConcentration.DangerZoneLength,
+            DangerZoneWidth = calculateConcentration.DangerZoneWidth,
             Concentrations = calculateConcentration.Concentrations
         };
 
         return Ok(new Result<ConcentrationRandomViewModel>(result));
     }
 
+    /// <summary>
+    /// Метод получения данных о концентрации в конкретную дату
+    /// </summary>
+    /// <param name="model"></param>
+    /// <returns></returns>
     [HttpGet("concentraion-getByDate")]
     public async Task<IActionResult> GetConcentrationByDate(ConcentrationGetByDateModel model)
     {
@@ -173,6 +167,11 @@ public class EmissionController : ControllerBase
         return Ok(new Result<List<ConcentrationViewModel>>(result));
     }
 
+    /// <summary>
+    /// Метод получения данных о концентрациях по типу концентрации
+    /// </summary>
+    /// <param name="model"></param>
+    /// <returns></returns>
     [HttpGet("concentraion-getByType")]
     public async Task<IActionResult> GetConcentrationByType(ConcentrationGetByTypeModel model)
     {
@@ -183,8 +182,8 @@ public class EmissionController : ControllerBase
         
         return Ok(new Result<List<ConcentrationViewModel>>(result));
     }
-    
-    public static double RandomDouble(double min, double max)
+
+    private static double RandomDouble(double min, double max)
     {
         Random random = new Random();
         return min + random.NextDouble() * (max - min);

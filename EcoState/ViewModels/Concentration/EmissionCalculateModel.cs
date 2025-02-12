@@ -44,4 +44,9 @@ public class EmissionCalculateModel
     /// Коэффицент степени очистки
     /// </summary>
     public CoefficientDegreePurification F { get; set; }
+    
+    /// <summary>
+    /// Скорость ветра
+    /// </summary>
+    public double WindSpeed { get; set; }
 }

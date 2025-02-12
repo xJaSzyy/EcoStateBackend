@@ -10,6 +10,8 @@ namespace EcoState.Services;
 /// </summary>
 public class EmissionService : IEmissionService
 {
+    private const double _windAverageSpeed = 3;
+
     private double H; 
     private double F; 
     private double D; 
@@ -24,7 +26,13 @@ public class EmissionService : IEmissionService
     private double vm_s;
     private double f;
     private double f_e;
+
+    private double windSpeed;
     
+    /// <summary>
+    /// Метод установки входных данных для дальнейших расчетов
+    /// </summary>
+    /// <param name="model"></param>
     public void Setup(EmissionCalculateModel model)
     {
         H = model.H;
@@ -41,9 +49,11 @@ public class EmissionService : IEmissionService
         vm_s = 1.3 * w0 * D / H;
         f = 1000 * (Math.Pow(w0, 2) * D) / (Math.Pow(H, 2) * deltaT);
         f_e = 800 * Math.Pow(vm_s, 3);
+
+        windSpeed = model.WindSpeed;
     }
 
-    public List<double> GetNormalSurfaceConcentration(List<double> x, double M)
+    private List<double> GetNormalSurfaceConcentration(List<double> x, double M)
     {
         List<double> c = new List<double>();
 
@@ -91,7 +101,7 @@ public class EmissionService : IEmissionService
         return c;
     }
 
-    public double GetMaximumSingleSurfaceConcentration(double H, double M, double V1, double D)
+    private double GetMaximumSingleSurfaceConcentration(double H, double M, double V1, double D)
     {
         double c_m = 0;
 
@@ -145,7 +155,7 @@ public class EmissionService : IEmissionService
         return c_m;
     }
 
-    public double GetDistanceFromEmissionSourceSingle()
+    private double GetDistanceFromEmissionSourceSingle()
     {
         double x_m = 0;
 
@@ -191,12 +201,16 @@ public class EmissionService : IEmissionService
         return x_m;
     }
     
+    /// <summary>
+    /// Метод расчета нескольких концентраций выброса
+    /// </summary>
+    /// <returns></returns>
     public EmissionViewModel CalculateEmission()
     {
-        var maxDistance = 1025;
+        const int distance = 10000;
 
         var x = new List<double>();
-        for (var i = 5; i <= maxDistance; i += 5)
+        for (var i = 5; i <= distance; i += 5)
         {
             x.Add(i);
         }
@@ -233,12 +247,17 @@ public class EmissionService : IEmissionService
         return result;
     }
     
+    /// <summary>
+    /// Метод расчета конкретной концентрации выброса
+    /// </summary>
+    /// <param name="type"></param>
+    /// <returns></returns>
     public ConcentrationViewModel CalculateConcentration(ConcentrationType type)
     {
-        var maxDistance = 10000;
+        const int distance = 10000;
 
         var x = new List<double>();
-        for (var i = 5; i <= maxDistance; i += 5)
+        for (var i = 5; i <= distance; i += 5)
         {
             x.Add(i);
         }
