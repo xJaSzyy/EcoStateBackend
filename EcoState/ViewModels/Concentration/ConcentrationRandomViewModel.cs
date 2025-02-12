@@ -5,7 +5,7 @@ public class ConcentrationRandomViewModel
     /// <summary>
     /// 
     /// </summary>
-    public double DangerZoneHalfWidth { get; set; }
+    public double DangerZoneWidth { get; set; }
     
     /// <summary>
     /// 

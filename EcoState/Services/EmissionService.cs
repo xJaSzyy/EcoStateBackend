@@ -226,21 +226,47 @@ public class EmissionService : IEmissionService
         var concentrationsNO2 = GetNormalSurfaceConcentration(x, mNO2); 
         var concentrationsCO2 = GetNormalSurfaceConcentration(x, mCO2); 
         var concentrationsSP = GetNormalSurfaceConcentration(x, mSP);
+        
+        var dangerZoneParametersSO2 = CalculateDangerZoneParameters(concentrationsSO2);
+        var dangerZoneParametersNO = CalculateDangerZoneParameters(concentrationsNO);
+        var dangerZoneParametersNO2 = CalculateDangerZoneParameters(concentrationsNO2);
+        var dangerZoneParametersCO2 = CalculateDangerZoneParameters(concentrationsCO2);
+        var dangerZoneParametersSP = CalculateDangerZoneParameters(concentrationsSP);
 
         var result = new EmissionViewModel
         {
             Concentrations = new List<Concentration>()
             {
                 new Concentration()
-                    { Type = ConcentrationType.SO2, Concentrations = concentrationsSO2 },
+                {
+                    Type = ConcentrationType.SO2, Concentrations = concentrationsSO2, 
+                    DangerZoneWidth = dangerZoneParametersSO2.DangerZoneWidth, 
+                    DangerZoneLength = dangerZoneParametersSO2.DangerZoneLength
+                },
                 new Concentration()
-                    { Type = ConcentrationType.NO, Concentrations = concentrationsNO },
+                {
+                    Type = ConcentrationType.NO, Concentrations = concentrationsNO, 
+                    DangerZoneWidth = dangerZoneParametersNO.DangerZoneWidth, 
+                    DangerZoneLength = dangerZoneParametersNO.DangerZoneLength
+                },
                 new Concentration()
-                    { Type = ConcentrationType.NO2, Concentrations = concentrationsNO2 },
+                { 
+                        Type = ConcentrationType.NO2, Concentrations = concentrationsNO2, 
+                        DangerZoneWidth = dangerZoneParametersNO2.DangerZoneWidth, 
+                        DangerZoneLength = dangerZoneParametersNO2.DangerZoneLength
+                },
                 new Concentration()
-                    { Type = ConcentrationType.CO2, Concentrations = concentrationsCO2 },
+                {
+                    Type = ConcentrationType.CO2, Concentrations = concentrationsCO2, 
+                    DangerZoneWidth = dangerZoneParametersCO2.DangerZoneWidth, 
+                    DangerZoneLength = dangerZoneParametersCO2.DangerZoneLength
+                },
                 new Concentration()
-                    { Type = ConcentrationType.SP, Concentrations = concentrationsSP }
+                {
+                    Type = ConcentrationType.SP, Concentrations = concentrationsSP, 
+                    DangerZoneWidth = dangerZoneParametersSP.DangerZoneWidth, 
+                    DangerZoneLength = dangerZoneParametersSP.DangerZoneLength
+                }
             }
         };
 
@@ -265,14 +291,73 @@ public class EmissionService : IEmissionService
         ConcentrationMasses().TryGetValue((int)type, out var m);
 
         var concentrations = GetNormalSurfaceConcentration(x, m);
+
+        var dangerZoneParameters = CalculateDangerZoneParameters(concentrations);
         
         var result = new ConcentrationViewModel()
         {
             Type = type,
+            DangerZoneLength = dangerZoneParameters.DangerZoneLength,
+            DangerZoneWidth = dangerZoneParameters.DangerZoneWidth,
             Concentrations = concentrations
         };
 
         return result;
+    }
+
+    private DangerZoneParameters CalculateDangerZoneParameters(List<double> concentrations)
+    {
+        var maxIndex = int.MinValue;
+        var maxDistance = double.MinValue;
+        var minDistance = double.MinValue;
+
+        var valuesUpMax = new List<double>();
+        
+        var maxConcentration = concentrations.Max();
+        for (var i = 0; i < concentrations.Count; i++)
+        {
+            valuesUpMax.Add(concentrations[i]);
+
+            if (maxConcentration == concentrations[i])
+            {
+                maxIndex = i;
+                maxDistance = (i + 1) * 5;
+                break;
+            }
+        }
+
+        double med;
+
+        valuesUpMax.Sort();
+        
+        if (valuesUpMax.Count % 2 == 0)
+        {
+            med = (valuesUpMax[(valuesUpMax.Count / 2)] + valuesUpMax[(valuesUpMax.Count / 2) - 1]) / 2;
+        }
+        else
+        {
+            med = valuesUpMax[(valuesUpMax.Count / 2)];
+        }
+
+        for (var i = maxIndex; i < concentrations.Count; i++)
+        {
+            if (concentrations[i] < med)
+            {
+                minDistance = (i + 1) * 5;
+                break;
+            }
+        }
+        
+        var windSpeedCoeff =  _windAverageSpeed / windSpeed; // коэффицент скорости ветра, влияющий на ширину выброса
+        
+        var dangerZoneLength = minDistance;
+        var dangerZoneWidth = Math.Round((minDistance - maxDistance) * 2 * windSpeedCoeff, 2);
+        
+        return new DangerZoneParameters()
+        {
+            DangerZoneLength = dangerZoneLength,
+            DangerZoneWidth = dangerZoneWidth
+        };
     }
 
     private Dictionary<int, double> ConcentrationMasses()
@@ -286,4 +371,20 @@ public class EmissionService : IEmissionService
             { 5, 15.72 },
         };
     }
+}
+
+/// <summary>
+/// Параметры зоны выброса
+/// </summary>
+public class DangerZoneParameters
+{
+    /// <summary>
+    /// Длина зоны выброса
+    /// </summary>
+    public double DangerZoneLength { get; set; }
+    
+    /// <summary>
+    /// Ширина зоны выброса
+    /// </summary>
+    public double DangerZoneWidth { get; set; }
 }
