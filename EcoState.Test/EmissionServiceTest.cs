@@ -48,7 +48,8 @@ public class EmissionServiceTest
         H = 13,
         D = 2,
         A = CoefficientRegion.NorthernPart,
-        F = CoefficientDegreePurification.High
+        F = CoefficientDegreePurification.High,
+        WindSpeed = 10
     };
 
     private readonly EmissionViewModel _emissionViewModel = new EmissionViewModel()
@@ -64,7 +65,9 @@ public class EmissionServiceTest
                     0.00027014928891727483,
                     0.00047138484194916754,
                     0.0007228098369154083
-                }
+                },
+                DangerZoneLength = 810,
+                DangerZoneWidth = 267
             },
             new Concentration()
             {
@@ -75,7 +78,9 @@ public class EmissionServiceTest
                     0.000011393074114672305,
                     0.000019879831860318236,
                     0.000030483241602435533
-                }
+                },
+                DangerZoneLength = 810,
+                DangerZoneWidth = 267
             },
             new Concentration()
             {
@@ -86,7 +91,9 @@ public class EmissionServiceTest
                     0.00006915390706991411,
                     0.00012066699744044517,
                     0.00018502778405081932
-                }
+                },
+                DangerZoneLength = 810,
+                DangerZoneWidth = 267
             },
             new Concentration()
             {
@@ -97,7 +104,9 @@ public class EmissionServiceTest
                     0.0012573437649075296,
                     0.002193945408008094,
                     0.0033641415281967153
-                }
+                },
+                DangerZoneLength = 810,
+                DangerZoneWidth = 267
             },
             new Concentration()
             {
@@ -108,7 +117,9 @@ public class EmissionServiceTest
                     0.0040337640784380326,
                     0.007038535064058618,
                     0.0107927152700515
-                }
+                },
+                DangerZoneLength = 810,
+                DangerZoneWidth = 267
             }
         }
     };
@@ -123,7 +134,9 @@ public class EmissionServiceTest
             0.0040337640784380326,
             0.007038535064058618,
             0.0107927152700515
-        }
+        },
+        DangerZoneLength = 810,
+        DangerZoneWidth = 267
     };
 
     #endregion
