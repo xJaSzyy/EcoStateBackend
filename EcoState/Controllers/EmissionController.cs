@@ -19,6 +19,12 @@ public class EmissionController : ControllerBase
     private readonly IMapper _mapper;
     private readonly IEmissionService _service;
     
+    /// <summary>
+    /// Конструктор
+    /// </summary>
+    /// <param name="dbContext"></param>
+    /// <param name="mapper"></param>
+    /// <param name="service"></param>
     public EmissionController(ApplicationDbContext dbContext, IMapper mapper, IEmissionService service)
     {
         _dbContext = dbContext;

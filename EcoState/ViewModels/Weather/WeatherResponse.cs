@@ -5,13 +5,13 @@ namespace EcoState.ViewModels.Weather;
 public class WeatherResponse
 {
     [JsonPropertyName("main")]
-    public MainData MainData { get; set; }
-    
+    public MainData MainData { get; set; } = null!;
+
     [JsonPropertyName("wind")]
-    public WindData WindData { get; set; }
-    
+    public WindData WindData { get; set; } = null!;
+
     [JsonPropertyName("weather")]
-    public List<WeatherData> WeatherData { get; set; }
+    public List<WeatherData> WeatherData { get; set; } = null!;
 }
 
 public class MainData
@@ -32,5 +32,5 @@ public class WindData
 public class WeatherData
 {
     [JsonPropertyName("icon")]
-    public string Icon { get; set; }
+    public string Icon { get; set; } = null!;
 }

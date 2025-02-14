@@ -1,5 +1,8 @@
 namespace EcoState.ViewModels.Concentration;
 
+/// <summary>
+/// Модель представления выброса
+/// </summary>
 public class EmissionViewModel
 {
     /// <summary>
@@ -15,5 +18,5 @@ public class EmissionViewModel
     /// <summary>
     /// Концентрации на дистанции некоторой
     /// </summary>
-    public List<Domain.Concentration> Concentrations { get; set; }
+    public List<Domain.Concentration> Concentrations { get; set; } = null!;
 }

@@ -25,5 +25,5 @@ public class WeatherViewModel
     /// <summary>
     /// Ссылка на иконку
     /// </summary>
-    public string IconUrl { get; set; }
+    public string IconUrl { get; set; } = null!;
 }

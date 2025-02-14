@@ -6,8 +6,8 @@ namespace EcoState.Extensions;
 public class Result
 {
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-    public string ErrorMessage { get; set; }
-    
+    public string ErrorMessage { get; set; } = null!;
+
     public int ReturnCode { get; set; }
     
     public bool IsSuccess => this.ErrorMessage == null;
@@ -26,5 +26,5 @@ public class Result<T> : Result
     public Result(T content) => this.Content = content;
 
     /// <summary>Содержание.</summary>
-    public T Content { get; set; }
+    public T Content { get; set; } = default!;
 }

@@ -2,6 +2,9 @@ using EcoState.Enums;
 
 namespace EcoState.ViewModels.Concentration;
 
+/// <summary>
+/// Модель представления концентрации
+/// </summary>
 public class ConcentrationViewModel
 {
     /// <summary>
@@ -22,8 +25,8 @@ public class ConcentrationViewModel
     /// <summary>
     /// Концентрации на дистанции некоторой
     /// </summary>
-    public List<double> Concentrations { get; set; }
-    
+    public List<double> Concentrations { get; set; } = null!;
+
     /// <summary>
     /// Длина зоны выброса
     /// </summary>

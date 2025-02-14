@@ -17,8 +17,8 @@ public class ConcentrationSaveModel
     /// <summary>
     /// Концентрации на дистанции некоторой
     /// </summary>
-    public List<double> Concentrations { get; set; }
-    
+    public List<double> Concentrations { get; set; } = null!;
+
     /// <summary>
     /// Длина зоны выброса
     /// </summary>

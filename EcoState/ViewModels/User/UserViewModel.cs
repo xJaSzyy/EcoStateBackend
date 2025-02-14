@@ -17,15 +17,15 @@ public class UserViewModel
     /// <summary>
     /// Логин/никнейм
     /// </summary>
-    public string Name { get; set; }
-    
+    public string Name { get; set; } = null!;
+
     /// <summary>
     /// Пароль
     /// </summary>
-    public string PasswordHash { get; set; }
-    
+    public string PasswordHash { get; set; } = null!;
+
     /// <summary>
     /// Почтовый адрес
     /// </summary>
-    public string Email { get; set; }
+    public string Email { get; set; } = null!;
 }
