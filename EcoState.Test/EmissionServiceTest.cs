@@ -42,13 +42,13 @@ public class EmissionServiceTest
 
     private readonly EmissionCalculateModel _calculateModel = new EmissionCalculateModel()
     {
-        Tgam = 235,
-        Ta = 10,
-        w0 = 15,
-        H = 13,
-        D = 2,
-        A = CoefficientRegion.NorthernPart,
-        F = CoefficientDegreePurification.High,
+        EjectedTemp = 235,
+        AirTemp = 10,
+        AvgExitSpeed = 15,
+        HeightSource = 13,
+        DiameterSource = 2,
+        TempStratificationRatio = CoefficientRegion.NorthernPart,
+        SedimentationRateRatio = CoefficientDegreePurification.High,
         WindSpeed = 10
     };
 

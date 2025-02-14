@@ -127,13 +127,13 @@ public class EmissionController : ControllerBase
     {
         var model = new EmissionCalculateModel()
         {
-            Tgam = RandomDouble(235, 265),
-            Ta = RandomDouble(-30, -20),
-            w0 = RandomDouble(15, 25),
-            D = RandomDouble(1, 7),
-            H = RandomDouble(13, 65),
-            A = CoefficientRegion.SouthernPart,
-            F = CoefficientDegreePurification.High,
+            EjectedTemp = RandomDouble(235, 265),
+            AirTemp = RandomDouble(-30, -20),
+            AvgExitSpeed = RandomDouble(15, 25),
+            DiameterSource = RandomDouble(1, 7),
+            HeightSource = RandomDouble(13, 65),
+            TempStratificationRatio = CoefficientRegion.SouthernPart,
+            SedimentationRateRatio = CoefficientDegreePurification.High,
             WindSpeed = RandomDouble(0, 13)
         };
 
