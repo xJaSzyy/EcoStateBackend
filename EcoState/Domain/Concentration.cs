@@ -15,4 +15,8 @@ public class Concentration
     public ConcentrationType Type { get; set; }
     
     public List<double> Concentrations { get; set; }
+    
+    public double DangerZoneLength { get; set; }
+    
+    public double DangerZoneWidth { get; set; }
 }
