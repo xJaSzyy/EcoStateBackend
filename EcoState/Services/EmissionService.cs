@@ -31,13 +31,13 @@ public class EmissionService : IEmissionService
     /// <inheritdoc />
     public void Setup(EmissionCalculateModel model)
     {
-        _heightSource = model.H;
-        _sedimentationRateRatio = (int)model.F;
-        _diameterSource = model.D;
-        _tempStratificationRatio = (int)model.A;
-        _avgExitSpeed = model.w0;
-        _ejectedTemp = model.Tgam;
-        _airTemp = model.Ta;
+        _heightSource = model.HeightSource;
+        _sedimentationRateRatio = (int)model.SedimentationRateRatio;
+        _diameterSource = model.DiameterSource;
+        _tempStratificationRatio = (int)model.TempStratificationRatio;
+        _avgExitSpeed = model.AvgExitSpeed;
+        _ejectedTemp = model.EjectedTemp;
+        _airTemp = model.AirTemp;
         _windSpeed = model.WindSpeed;
         
         deltaT = _ejectedTemp - _airTemp;
