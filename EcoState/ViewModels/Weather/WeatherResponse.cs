@@ -2,6 +2,9 @@ using System.Text.Json.Serialization;
 
 namespace EcoState.ViewModels.Weather;
 
+/// <summary>
+/// Запрос к api погоды
+/// </summary>
 public class WeatherResponse
 {
     [JsonPropertyName("main")]

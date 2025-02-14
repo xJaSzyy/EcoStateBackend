@@ -2,6 +2,9 @@ using EcoState.Domain;
 
 namespace EcoState.ViewModels.User;
 
+/// <summary>
+/// Модель представления пользователя
+/// </summary>
 public class UserViewModel
 {
     /// <summary>

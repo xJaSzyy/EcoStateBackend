@@ -1,5 +1,8 @@
 namespace EcoState.ViewModels.Weather;
 
+/// <summary>
+/// Модель сохранения погоды
+/// </summary>
 public class WeatherSaveModel
 {
     /// <summary>

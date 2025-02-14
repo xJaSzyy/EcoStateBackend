@@ -2,6 +2,9 @@ using EcoState.Domain;
 
 namespace EcoState.ViewModels.User;
 
+/// <summary>
+/// Модель обновления пользователя
+/// </summary>
 public class UserUpdateModel
 {
     /// <summary>

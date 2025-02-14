@@ -2,6 +2,9 @@ using EcoState.Enums;
 
 namespace EcoState.ViewModels.Concentration;
 
+/// <summary>
+/// Модель сохранения концентрации
+/// </summary>
 public class ConcentrationSaveModel
 {
     /// <summary>

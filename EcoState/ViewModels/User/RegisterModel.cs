@@ -2,6 +2,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace EcoState.ViewModels.User;
 
+/// <summary>
+/// Модель регистрации
+/// </summary>
 public class RegisterModel
 {
     [Required(ErrorMessage = "Не указано имя")]
