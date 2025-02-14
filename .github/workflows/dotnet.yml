@@ -24,4 +24,4 @@ jobs:
       run: dotnet restore
     
     - name: Test with the dotnet CLI
-      run: dotnet test --no-build --verbosity normal
+      run: dotnet test EcoState.Test/EcoState.Test.csproj
