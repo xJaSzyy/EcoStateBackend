@@ -26,7 +26,7 @@ jobs:
       - name: Code Coverage Report
         uses: irongut/CodeCoverageSummary@v1.3.0
         with:
-          filename: coverage.cobertura.xml
+          filename: ./coverage/coverage.cobertura.xml
           badge: true
           fail_below_min: true
           format: markdown
@@ -35,6 +35,9 @@ jobs:
           indicators: true
           output: both
           thresholds: '20 60'
+
+      - name: List files in coverage directory
+        run: ls -l ./coverage
 
       - name: Extract Coverage Percentage from Report
         id: extract_coverage
