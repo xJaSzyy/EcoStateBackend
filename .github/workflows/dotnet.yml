@@ -34,6 +34,7 @@ jobs:
           hide_complexity: true
           indicators: true
           output: both
+          thresholds: '0 60'
 
       - name: Extract Coverage Percentage from Report
         id: extract_coverage
