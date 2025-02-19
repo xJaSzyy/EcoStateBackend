@@ -39,7 +39,7 @@ jobs:
         echo "coverage_percentage=$COVERAGE" >> $GITHUB_OUTPUT
           
     - name: Upload coverage reports to Artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v5
       with:
         name: coverage-report
         path: coveragereport
