@@ -45,3 +45,6 @@ jobs:
         auth: ${{ secrets.GIST_SECRET }}
         gistID: 4a7a6924fbbad82e9ee021b9e5205127
         filename: test.json
+        label: Coverage
+        message: 2%
+        color: red
