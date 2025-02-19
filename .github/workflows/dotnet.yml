@@ -34,7 +34,7 @@ jobs:
           hide_complexity: true
           indicators: true
           output: both
-          thresholds: '0 60'
+          thresholds: '20 80'
 
       - name: Extract Coverage Percentage from Report
         id: extract_coverage
@@ -54,9 +54,9 @@ jobs:
           fi
 
           COVERAGE_INT=$(echo "$COVERAGE_PERCENTAGE" | tr -d ' ') # Remove spaces
-          if [[ "$COVERAGE_INT" -lt 20 ]]; then
+          if [[ "$COVERAGE_INT" -lt 40 ]]; then
             COVERAGE_COLOR="red"
-          elif [[ "$COVERAGE_INT" -gt 60 ]]; then
+          elif [[ "$COVERAGE_INT" -gt 80 ]]; then
             COVERAGE_COLOR="green"
           else
             COVERAGE_COLOR="yellow"
