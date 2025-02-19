@@ -34,6 +34,7 @@ jobs:
           hide_complexity: true
           indicators: true
           output: both
+          output_path: ./coverage/coverage-summary.md # Explicit path to summary
           thresholds: '20 60'
 
       - name: Set Coverage Percentage
