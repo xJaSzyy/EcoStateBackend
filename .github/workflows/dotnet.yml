@@ -23,25 +23,25 @@ jobs:
       - name: Test with the dotnet CLI
         run: dotnet test EcoState.Test/EcoState.Test.csproj --collect:"XPlat Code Coverage" --results-directory ./coverage
 
-      - name: Install xmllint
-        run: sudo apt-get update && sudo apt-get install -y libxml2-utils
+      - name: Code Coverage Report
+        uses: irongut/CodeCoverageSummary@v1.3.0
+        with:
+          filename: coverage.cobertura.xml
+          badge: true
+          fail_below_min: true
+          format: markdown
+          hide_branch_rate: false
+          hide_complexity: true
+          indicators: true
+          output: both
+          thresholds: '20 60'
 
-      - name: Extract Coverage Percentage from XML
+      - name: Extract Coverage Percentage from Report
         id: extract_coverage
         run: |
-          COVERAGE_XML=$(find ./coverage -name "coverage.cobertura.xml")
-          if [ -z "$COVERAGE_XML" ]; then
-            echo "Error: coverage.cobertura.xml not found"
-            exit 1
-          fi
-
-          TOTAL_LINES=$(xmllint --xpath "sum(//line[@condition-coverage='100%']/@count + //line[not(@condition-coverage)]/@count)" "$COVERAGE_XML")
-          COVERED_LINES=$(xmllint --xpath "sum(//line[@condition-coverage])" "$COVERAGE_XML")
-          # Calculate percentage
-          COVERAGE_PERCENTAGE=$(( $(echo "scale=2; $COVERED_LINES / $TOTAL_LINES * 100" | bc) + 0.5 ))
+          COVERAGE_PERCENTAGE=$(grep "Coverage:" code-coverage-results.md | awk '{print $2}' | sed 's/%//g')
           echo "COVERAGE_PERCENTAGE=$COVERAGE_PERCENTAGE" >> $GITHUB_ENV
-
-        shell: bash
+          echo "::set-output name=coverage_percentage::$COVERAGE_PERCENTAGE"
 
       - name: Create Awesome Badge
         uses: schneegans/dynamic-badges-action@v1.7.0
