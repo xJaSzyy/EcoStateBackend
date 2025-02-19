@@ -26,21 +26,20 @@ jobs:
     - name: Test with the dotnet CLI
       run: dotnet test EcoState.Test/EcoState.Test.csproj --collect:"XPlat Code Coverage" --results-directory ./coverage
 
-    - name: Convert coverage to Cobertura
+    - name: Extract Coverage Percentage
+      id: coverage_percentage
       run: |
-        dotnet tool install -g dotnet-reportgenerator-globaltool
-        reportgenerator -reports:"**/coverage.cobertura.xml" -targetdir:"coveragereport" -reporttypes:Cobertura
+        COVERAGE=$(grep "Total" ./coverage/TestResults/*/coverage.cobertura.xml | awk -F'line-rate="' '{print $2}' | awk -F'"' '{print $1}' | awk '{printf "%.2f", $1 * 100}')
+        echo "coverage=$COVERAGE" >> $GITHUB_OUTPUT
+        echo "Code Coverage: $COVERAGE%"
 
-    - name: Calculate code coverage percentage
-      id: coverage
+    - name: Use Coverage Percentage
       run: |
-        COVERAGE=$(grep "line-rate" coveragereport/Cobertura.xml | awk -F'"' '{print $2 * 100}')
-        echo "Code coverage: $COVERAGE%"
-        echo "coverage_percentage=$COVERAGE" >> $GITHUB_OUTPUT
+        echo "Coverage Percentage: ${{ steps.coverage_percentage.outputs.coverage }}%"
       
     - name: Set Coverage Percentage
       run: |
-        COVERAGE=steps.coverage.outputs.coverage_percentage
+        COVERAGE=steps.coverage_percentage.outputs.coverage
         echo "COVERAGE=$COVERAGE" >> $GITHUB_ENV
       shell: bash
 
