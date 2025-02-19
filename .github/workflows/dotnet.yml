@@ -36,8 +36,8 @@ jobs:
           output: both
           thresholds: '20 60'
 
-      - name: List files in coverage directory
-        run: ls -l ./coverage
+      - name: Print code-coverage-results.md
+        run: cat code-coverage-results.md
 
       - name: Extract Coverage Percentage from Report
         id: extract_coverage
