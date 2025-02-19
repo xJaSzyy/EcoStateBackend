@@ -43,7 +43,7 @@ jobs:
         id: extract_coverage
         run: |
           # Attempt to find the percentage after "Summary: Line Rate ="
-          COVERAGE_PERCENTAGE=$(grep "^Summary:" code-coverage-results.md | awk '{print $4}' | sed 's/%//g')
+          COVERAGE_PERCENTAGE=$(grep "![Code Coverage](https://img.shields.io/badge/Code%20Coverage-" code-coverage-results.md | awk '{print $4}' | sed 's/%//g')
       
           if [[ -z "$COVERAGE_PERCENTAGE" ]]; then
             echo "Coverage percentage not found. Setting to 0."
