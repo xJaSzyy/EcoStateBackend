@@ -28,12 +28,16 @@ jobs:
 
     - name: Calculate Coverage Percentage
       run: |
-        dotnet tool install -g dotnet-reportgenerator
+        # Install reportgenerator (if not already installed - you might want to add this to your .csproj or a global tool)
+        dotnet tool install -g ReportGenerator
 
+        # Generate a report
         reportgenerator -reports:./coverage/**/coverage.cobertura.xml -targetdir:./coveragereport
 
+        # Extract the coverage percentage from the report
         COVERAGE=$(grep "line-rate" ./coveragereport/index.html | head -n 1 | awk '{print $2}' | awk -F'=' '{print $2}' | awk -F'%' '{print $1}')
 
+        # Check if coverage is empty or invalid
         if [[ -z "$COVERAGE" || "$COVERAGE" == "nan" ]]; then
           COVERAGE="0"
         fi
