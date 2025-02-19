@@ -20,29 +20,27 @@ jobs:
         with:
           dotnet-version: 7.0.x
 
-      - name: Restore dependencies
-        run: dotnet restore
+      - name: Test with the dotnet CLI
+        run: dotnet test EcoState.Test/EcoState.Test.csproj --collect:"XPlat Code Coverage" --results-directory ./coverage
 
-      - name: Install coverlet global tool
-        run: dotnet tool install --global coverlet.console
+      - name: Code Coverage Report
+        uses: irongut/CodeCoverageSummary@v1.3.0
+        with:
+          filename: coverage/**/coverage.cobertura.xml
+          badge: true
+          fail_below_min: true
+          format: markdown
+          hide_branch_rate: false
+          hide_complexity: true
+          indicators: true
+          output: both
+          thresholds: '20 60'
 
-      - name: Test with the dotnet CLI and Coverlet
-        run: dotnet test EcoState.Test/EcoState.Test.csproj --collect:"XPlat Code Coverage" --logger:"trx;LogFileName=test_results.trx" --results-directory ./TestResults /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput=./coverage/coverage.cobertura.xml
-
-      - name: Calculate Coverage Percentage (Coverlet)
+      - name: Set Coverage Percentage
         run: |
-          # Use Coverlet to generate the coverage summary.
-          COVERAGE=$(coverlet ./EcoState.Test/bin/Debug/net7.0/EcoState.Test.dll --target="./EcoState.Test/bin/Debug/net7.0/EcoState.dll" --format=opencover --output=coverage.opencover.xml | grep "Total line coverage:" | awk '{print $4}' | tr -d '%')
-
-          # Check if coverage is empty or invalid.
-          if [[ -z "$COVERAGE" || "$COVERAGE" == "nan" ]]; then
-            COVERAGE="0"
-          fi
-
-          # Format the coverage percentage.
-          COVERAGE=$(printf "%.2f" "$COVERAGE")
-          echo "COVERAGE=$COVERAGE%"
-          echo "COVERAGE=$COVERAGE%" >> $GITHUB_ENV
+          # Extract coverage percentage from the output of CodeCoverageSummary
+          COVERAGE_PERCENTAGE=$(grep -oP 'Total:\s*\K\d+\.\d+%' coverage-summary.md | tr -d '%')
+          echo "COVERAGE=${COVERAGE_PERCENTAGE}%" >> $GITHUB_ENV
         shell: bash
 
       - name: Create Awesome Badge
