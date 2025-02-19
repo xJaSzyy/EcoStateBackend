@@ -43,7 +43,7 @@ jobs:
         id: extract_coverage
         run: |
           # Attempt to find the percentage after "Summary: Line Rate ="
-          COVERAGE_PERCENTAGE=$(grep "Summary: Line Rate =" code-coverage-results.md | awk '{print $4}' | sed 's/%//g')
+          COVERAGE_PERCENTAGE=$(grep "Summary: Line Rate =" code-coverage-results.txt | awk '{print $4}' | sed 's/%//g')
       
           # Check if the percentage was found. If not, provide a default.
           if [[ -z "$COVERAGE_PERCENTAGE" ]]; then
