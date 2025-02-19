@@ -37,23 +37,23 @@ jobs:
           hide_branch_rate: false
           hide_complexity: true
           indicators: true
-          output: both
-          output_path: ./coverage/coverage-summary.md  # Указываем путь для файла summary
+          report_only: true # Only output the badge URL
+          output: console # Make sure the URL is printed to the console
           thresholds: '20 60'
 
-      - name: Set Coverage Percentage
+      - name: Extract Badge URL
+        id: extract-badge-url
         run: |
-          # Extract coverage percentage from the output of CodeCoverageSummary
-          COVERAGE_PERCENTAGE=$(grep -oP 'Total:\s*\K\d+\.\d+%' ./coverage/coverage-summary.md | tr -d '%')
-          echo "COVERAGE=${COVERAGE_PERCENTAGE}%" >> $GITHUB_ENV
+          BADGE_URL=$(echo "${{ steps.coverage-report.outputs.report }}" | grep -oP 'https:\/\/img\.shields\.io\/badge\/Code%20Coverage-\d+%25-[a-z]+(\?style=flat)?')
+          echo "BADGE_URL=$BADGE_URL" >> $GITHUB_ENV
         shell: bash
 
-      - name: Create Awesome Badge
+      - name: Update Gist with Badge URL
         uses: schneegans/dynamic-badges-action@v1.7.0
         with:
           auth: ${{ secrets.GIST_SECRET }}
           gistID: 4a7a6924fbbad82e9ee021b9e5205127
           filename: test.json
-          label: Coverage
-          message: ${{ env.COVERAGE }}
-          color: red
+          label: Coverage Badge
+          message: ${{ env.BADGE_URL }}
+          color: green # You can choose any color here, it won't affect the badge's appearance
