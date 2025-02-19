@@ -26,33 +26,27 @@ jobs:
     - name: Test with the dotnet CLI
       run: dotnet test EcoState.Test/EcoState.Test.csproj --collect:"XPlat Code Coverage" --results-directory ./coverage
 
-    - name: Code Coverage Report
-      uses: irongut/CodeCoverageSummary@v1.3.0
-      id: coverage-report
-      with:
-        filename: coverage/**/coverage.cobertura.xml
-        badge: true
-        fail_below_min: true
-        format: markdown
-        hide_branch_rate: false
-        hide_complexity: true
-        indicators: true
-        output: both
-        thresholds: '20 60'
-
-    - name: Extract Line Rate Coverage
-      id: extract-coverage
+    - name: Convert coverage to Cobertura
       run: |
-        LINE_RATE_LINE=$(cat ./github_pages/coverage.md | grep "Line Rate:")
-    
-        LINE_RATE_PERCENT=$(echo "$LINE_RATE_LINE" | awk '{print $3}' | tr -d '%')
-    
-        echo "LINE_RATE_PERCENT=$LINE_RATE_PERCENT" >> $GITHUB_ENV
-      shell: bash
+        dotnet tool install -g dotnet-reportgenerator-globaltool
+        reportgenerator -reports:"**/coverage.cobertura.xml" -targetdir:"coveragereport" -reporttypes:Cobertura
 
+    - name: Calculate code coverage percentage
+      id: coverage
+      run: |
+        COVERAGE=$(grep "line-rate" coveragereport/Cobertura.xml | awk -F'"' '{print $2 * 100}')
+        echo "Code coverage: $COVERAGE%"
+        echo "coverage_percentage=$COVERAGE" >> $GITHUB_OUTPUT
+          
+    - name: Upload coverage reports to Artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: coverage-report
+        path: coveragereport
+      
     - name: Set Coverage Percentage
       run: |
-        COVERAGE=process.env.LINE_RATE_PERCENT
+        COVERAGE=steps.coverage.outputs.coverage_percentage
         echo "COVERAGE=$COVERAGE" >> $GITHUB_ENV
       shell: bash
 
