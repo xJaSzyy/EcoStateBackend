@@ -42,7 +42,15 @@ jobs:
       - name: Extract Coverage Percentage from Report
         id: extract_coverage
         run: |
-          COVERAGE_PERCENTAGE=$(grep "Coverage:" code-coverage-results.md | awk '{print $2}' | sed 's/%//g')
+          # Attempt to find the percentage after "Summary: Line Rate ="
+          COVERAGE_PERCENTAGE=$(grep "Summary: Line Rate =" code-coverage-results.md | awk '{print $4}' | sed 's/%//g')
+      
+          # Check if the percentage was found. If not, provide a default.
+          if [[ -z "$COVERAGE_PERCENTAGE" ]]; then
+            echo "Coverage percentage not found using 'Summary: Line Rate ='. Setting to 0."
+            COVERAGE_PERCENTAGE="0"
+          fi
+      
           echo "COVERAGE_PERCENTAGE=$COVERAGE_PERCENTAGE" >> $GITHUB_ENV
           echo "::set-output name=coverage_percentage::$COVERAGE_PERCENTAGE"
 
