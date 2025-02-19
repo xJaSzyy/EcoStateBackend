@@ -14,27 +14,63 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
-    - name: Setup dotnet
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: 7.0.x
-        
-    - name: Install dependencies
-      run: dotnet restore
-    
-    - name: Test with the dotnet CLI
-      run: dotnet test EcoState.Test/EcoState.Test.csproj --collect:"XPlat Code Coverage" --results-directory ./coverage
+      - uses: actions/checkout@v4
+      - name: Setup dotnet
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 7.0.x
 
-    - name: Code Coverage Report
-      uses: irongut/CodeCoverageSummary@v1.3.0
-      with:
-        filename: coverage/**/coverage.cobertura.xml
-        badge: true
-        fail_below_min: true
-        format: markdown
-        hide_branch_rate: false
-        hide_complexity: true
-        indicators: true
-        output: both
-        thresholds: '20 60'
+      - name: Test with the dotnet CLI
+        run: dotnet test EcoState.Test/EcoState.Test.csproj --collect:"XPlat Code Coverage" --results-directory ./coverage
+
+      - name: Code Coverage Report
+        uses: irongut/CodeCoverageSummary@v1.3.0
+        with:
+          filename: coverage/**/coverage.cobertura.xml
+          badge: true
+          fail_below_min: true
+          format: markdown
+          hide_branch_rate: false
+          hide_complexity: true
+          indicators: true
+          output: both
+          thresholds: '20 80'
+
+      - name: Extract Coverage Percentage from Report
+        id: extract_coverage
+        run: |
+          COVERAGE_PERCENTAGE=$(grep "EcoState" code-coverage-results.md | sed 's/^.*EcoState | \([0-9]*%\) | .*$/\1/' | cut -d'%' -f1)
+          echo "COVERAGE_PERCENTAGE=$COVERAGE_PERCENTAGE" >> $GITHUB_ENV
+          echo "::set-output name=coverage_percentage::$COVERAGE_PERCENTAGE"
+
+      - name: Determine Badge Color
+        id: determine_color
+        run: |
+          COVERAGE_PERCENTAGE="${{ env.COVERAGE_PERCENTAGE }}"
+          if [[ -z "$COVERAGE_PERCENTAGE" ]]; then
+            COVERAGE_COLOR="red"
+            echo "COVERAGE_COLOR=$COVERAGE_COLOR" >> $GITHUB_ENV
+            exit 1  # Exit with error so action will fail
+          fi
+
+          COVERAGE_INT=$(echo "$COVERAGE_PERCENTAGE" | tr -d ' ') # Remove spaces
+          if [[ "$COVERAGE_INT" -lt 40 ]]; then
+            COVERAGE_COLOR="red"
+          elif [[ "$COVERAGE_INT" -gt 80 ]]; then
+            COVERAGE_COLOR="green"
+          else
+            COVERAGE_COLOR="yellow"
+          fi
+          echo "COVERAGE_COLOR=$COVERAGE_COLOR" >> $GITHUB_ENV
+          echo "::set-output name=coverage_color::$COVERAGE_COLOR"
+
+
+      - name: Create Awesome Badge
+        uses: schneegans/dynamic-badges-action@v1.7.0
+        with:
+          auth: ${{ secrets.GIST_SECRET }}
+          gistID: 4a7a6924fbbad82e9ee021b9e5205127
+          filename: test.json
+          label: Code Coverage
+          message: ${{ env.COVERAGE_PERCENTAGE }}%
+          color: ${{ env.COVERAGE_COLOR }}
