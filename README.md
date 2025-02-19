@@ -1,4 +1,4 @@
-![check-code-coverage](https://img.shields.io/badge/code--coverage-80%-brightgreen)
+![check-code-coverage](https://img.shields.io/badge/Code%20Coverage-36%25-yellow?style=flat)
 
 # EcoStateBackend
 
