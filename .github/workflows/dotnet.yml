@@ -37,12 +37,6 @@ jobs:
         COVERAGE=$(grep "line-rate" coveragereport/Cobertura.xml | awk -F'"' '{print $2 * 100}')
         echo "Code coverage: $COVERAGE%"
         echo "coverage_percentage=$COVERAGE" >> $GITHUB_OUTPUT
-          
-    - name: Upload coverage reports to Artifacts
-      uses: actions/upload-artifact@v5
-      with:
-        name: coverage-report
-        path: coveragereport
       
     - name: Set Coverage Percentage
       run: |
