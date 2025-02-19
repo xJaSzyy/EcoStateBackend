@@ -1,3 +1,5 @@
+![check-code-coverage](https://img.shields.io/badge/code--coverage-80%-brightgreen)
+
 # EcoStateBackend
 
 ## Клонирование репозитория
