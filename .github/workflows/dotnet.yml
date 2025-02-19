@@ -24,42 +24,25 @@ jobs:
       run: dotnet restore
     
     - name: Test with the dotnet CLI
-      id: dotnet_test
+      run: dotnet test EcoState.Test/EcoState.Test.csproj --collect:"XPlat Code Coverage" --results-directory ./coverage
+
+    - name: Calculate Coverage Percentage
       run: |
-        dotnet test EcoState.Test/EcoState.Test.csproj --collect:"XPlat Code Coverage" --results-directory ./coverage -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=cobertura
-        dotnet tool install --global dotnet-reportgenerator-globaltool
-        reportgenerator -reports:./coverage/TestResults/*/coverage.cobertura.xml -targetdir:./coverage/report -reporttypes:Cobertura
+        dotnet tool install -g dotnet-reportgenerator
 
-    - name: List Coverage Directory
-      run: ls -lR ./coverage/TestResults/ || true # Continue even if directory doesn't exist
+        reportgenerator -reports:./coverage/**/coverage.cobertura.xml -targetdir:./coveragereport
 
-    - name: Wait for Coverage File
-      run: sleep 5 # Give time for file to be written. Adjust as needed
+        COVERAGE=$(grep "line-rate" ./coveragereport/index.html | head -n 1 | awk '{print $2}' | awk -F'=' '{print $2}' | awk -F'%' '{print $1}')
 
-    - name: Extract Coverage Percentage
-      id: coverage_percentage
-      if: steps.dotnet_test.outcome == 'success'
-      run: |
-        # Try more specific path; adjust to your actual directory structure
-        COVERAGE=$(grep "Total" ./coverage/report/coverage.cobertura.xml | awk -F'line-rate="' '{print $2}' | awk -F'"' '{print $1}' | awk '{printf "%.2f", $1 * 100}')
-        if [ -z "$COVERAGE" ]; then
-          echo "::error title=Code Coverage Extraction Failed::Could not extract coverage percentage.  Check coverage file."
-          exit 1
+        if [[ -z "$COVERAGE" || "$COVERAGE" == "nan" ]]; then
+          COVERAGE="0"
         fi
-        echo "coverage=$COVERAGE" >> $GITHUB_OUTPUT
-        echo "Code Coverage: $COVERAGE%"
-
-    - name: Use Coverage Percentage
-      if: steps.coverage_percentage.outcome == 'success'
-      run: |
-        echo "Coverage Percentage: ${{ steps.coverage_percentage.outputs.coverage }}%"
-      
-    - name: Set Coverage Percentage
-      run: |
-        COVERAGE="${{ steps.coverage_percentage.outputs.coverage }}%"
-        echo "COVERAGE=$COVERAGE" >> $GITHUB_ENV
+        
+        COVERAGE=$(printf "%.2f" "$COVERAGE")
+        echo "COVERAGE=$COVERAGE%"
+        echo "COVERAGE=$COVERAGE%" >> $GITHUB_ENV
       shell: bash
-
+      
     - name: Create Awesome Badge
       uses: schneegans/dynamic-badges-action@v1.7.0
       with:
