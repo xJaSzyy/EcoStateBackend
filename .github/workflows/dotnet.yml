@@ -40,9 +40,19 @@ jobs:
         output: both
         thresholds: '20 60'
 
+    - name: Extract Line Rate Coverage
+      id: extract-coverage
+      run: |
+        LINE_RATE_LINE=$(cat ./github_pages/coverage.md | grep "Line Rate:")
+    
+        LINE_RATE_PERCENT=$(echo "$LINE_RATE_LINE" | awk '{print $3}' | tr -d '%')
+    
+        echo "LINE_RATE_PERCENT=$LINE_RATE_PERCENT" >> $GITHUB_ENV
+      shell: bash
+
     - name: Set Coverage Percentage
       run: |
-        COVERAGE=$(echo '${{ steps.coverage-report.outputs.coverage }}' | sed 's/%//g')
+        COVERAGE=process.env.LINE_RATE_PERCENT
         echo "COVERAGE=$COVERAGE" >> $GITHUB_ENV
       shell: bash
 
