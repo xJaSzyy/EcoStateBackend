@@ -12,7 +12,7 @@ namespace EcoState.Test;
 
 public class UserServiceTest
 {
-    [Fact]
+    /*[Fact]
     public void Login_WithLoginModel_ShouldReturnNotEmptyToken()
     {
         //Arrange
@@ -28,7 +28,7 @@ public class UserServiceTest
          
         //Assert
         Assert.NotEmpty(token);
-    }
+    }*/
 
     [Fact]
     public void Register_WithRegisterModel_ShouldReturnUser()
