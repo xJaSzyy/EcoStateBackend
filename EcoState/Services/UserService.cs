@@ -1,6 +1,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using EcoState.Context;
 using EcoState.Domain;
 using EcoState.Helpers;
 using EcoState.Interfaces;
@@ -13,10 +14,10 @@ namespace EcoState.Services;
 
 public class UserService : IUserService
 {
-    private readonly IDbContext _dbContext;
+    private readonly ApplicationDbContext _dbContext;
     private readonly IOptions<AuthSettings> _options;
 
-    public UserService(IDbContext dbContext, IOptions<AuthSettings> options)
+    public UserService(ApplicationDbContext dbContext, IOptions<AuthSettings> options)
     {
         _dbContext = dbContext;
         _options = options;

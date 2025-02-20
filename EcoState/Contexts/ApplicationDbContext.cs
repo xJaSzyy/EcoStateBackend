@@ -4,12 +4,14 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EcoState.Context;
 
-public class ApplicationDbContext : DbContext, IDbContext
+public class ApplicationDbContext : DbContext
 {
-    public DbSet<Emission> Emissions { get; set; } = null!;
-    public DbSet<Concentration> Concentrations { get; set; } = null!;
-    public DbSet<User> Users { get; set; } = null!;
-    public DbSet<Weather> Weathers { get; set; } = null!;
+    public virtual DbSet<Emission> Emissions { get; set; } = null!;
+    public virtual DbSet<Concentration> Concentrations { get; set; } = null!;
+    public virtual DbSet<User> Users { get; set; } = null!;
+    public virtual DbSet<Weather> Weathers { get; set; } = null!;
+    
+    public ApplicationDbContext() {  }
     
     public ApplicationDbContext(DbContextOptions options) : base(options)
     {

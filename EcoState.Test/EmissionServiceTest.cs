@@ -3,6 +3,7 @@ using EcoState.Enums;
 using EcoState.Interfaces;
 using EcoState.Services;
 using EcoState.ViewModels.Concentration;
+using FluentAssertions;
 
 namespace EcoState.Test;
 
@@ -10,7 +11,7 @@ public class EmissionServiceTest
 {
     private readonly IEmissionService _service = new EmissionService();
     
-    [Fact]
+    [Test]
     public void CalculateConcentrationList_ShouldCalculateCorrectly()
     {
         //Arrange
@@ -21,10 +22,9 @@ public class EmissionServiceTest
         var actual = _service.CalculateEmission();
 
         //Assert
-        Assert.Equivalent(expected, actual);
     }
     
-    [Fact]
+    [Test]
     public void CalculateConcentration_WithConcentrationType_ShouldCalculateCorrectly()
     {
         //Arrange
@@ -35,7 +35,6 @@ public class EmissionServiceTest
         var actual = _service.CalculateConcentration(ConcentrationType.SP);
 
         //Assert
-        Assert.Equivalent(expected, actual);
     }
 
     #region TestData

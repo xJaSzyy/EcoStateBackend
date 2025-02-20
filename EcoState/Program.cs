@@ -39,7 +39,6 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 builder.Services.AddTransient<IEmissionService, EmissionService>();
 builder.Services.AddTransient<IUserService, UserService>();
-builder.Services.AddTransient<IDbContext, ApplicationDbContext>();
 
 builder.Services.Configure<WeatherSettings>(builder.Configuration.GetSection("WeatherSettings"));
 builder.Services.AddSwagger();

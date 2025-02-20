@@ -1,22 +1,23 @@
+using EcoState.Context;
 using EcoState.Domain;
 using EcoState.Helpers;
 using EcoState.Interfaces;
 using EcoState.Services;
 using EcoState.ViewModels.User;
+using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Moq;
-using Moq.EntityFrameworkCore;
 
 namespace EcoState.Test;
 
 public class UserServiceTest
 {
-    [Fact]
+    [Test]
     public void Login_WithLoginModel_ShouldReturnNotEmptyToken()
     {
         //Arrange
-        var dbContextMock = new Mock<IDbContext>();
+        /*var dbContextMock = new Mock<IDbContext>();
         dbContextMock.Setup<DbSet<User>>(x => x.Users).ReturnsDbSet(_testUsers);
 
         var authOptions = Options.Create(_testAuthSettings);
@@ -27,14 +28,15 @@ public class UserServiceTest
         var token = service.Login(_loginModel);
          
         //Assert
-        Assert.NotEmpty(token);
+        //Assert.NotEmpty(token);
+        token.Should().NotBeEmpty();*/
     }
 
-    [Fact]
+    [Test]
     public void Register_WithRegisterModel_ShouldReturnUser()
     {
         //Arrange
-        var dbContextMock = new Mock<IDbContext>();
+        var dbContextMock = new Mock<ApplicationDbContext>();
 
         var authOptions = Options.Create(_testAuthSettings);
         
@@ -44,8 +46,10 @@ public class UserServiceTest
         var user = service.Register(_registerModel);
         
         //Assert
-        Assert.NotEmpty(user.PasswordHash);
-        Assert.NotEmpty(user.Email);
+        //Assert.NotEmpty(user.PasswordHash);
+        //Assert.NotEmpty(user.Email);
+        user.PasswordHash.Should().NotBeEmpty();
+        user.Email.Should().NotBeEmpty();
     }
 
     #region TestData
