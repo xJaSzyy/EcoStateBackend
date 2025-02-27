@@ -31,16 +31,12 @@ public class UserController : ControllerBase
         
         if (user == null)
         {
-            return Ok(new Result()
-            {
-                ErrorMessage = "Пользователь не найден",
-                ReturnCode = 13
-            });
+            return Ok(Results.NotFound(new { message= "Пользователь не найден"}));
         }
 
         var result = _mapper.Map<UserViewModel>(user);
 
-        return Ok(new Result<UserViewModel>(result));
+        return Ok(result);
     }
     
     [HttpGet("user-getAll")]
@@ -50,7 +46,7 @@ public class UserController : ControllerBase
 
         var result = _mapper.Map<List<UserViewModel>>(userList);
 
-        return Ok(new Result<List<UserViewModel>>(result));
+        return Ok(result);
     }
     
     [EnumAuthorize(Role.Admin)]
@@ -61,11 +57,7 @@ public class UserController : ControllerBase
 
         if (user == null)
         {
-            return Ok(new Result()
-            {
-                ErrorMessage = "Пользователь не найден",
-                ReturnCode = 13
-            });
+            return Ok(Results.NotFound(new { message= "Пользователь не найден"}));
         }
         
         _dbContext.Users.Remove(user);
@@ -73,7 +65,7 @@ public class UserController : ControllerBase
 
         var result = _mapper.Map<UserViewModel>(user);
 
-        return Ok(new Result<UserViewModel>(result));
+        return Ok(result);
     }
 
     [EnumAuthorize(Role.Admin)]
@@ -84,11 +76,7 @@ public class UserController : ControllerBase
 
         if (user == null)
         {
-            return Ok(new Result()
-            {
-                ErrorMessage = "Пользователь не найден",
-                ReturnCode = 13
-            });
+            return Ok(Results.NotFound(new { message= "Пользователь не найден"}));
         }
 
         if (model.Role != null) user.Role = (Role)model.Role;
@@ -101,7 +89,7 @@ public class UserController : ControllerBase
         
         var result = _mapper.Map<UserViewModel>(user);
 
-        return Ok(new Result<UserViewModel>(result));
+        return Ok(result);
     }
 
     [HttpPost("user-login")]
@@ -111,14 +99,10 @@ public class UserController : ControllerBase
 
         if (token == string.Empty)
         {
-            return Ok(new Result()
-            {
-                ErrorMessage = "Неверный логин или пароль",
-                ReturnCode = 13
-            });
+            return Ok(Results.NotFound(new { message= "Пользователь не найден"}));
         }
         
-        return Ok(new Result<string>(token));
+        return Ok(token);
     }
 
     [HttpPost("user-register")]
@@ -131,6 +115,6 @@ public class UserController : ControllerBase
 
         var result = _mapper.Map<UserViewModel>(user);
 
-        return Ok(new Result<UserViewModel>(result));
+        return Ok(result);
     }
 }
