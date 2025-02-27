@@ -16,6 +16,7 @@ namespace EcoState.Test;
 public class WeatherControllerTest
 {
     private Mock<ApplicationDbContext> _dbContext = new();
+    private readonly Mock<IMapper> _mapper = new();
     private readonly Fixture _fixture = new();
     
     private List<Weather> _testData = new();
@@ -30,6 +31,7 @@ public class WeatherControllerTest
     public void Cleanup()
     {
         _dbContext.Reset();
+        _mapper.Reset();
 
         _testData = new List<Weather>();
     }
@@ -38,10 +40,6 @@ public class WeatherControllerTest
     public async Task GetWeather_WithWeatherGetModel_ShouldReturnCorrectListWeatherViewModel()
     {
         // Arrange
-        var mapper = new Mock<IMapper>();
-        var settings = new Mock<IOptions<WeatherSettings>>();
-        var factory = new Mock<IHttpClientFactory>();
-
         var dateTimeNow = DateTime.Now;
         var weatherGetModel = new WeatherGetModel()
         {
@@ -66,10 +64,10 @@ public class WeatherControllerTest
             .Where(x => x.Date == dateTimeNow)
             .ToList();
 
-        mapper.Setup(x => x.Map<List<WeatherViewModel>>(It.IsAny<List<Weather>>()))
+        _mapper.Setup(x => x.Map<List<WeatherViewModel>>(It.IsAny<List<Weather>>()))
             .Returns(weatherViewModelList);
-        
-        var controller = new WeatherController(_dbContext.Object, mapper.Object, settings.Object, factory.Object);
+
+        var controller = GetWeatherController();
         
         // Act
         var result = await controller.GetWeather(weatherGetModel) as OkObjectResult;
@@ -88,10 +86,6 @@ public class WeatherControllerTest
     public async Task SaveWeather_WithWeatherSaveModel_ShouldCorrectSaveWeather()
     {
         // Arrange
-        var mapper = new Mock<IMapper>();
-        var settings = new Mock<IOptions<WeatherSettings>>();
-        var factory = new Mock<IHttpClientFactory>();
-
         var weatherSaveModel = _fixture.Create<WeatherSaveModel>();
 
         var weather = new Weather()
@@ -112,12 +106,12 @@ public class WeatherControllerTest
             IconUrl = weatherSaveModel.IconUrl
         };
         
-        mapper.Setup(x => x.Map<Weather>(weatherSaveModel))
+        _mapper.Setup(x => x.Map<Weather>(weatherSaveModel))
             .Returns(weather);
-        mapper.Setup(x => x.Map<WeatherViewModel>(weather))
+        _mapper.Setup(x => x.Map<WeatherViewModel>(weather))
             .Returns(weatherViewModel);
-        
-        var controller = new WeatherController(_dbContext.Object, mapper.Object, settings.Object, factory.Object);
+
+        var controller = GetWeatherController();
         
         // Act
         var result = await controller.SaveWeather(weatherSaveModel) as OkObjectResult;
@@ -139,5 +133,13 @@ public class WeatherControllerTest
         
         _dbContext = new Mock<ApplicationDbContext>();
         _dbContext.Setup(c => c.Weathers).Returns(mockSet.Object);
+    }
+
+    private WeatherController GetWeatherController()
+    {
+        var settings = new Mock<IOptions<WeatherSettings>>();
+        var factory = new Mock<IHttpClientFactory>();
+        
+        return new WeatherController(_dbContext.Object, _mapper.Object, settings.Object, factory.Object);
     }
 }
