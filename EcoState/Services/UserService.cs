@@ -12,17 +12,26 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace EcoState.Services;
 
+/// <summary>
+/// Сервис пользователей
+/// </summary>
 public class UserService : IUserService
 {
     private readonly ApplicationDbContext _dbContext;
     private readonly IOptions<AuthSettings> _options;
 
+    /// <summary>
+    /// Конструктор
+    /// </summary>
+    /// <param name="dbContext">Контекст БД</param>
+    /// <param name="options">Настройки</param>
     public UserService(ApplicationDbContext dbContext, IOptions<AuthSettings> options)
     {
         _dbContext = dbContext;
         _options = options;
     }
 
+    /// <inheritdoc />
     public string Login(LoginModel model)
     {
         var user = _dbContext.Users.FirstOrDefault(x => x.Name == model.Name);
@@ -57,6 +66,7 @@ public class UserService : IUserService
         return "Неверный пароль";
     }
 
+    /// <inheritdoc />
     public User Register(RegisterModel model)
     {
         var user = new User
