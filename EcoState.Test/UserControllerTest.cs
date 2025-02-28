@@ -6,6 +6,7 @@ using EcoState.Domain;
 using EcoState.Interfaces;
 using EcoState.ViewModels.User;
 using FluentAssertions;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Moq;
@@ -38,7 +39,7 @@ public class UserControllerTest
     }
 
     [Test]
-    public async Task Test()
+    public async Task GetUser_ShouldGetCorrectUser()
     {
         // Arrange
         var model = _fixture.Create<UserGetModel>();
@@ -61,7 +62,6 @@ public class UserControllerTest
 
         _testData = new List<User>() { user };
         SetDataToContext(_testData.AsQueryable());
-        _dbContext.Setup(x => x.Users.FindAsync(model.Id)).ReturnsAsync(user);
         
         var controller = new UserController(_dbContext.Object, _mapper.Object, _service.Object);
 
@@ -69,8 +69,161 @@ public class UserControllerTest
         var result = await controller.GetUser(model) as OkObjectResult;
 
         // Assert
-        _dbContext.Verify(x => x.Users.FindAsync(model.Id), Times.Once);
+        _dbContext.Verify(x => x.Users, Times.Once);
         result!.Value.Should().Be(userViewModel);
+    }
+    
+    [Test]
+    public async Task GetUser_ShouldNotFindUser()
+    {
+        // Arrange
+        var model = _fixture.Create<UserGetModel>();
+        
+        SetDataToContext(_testData.AsQueryable());
+        
+        var controller = new UserController(_dbContext.Object, _mapper.Object, _service.Object);
+
+        // Act
+        var result = await controller.GetUser(model) as OkObjectResult;
+
+        // Assert
+        _dbContext.Verify(x => x.Users, Times.Once);
+        result!.Value.Should().Be("Пользователь не найден");
+    }
+    
+    [Test]
+    public async Task GetAllUsers_ShouldGetCorrectUsers()
+    {
+        // Arrange
+        _testData = _fixture.Create<List<User>>();
+
+        var usersViewModel = _testData.Select(user => new UserViewModel()
+            {
+                Id = user.Id,
+                Role = user.Role,
+                Name = user.Name,
+                PasswordHash = user.PasswordHash,
+                Email = user.Email!,
+            })
+            .ToList();
+
+        _mapper.Setup(x => x.Map<List<UserViewModel>>(_testData))
+            .Returns(usersViewModel);
+
+        SetDataToContext(_testData.AsQueryable());
+        
+        var controller = new UserController(_dbContext.Object, _mapper.Object, _service.Object);
+
+        // Act
+        var result = await controller.GetAllUsers() as OkObjectResult;
+
+        // Assert
+        _dbContext.Verify(x => x.Users, Times.Once);
+        result!.Value.Should().Be(usersViewModel);
+    }
+    
+    [Test]
+    public async Task DeleteUser_ShouldDeleteUser()
+    {
+        // Arrange
+        _testData = _fixture.Create<List<User>>();
+
+        var model = new UserDeleteModel() { Id = _testData[0].Id };
+
+        var userViewModel = new UserViewModel()
+        {
+            Id = _testData[0].Id,
+            Role = _testData[0].Role,
+            Name = _testData[0].Name,
+            PasswordHash = _testData[0].PasswordHash,
+            Email = _testData[0].Email!,
+        };
+
+        _mapper.Setup(x => x.Map<UserViewModel>(_testData[0]))
+            .Returns(userViewModel);
+
+        SetDataToContext(_testData.AsQueryable());
+        
+        var controller = new UserController(_dbContext.Object, _mapper.Object, _service.Object);
+
+        // Act
+        var result = await controller.DeleteUser(model) as OkObjectResult;
+
+        // Assert
+        _dbContext.Verify(x => x.Users, Times.Exactly(2));
+        _dbContext.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
+        result!.Value.Should().Be(userViewModel);
+    }
+    
+    [Test]
+    public async Task DeleteUser_ShouldNotFindUser()
+    {
+        // Arrange
+        var model = _fixture.Create<UserDeleteModel>();
+
+        SetDataToContext(_testData.AsQueryable());
+        
+        var controller = new UserController(_dbContext.Object, _mapper.Object, _service.Object);
+
+        // Act
+        var result = await controller.DeleteUser(model) as OkObjectResult;
+
+        // Assert
+        _dbContext.Verify(x => x.Users, Times.Once);
+        result!.Value.Should().Be("Пользователь не найден");
+    }
+    
+    [Test]
+    public async Task UpdateUser_ShouldUpdateUserCorrect()
+    {
+        // Arrange
+        _testData = _fixture.Create<List<User>>();
+
+        var model = _fixture.Build<UserUpdateModel>()
+            .With(x => x.Id, _testData[0].Id)
+            .Create();
+
+        var userViewModel = new UserViewModel()
+        {
+            Id = model.Id,
+            Role = (Role)model.Role!,
+            Name = model.Name!,
+            PasswordHash = model.Password!,
+            Email = model.Email!,
+        };
+
+        _mapper.Setup(x => x.Map<UserViewModel>(It.IsAny<User>()))
+            .Returns(userViewModel);
+
+        SetDataToContext(_testData.AsQueryable());
+        
+        var controller = new UserController(_dbContext.Object, _mapper.Object, _service.Object);
+
+        // Act
+        var result = await controller.UpdateUser(model) as OkObjectResult;
+
+        // Assert
+        _dbContext.Verify(x => x.Users, Times.Exactly(2));
+        _dbContext.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
+        result!.Value.Should().Be(userViewModel);
+    }
+    
+    [Test]
+    public async Task UpdateUser_ShouldNotFindUser()
+    {
+        // Arrange
+        var model = _fixture.Create<UserUpdateModel>();
+
+        SetDataToContext(_testData.AsQueryable());
+        
+        var controller = new UserController(_dbContext.Object, _mapper.Object, _service.Object);
+
+        // Act
+        var result = await controller.UpdateUser(model) as OkObjectResult;
+
+        // Assert
+        _dbContext.Verify(x => x.Users, Times.Once);
+        result!.Value.Should().Be("Пользователь не найден");
     }
     
     private void SetDataToContext(IQueryable<User> testData)

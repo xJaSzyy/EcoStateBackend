@@ -27,11 +27,11 @@ public class UserController : ControllerBase
     [HttpGet("user-get")]
     public async Task<IActionResult> GetUser([FromBody] UserGetModel model)
     {
-        var user = await _dbContext.Users.FindAsync(model.Id);
+        var user = _dbContext.Users.FirstOrDefault(x => x.Id == model.Id);
         
         if (user == null)
         {
-            return Ok(Results.NotFound(new { message= "Пользователь не найден"}));
+            return Ok("Пользователь не найден");
         }
 
         var result = _mapper.Map<UserViewModel>(user);
@@ -53,11 +53,11 @@ public class UserController : ControllerBase
     [HttpPost("user-delete")]
     public async Task<IActionResult> DeleteUser([FromBody] UserDeleteModel model)
     {
-        var user = await _dbContext.Users.FindAsync(model.Id);
+        var user = _dbContext.Users.FirstOrDefault(x => x.Id == model.Id);
 
         if (user == null)
         {
-            return Ok(Results.NotFound(new { message= "Пользователь не найден"}));
+            return Ok("Пользователь не найден");
         }
         
         _dbContext.Users.Remove(user);
@@ -72,11 +72,11 @@ public class UserController : ControllerBase
     [HttpPost("user-update")]
     public async Task<IActionResult> UpdateUser([FromBody] UserUpdateModel model)
     {
-        var user = await _dbContext.Users.FindAsync(model.Id);
+        var user = _dbContext.Users.FirstOrDefault(x => x.Id == model.Id);
 
         if (user == null)
         {
-            return Ok(Results.NotFound(new { message= "Пользователь не найден"}));
+            return Ok("Пользователь не найден");
         }
 
         if (model.Role != null) user.Role = (Role)model.Role;
@@ -99,7 +99,7 @@ public class UserController : ControllerBase
 
         if (token == string.Empty)
         {
-            return Ok(Results.NotFound(new { message= "Пользователь не найден"}));
+            return Ok("Пользователь не найден");
         }
         
         return Ok(token);
