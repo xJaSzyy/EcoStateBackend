@@ -44,7 +44,7 @@ public class EmissionController : ControllerBase
         
         var result = _service.CalculateEmission();
         
-        return Ok(new Result<EmissionViewModel>(result));
+        return Ok(result);
     }
 
     /// <summary>
@@ -60,7 +60,7 @@ public class EmissionController : ControllerBase
         
         var result = _service.CalculateConcentration(concentration);
         
-        return Ok(new Result<ConcentrationViewModel>(result));
+        return Ok(result);
     }
 
     /// <summary>
@@ -84,7 +84,7 @@ public class EmissionController : ControllerBase
         
         var result = _mapper.Map<EmissionViewModel>(emission);
         
-        return Ok(new Result<EmissionViewModel>(result));
+        return Ok(result);
     }
 
     /// <summary>
@@ -104,7 +104,7 @@ public class EmissionController : ControllerBase
         
         var result = _mapper.Map<ConcentrationViewModel>(concentration);
         
-        return Ok(new Result<ConcentrationViewModel>(result));
+        return Ok(result);
     }
 
     /// <summary>
@@ -121,7 +121,7 @@ public class EmissionController : ControllerBase
         
         var result = _mapper.Map<List<EmissionViewModel>>(emissions);
         
-        return Ok(new Result<List<EmissionViewModel>>(result));
+        return Ok(result);
     }
 
     /// <summary>
@@ -154,7 +154,7 @@ public class EmissionController : ControllerBase
             Concentrations = calculateConcentration.Concentrations
         };
 
-        return Ok(new Result<ConcentrationRandomViewModel>(result));
+        return Ok(result);
     }
 
     /// <summary>
@@ -170,7 +170,7 @@ public class EmissionController : ControllerBase
         
         var result = _mapper.Map<List<ConcentrationViewModel>>(concentrations);
         
-        return Ok(new Result<List<ConcentrationViewModel>>(result));
+        return Ok(result);
     }
 
     /// <summary>
@@ -186,7 +186,7 @@ public class EmissionController : ControllerBase
         
         var result = _mapper.Map<List<ConcentrationViewModel>>(concentrations);
         
-        return Ok(new Result<List<ConcentrationViewModel>>(result));
+        return Ok(result);
     }
 
     private static double RandomDouble(double min, double max)

@@ -55,17 +55,17 @@ public class WeatherController : ControllerBase
             var result = new WeatherViewModel
             {
                 Date = DateTime.UtcNow,
-                Temperature = (float)weatherResponse.MainData.Temp,
+                Temperature = (float)weatherResponse!.MainData.Temp,
                 WindSpeed = (float)weatherResponse.WindData.Speed,
                 WindDirection = weatherResponse.WindData.Deg,
                 IconUrl = $"https://openweathermap.org/img/wn/{weatherResponse.WeatherData[0].Icon}@2x.png"
             };
 
-            return Ok(new Result<WeatherViewModel>(result));
+            return Ok(result);
         }
         catch (Exception ex)
         {
-            return Ok(new Result<string>(ex.ToString()));
+            return Ok(ex.ToString());
         }
     }
 
@@ -76,7 +76,7 @@ public class WeatherController : ControllerBase
 
         var result = _mapper.Map<List<WeatherViewModel>>(weathers);
 
-        return Ok(new Result<List<WeatherViewModel>>(result));
+        return Ok(result);
     }
 
     [EnumAuthorize(Role.Admin)]
@@ -91,6 +91,6 @@ public class WeatherController : ControllerBase
 
         var result = _mapper.Map<WeatherViewModel>(weather);
 
-        return Ok(new Result<WeatherViewModel>(result));
+        return Ok(result);
     }
 }
