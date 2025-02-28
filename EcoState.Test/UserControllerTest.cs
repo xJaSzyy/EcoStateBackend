@@ -75,7 +75,7 @@ public class UserControllerTest
     }
     
     [Test]
-    public async Task GetUser_WithUserGetModel_ShouldNotFindUser()
+    public async Task GetUser_WithUserGetModel_ShouldNotFoundUser()
     {
         // Arrange
         var model = _fixture.Create<UserGetModel>();
@@ -157,7 +157,7 @@ public class UserControllerTest
     }
     
     [Test]
-    public async Task DeleteUser_WithUserDeleteModel_ShouldNotFindUser()
+    public async Task DeleteUser_WithUserDeleteModel_ShouldNotFoundUser()
     {
         // Arrange
         var model = _fixture.Create<UserDeleteModel>();
@@ -209,7 +209,7 @@ public class UserControllerTest
     }
     
     [Test]
-    public async Task UpdateUser_WithUserUpdateModel_ShouldNotFindUser()
+    public async Task UpdateUser_WithUserUpdateModel_ShouldNotFoundUser()
     {
         // Arrange
         var model = _fixture.Create<UserUpdateModel>();
@@ -241,23 +241,6 @@ public class UserControllerTest
 
         // Assert
         result!.Value.Should().Be(token);
-    }
-    
-    [Test]
-    public async Task Login_WithLoginModel_ShouldReturnEmptyToken()
-    {
-        // Arrange
-        var model = _fixture.Create<LoginModel>();
-
-        _service.Setup(x => x.Login(model)).Returns(string.Empty);
-        
-        var controller = new UserController(_dbContext.Object, _mapper.Object, _service.Object);
-
-        // Act
-        var result = await controller.Login(model) as OkObjectResult;
-
-        // Assert
-        result!.Value.Should().Be("Пользователь не найден");
     }
     
     [Test]

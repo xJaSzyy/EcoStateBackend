@@ -96,11 +96,6 @@ public class UserController : ControllerBase
     public async Task<IActionResult> Login([FromBody] LoginModel model)
     {
         var token = _service.Login(model);
-
-        if (token == string.Empty)
-        {
-            return Ok("Пользователь не найден");
-        }
         
         return Ok(token);
     }

@@ -27,6 +27,11 @@ public class UserService : IUserService
     {
         var user = _dbContext.Users.FirstOrDefault(x => x.Name == model.Name);
 
+        if (user == null)
+        {
+            return "Пользователь не найден";
+        }
+        
         var result = new PasswordHasher<User>()
             .VerifyHashedPassword(user, user.PasswordHash, model.Password);
 
@@ -49,18 +54,17 @@ public class UserService : IUserService
             return new JwtSecurityTokenHandler().WriteToken(jwtToken);
         }
 
-        return string.Empty;
+        return "Неверный пароль";
     }
 
     public User Register(RegisterModel model)
     {
-        var user = new User()
+        var user = new User
         {
             Name = model.Name,
-            Email = model.Email 
+            Email = model.Email,
+            Role = Role.User
         };
-
-        user.Role = Role.User;
 
         var passwordHash = new PasswordHasher<User>().HashPassword(user, model.Password);
         user.PasswordHash = passwordHash;
