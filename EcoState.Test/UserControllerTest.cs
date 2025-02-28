@@ -39,7 +39,7 @@ public class UserControllerTest
     }
 
     [Test]
-    public async Task GetUser_ShouldGetCorrectUser()
+    public async Task GetUser_WithUserGetModel_ShouldGetCorrectUser()
     {
         // Arrange
         var model = _fixture.Create<UserGetModel>();
@@ -70,16 +70,15 @@ public class UserControllerTest
 
         // Assert
         _dbContext.Verify(x => x.Users, Times.Once);
+        _mapper.Verify(x => x.Map<UserViewModel>(user), Times.Once);
         result!.Value.Should().Be(userViewModel);
     }
     
     [Test]
-    public async Task GetUser_ShouldNotFindUser()
+    public async Task GetUser_WithUserGetModel_ShouldNotFindUser()
     {
         // Arrange
         var model = _fixture.Create<UserGetModel>();
-        
-        SetDataToContext(_testData.AsQueryable());
         
         var controller = new UserController(_dbContext.Object, _mapper.Object, _service.Object);
 
@@ -119,11 +118,12 @@ public class UserControllerTest
 
         // Assert
         _dbContext.Verify(x => x.Users, Times.Once);
+        _mapper.Verify(x => x.Map<List<UserViewModel>>(_testData), Times.Once);
         result!.Value.Should().Be(usersViewModel);
     }
     
     [Test]
-    public async Task DeleteUser_ShouldDeleteUser()
+    public async Task DeleteUser_WithUserDeleteModel_ShouldDeleteUser()
     {
         // Arrange
         _testData = _fixture.Create<List<User>>();
@@ -152,16 +152,15 @@ public class UserControllerTest
         // Assert
         _dbContext.Verify(x => x.Users, Times.Exactly(2));
         _dbContext.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
+        _mapper.Verify(x => x.Map<UserViewModel>(_testData[0]), Times.Once);
         result!.Value.Should().Be(userViewModel);
     }
     
     [Test]
-    public async Task DeleteUser_ShouldNotFindUser()
+    public async Task DeleteUser_WithUserDeleteModel_ShouldNotFindUser()
     {
         // Arrange
         var model = _fixture.Create<UserDeleteModel>();
-
-        SetDataToContext(_testData.AsQueryable());
         
         var controller = new UserController(_dbContext.Object, _mapper.Object, _service.Object);
 
@@ -174,7 +173,7 @@ public class UserControllerTest
     }
     
     [Test]
-    public async Task UpdateUser_ShouldUpdateUserCorrect()
+    public async Task UpdateUser_WithUserUpdateModel_ShouldUpdateUserCorrect()
     {
         // Arrange
         _testData = _fixture.Create<List<User>>();
@@ -205,16 +204,15 @@ public class UserControllerTest
         // Assert
         _dbContext.Verify(x => x.Users, Times.Exactly(2));
         _dbContext.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
+        _mapper.Verify(x => x.Map<UserViewModel>(It.IsAny<User>()), Times.Once);
         result!.Value.Should().Be(userViewModel);
     }
     
     [Test]
-    public async Task UpdateUser_ShouldNotFindUser()
+    public async Task UpdateUser_WithUserUpdateModel_ShouldNotFindUser()
     {
         // Arrange
         var model = _fixture.Create<UserUpdateModel>();
-
-        SetDataToContext(_testData.AsQueryable());
         
         var controller = new UserController(_dbContext.Object, _mapper.Object, _service.Object);
 
@@ -224,6 +222,79 @@ public class UserControllerTest
         // Assert
         _dbContext.Verify(x => x.Users, Times.Once);
         result!.Value.Should().Be("Пользователь не найден");
+    }
+    
+    [Test]
+    public async Task Login_WithLoginModel_ShouldReturnToken()
+    {
+        // Arrange
+        var token = _fixture.Create<string>();
+        
+        var model = _fixture.Create<LoginModel>();
+
+        _service.Setup(x => x.Login(model)).Returns(token);
+        
+        var controller = new UserController(_dbContext.Object, _mapper.Object, _service.Object);
+
+        // Act
+        var result = await controller.Login(model) as OkObjectResult;
+
+        // Assert
+        result!.Value.Should().Be(token);
+    }
+    
+    [Test]
+    public async Task Login_WithLoginModel_ShouldReturnEmptyToken()
+    {
+        // Arrange
+        var model = _fixture.Create<LoginModel>();
+
+        _service.Setup(x => x.Login(model)).Returns(string.Empty);
+        
+        var controller = new UserController(_dbContext.Object, _mapper.Object, _service.Object);
+
+        // Act
+        var result = await controller.Login(model) as OkObjectResult;
+
+        // Assert
+        result!.Value.Should().Be("Пользователь не найден");
+    }
+    
+    [Test]
+    public async Task Register_WithRegisterModel_ShouldCreateNewUser()
+    {
+        // Arrange
+        var model = _fixture.Create<RegisterModel>();
+
+        var user = new User()
+        {
+            Name = model.Name,
+            PasswordHash = model.Password,
+            Email = model.Email
+        };
+        
+        var userViewModel = new UserViewModel()
+        {
+            Name = user.Name,
+            PasswordHash = user.PasswordHash,
+            Email = user.Email
+        };
+
+        _service.Setup(x => x.Register(model)).Returns(user);
+        
+        _mapper.Setup(x => x.Map<UserViewModel>(user))
+            .Returns(userViewModel);
+        
+        var controller = new UserController(_dbContext.Object, _mapper.Object, _service.Object);
+
+        // Act
+        var result = await controller.Register(model) as OkObjectResult;
+
+        // Assert
+        _dbContext.Verify(x => x.Users, Times.Once);
+        _dbContext.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
+        _mapper.Verify(x => x.Map<UserViewModel>(user), Times.Once);
+        result!.Value.Should().Be(userViewModel);
     }
     
     private void SetDataToContext(IQueryable<User> testData)
