@@ -35,7 +35,7 @@ public class EmissionController : ControllerBase
     /// <summary>
     /// Метод расчета нескольких концентраций выброса
     /// </summary>
-    /// <param name="model"></param>
+    /// <param name="model">Модель расчета концентраций выброса</param>
     /// <returns></returns>
     [HttpGet("emission-calc")]
     public async Task<IActionResult> CalculateEmission(EmissionCalculateModel model)
@@ -50,8 +50,8 @@ public class EmissionController : ControllerBase
     /// <summary>
     /// Метод расчета конкретной концентрации выброса
     /// </summary>
-    /// <param name="model"></param>
-    /// <param name="concentration"></param>
+    /// <param name="model">Модель расчета концентраций выброса</param>
+    /// <param name="concentration">Вид частиц</param>
     /// <returns></returns>
     [HttpGet("concentraion-calc")]
     public async Task<IActionResult> CalculateConcentration(EmissionCalculateModel model, ConcentrationType concentration)
@@ -66,7 +66,7 @@ public class EmissionController : ControllerBase
     /// <summary>
     /// Метод сохранения нескольких концентраций выброса в базу данных
     /// </summary>
-    /// <param name="concentrations"></param>
+    /// <param name="concentrations">Список концентраций</param>
     /// <returns></returns>
     [EnumAuthorize(Role.Admin)]
     [HttpPost("emission-save")]
@@ -90,10 +90,10 @@ public class EmissionController : ControllerBase
     /// <summary>
     /// Метод сохранения конкретной концентрации выброса в базу данных
     /// </summary>
-    /// <param name="model"></param>
+    /// <param name="model">Модель сохранения концентрации</param>
     /// <returns></returns>
     [EnumAuthorize(Role.Admin)]
-    [HttpPost("concentraion-save")]
+    [HttpPost("concentration-save")]
     public async Task<IActionResult> SaveConcentration(ConcentrationSaveModel model)
     {
         var concentration = _mapper.Map<Concentration>(model);
@@ -110,7 +110,7 @@ public class EmissionController : ControllerBase
     /// <summary>
     /// Метод получения данных о выбросе в конкретную дату
     /// </summary>
-    /// <param name="model"></param>
+    /// <param name="model">Модель получения выброса по дате</param>
     /// <returns></returns>
     [HttpGet("emission-getByDate")]
     public async Task<IActionResult> GetEmissionByDate(EmissionGetByDateModel model)
