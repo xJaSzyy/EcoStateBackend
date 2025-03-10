@@ -10,6 +10,8 @@ services:
       - postgres
     ports:
       - "5000:80"
+    environment:
+      - ASPNETCORE_URLS=http://+:80 
     networks:
       - test
   
