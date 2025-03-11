@@ -14,6 +14,16 @@ builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddAutoMapper(cfg=>cfg.AddProfile(new EntityMapper()));
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", policy =>
+    {
+        policy.AllowAnyOrigin() 
+            .AllowAnyHeader()
+            .AllowAnyMethod(); 
+    });
+});
+
 builder.Configuration
     .SetBasePath(Directory.GetCurrentDirectory())
     .AddJsonFile("appsettings.json")
