@@ -11,14 +11,14 @@ services:
     ports:
       - "5000:5000"
     environment:
-      - ASPNETCORE_URLS=http://+:5000
-      - ASPNETCORE_ENVIRONMENT=${ENV}
-      - ${CONNECTION_STRING}
-      - ${WEATHER_SETTING_API_KEY}
-      - ${WEATHER_SETTING_BASE_URL}
-      - ${WEATHER_SETTING_UNITS}
-      - ${AUTH_SETTING_SECRET_KEY}
-      - ${AUTH_SETTING_EXPIRES}
+      ASPNETCORE_URLS: http://+:5000
+      ASPNETCORE_ENVIRONMENT: ${ENV}
+      ConnectionStrings__DefaultConnection: ${CONNECTION_STRING}
+      WeatherSettings__ApiKey: ${WEATHER_SETTING_API_KEY}
+      WeatherSettings__BaseUrl: ${WEATHER_SETTING_BASE_URL}
+      WeatherSettings__Units: ${WEATHER_SETTING_UNITS}
+      AuthSettings__SecretKey: ${AUTH_SETTING_SECRET_KEY}
+      AuthSettings__Expires: ${AUTH_SETTING_EXPIRES}
     networks:
       - test
   
