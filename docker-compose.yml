@@ -14,6 +14,9 @@ services:
       - ASPNETCORE_URLS=http://+:5000
       - ASPNETCORE_ENVIRONMENT=${ENV}
       - ${CONNECTION_STRING}
+      - ${WEATHER_SETTING_API_KEY}
+      - ${WEATHER_SETTING_BASE_URL}
+      - ${WEATHER_SETTING_UNITS}
     networks:
       - test
   
