@@ -35,7 +35,7 @@ public class EmissionController : ControllerBase
     /// <summary>
     /// Метод расчета нескольких концентраций выброса
     /// </summary>
-    /// <param name="model"></param>
+    /// <param name="model">Модель расчета концентраций выброса</param>
     /// <returns></returns>
     [HttpGet("emission-calc")]
     public async Task<IActionResult> CalculateEmission(EmissionCalculateModel model)
@@ -44,14 +44,14 @@ public class EmissionController : ControllerBase
         
         var result = _service.CalculateEmission();
         
-        return Ok(new Result<EmissionViewModel>(result));
+        return Ok(result);
     }
 
     /// <summary>
     /// Метод расчета конкретной концентрации выброса
     /// </summary>
-    /// <param name="model"></param>
-    /// <param name="concentration"></param>
+    /// <param name="model">Модель расчета концентраций выброса</param>
+    /// <param name="concentration">Вид частиц</param>
     /// <returns></returns>
     [HttpGet("concentraion-calc")]
     public async Task<IActionResult> CalculateConcentration(EmissionCalculateModel model, ConcentrationType concentration)
@@ -60,13 +60,13 @@ public class EmissionController : ControllerBase
         
         var result = _service.CalculateConcentration(concentration);
         
-        return Ok(new Result<ConcentrationViewModel>(result));
+        return Ok(result);
     }
 
     /// <summary>
     /// Метод сохранения нескольких концентраций выброса в базу данных
     /// </summary>
-    /// <param name="concentrations"></param>
+    /// <param name="concentrations">Список концентраций</param>
     /// <returns></returns>
     [EnumAuthorize(Role.Admin)]
     [HttpPost("emission-save")]
@@ -84,16 +84,16 @@ public class EmissionController : ControllerBase
         
         var result = _mapper.Map<EmissionViewModel>(emission);
         
-        return Ok(new Result<EmissionViewModel>(result));
+        return Ok(result);
     }
 
     /// <summary>
     /// Метод сохранения конкретной концентрации выброса в базу данных
     /// </summary>
-    /// <param name="model"></param>
+    /// <param name="model">Модель сохранения концентрации</param>
     /// <returns></returns>
     [EnumAuthorize(Role.Admin)]
-    [HttpPost("concentraion-save")]
+    [HttpPost("concentration-save")]
     public async Task<IActionResult> SaveConcentration(ConcentrationSaveModel model)
     {
         var concentration = _mapper.Map<Concentration>(model);
@@ -104,13 +104,13 @@ public class EmissionController : ControllerBase
         
         var result = _mapper.Map<ConcentrationViewModel>(concentration);
         
-        return Ok(new Result<ConcentrationViewModel>(result));
+        return Ok(result);
     }
 
     /// <summary>
     /// Метод получения данных о выбросе в конкретную дату
     /// </summary>
-    /// <param name="model"></param>
+    /// <param name="model">Модель получения выброса по дате</param>
     /// <returns></returns>
     [HttpGet("emission-getByDate")]
     public async Task<IActionResult> GetEmissionByDate(EmissionGetByDateModel model)
@@ -121,40 +121,7 @@ public class EmissionController : ControllerBase
         
         var result = _mapper.Map<List<EmissionViewModel>>(emissions);
         
-        return Ok(new Result<List<EmissionViewModel>>(result));
-    }
-
-    /// <summary>
-    /// Метод расчета концентраций твердых частиц при случайных входных данных
-    /// </summary>
-    /// <returns></returns>
-    [HttpGet("concentration-rnd")]
-    public async Task<IActionResult> GetRandomConcentration()
-    {
-        var model = new EmissionCalculateModel()
-        {
-            EjectedTemp = RandomDouble(235, 265),
-            AirTemp = RandomDouble(-30, -20),
-            AvgExitSpeed = RandomDouble(15, 25),
-            DiameterSource = RandomDouble(1, 7),
-            HeightSource = RandomDouble(13, 65),
-            TempStratificationRatio = CoefficientRegion.SouthernPart,
-            SedimentationRateRatio = CoefficientDegreePurification.High,
-            WindSpeed = RandomDouble(0, 13)
-        };
-
-        _service.Setup(model);
-
-        var calculateConcentration = _service.CalculateConcentration(ConcentrationType.SP);
-        
-        var result = new ConcentrationRandomViewModel()
-        {
-            DangerZoneLength = calculateConcentration.DangerZoneLength,
-            DangerZoneWidth = calculateConcentration.DangerZoneWidth,
-            Concentrations = calculateConcentration.Concentrations
-        };
-
-        return Ok(new Result<ConcentrationRandomViewModel>(result));
+        return Ok(result);
     }
 
     /// <summary>
@@ -170,7 +137,7 @@ public class EmissionController : ControllerBase
         
         var result = _mapper.Map<List<ConcentrationViewModel>>(concentrations);
         
-        return Ok(new Result<List<ConcentrationViewModel>>(result));
+        return Ok(result);
     }
 
     /// <summary>
@@ -186,13 +153,7 @@ public class EmissionController : ControllerBase
         
         var result = _mapper.Map<List<ConcentrationViewModel>>(concentrations);
         
-        return Ok(new Result<List<ConcentrationViewModel>>(result));
-    }
-
-    private static double RandomDouble(double min, double max)
-    {
-        Random random = new Random();
-        return min + random.NextDouble() * (max - min);
+        return Ok(result);
     }
 }
 

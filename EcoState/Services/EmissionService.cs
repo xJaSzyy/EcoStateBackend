@@ -336,8 +336,8 @@ public class EmissionService : IEmissionService
                 break;
             }
         }
-        
-        var windSpeedCoeff =  WindAverageSpeed / _windSpeed; // коэффицент скорости ветра, влияющий на ширину выброса
+
+        var windSpeedCoeff =  _windSpeed != 0  ? WindAverageSpeed / _windSpeed : WindAverageSpeed; // коэффицент скорости ветра, влияющий на ширину выброса
         
         var dangerZoneLength = minDistance;
         var dangerZoneWidth = Math.Round((minDistance - maxDistance) * 2 * windSpeedCoeff, 2);

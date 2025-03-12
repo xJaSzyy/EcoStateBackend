@@ -34,12 +34,8 @@ builder.Configuration.AddEnvironmentVariables();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-/*builder.Services.AddDbContext<DbContext>(opt =>
-    opt.UseNpgsql(connectionString));*/
-
 builder.Services.AddTransient<IEmissionService, EmissionService>();
 builder.Services.AddTransient<IUserService, UserService>();
-builder.Services.AddTransient<IDbContext, ApplicationDbContext>();
 
 builder.Services.Configure<WeatherSettings>(builder.Configuration.GetSection("WeatherSettings"));
 builder.Services.AddSwagger();
@@ -47,7 +43,6 @@ builder.Services.AddAuth(builder.Configuration);
 builder.Services.AddHttpClient();
 
 var app = builder.Build();
-
 
 if (app.Environment.IsDevelopment())
 {
@@ -58,7 +53,7 @@ if (app.Environment.IsDevelopment())
 // ТОЛЬКО ДЛЯ РАЗРАБОТКИ
 app.UseCors("AllowAll");
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
