@@ -53,7 +53,7 @@ if (app.Environment.IsDevelopment())
 // ТОЛЬКО ДЛЯ РАЗРАБОТКИ
 app.UseCors("AllowAll");
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();

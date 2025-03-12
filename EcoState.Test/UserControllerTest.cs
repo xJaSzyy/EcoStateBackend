@@ -6,7 +6,6 @@ using EcoState.Domain;
 using EcoState.Interfaces;
 using EcoState.ViewModels.User;
 using FluentAssertions;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Moq;
