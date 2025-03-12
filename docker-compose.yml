@@ -9,9 +9,11 @@ services:
     depends_on:
       - postgres
     ports:
-      - "5000:80"
+      - "5000:5000"
     environment:
-      - ASPNETCORE_URLS=http://+:80 
+      - ASPNETCORE_URLS=http://+:5000
+      - ASPNETCORE_ENVIRONMENT=${ENV}
+      - ${CONNECTION_STRING}
     networks:
       - test
   
@@ -20,19 +22,19 @@ services:
     image: postgres:latest
     restart: always
     environment:
-      POSTGRES_DB: "ecostatedb"
-      POSTGRES_USER: "stepan"
-      POSTGRES_PASSWORD: "semen"
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
       - db_data:/var/lib/postgresql/data
     ports:
       - "5433:5432"
     networks:
       - test
-  
+
 networks:
   test:
     driver: bridge
-    
+
 volumes:
   db_data:

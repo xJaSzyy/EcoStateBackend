@@ -32,7 +32,7 @@ builder.Configuration
 builder.Configuration.AddEnvironmentVariables();
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseNpgsql(Environment.GetEnvironmentVariable("ConnectionStrings__DefaultConnection")));
 
 builder.Services.AddTransient<IEmissionService, EmissionService>();
 builder.Services.AddTransient<IUserService, UserService>();
