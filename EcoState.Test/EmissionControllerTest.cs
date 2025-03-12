@@ -155,6 +155,123 @@ public class EmissionControllerTest
         _dbContext.Verify(x => x.Concentrations.Add(It.IsAny<Concentration>()), Times.Once);
         _dbContext.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
     }
+    
+    [Test]
+    public async Task GetEmissionByDate_WithEmissionGetByDateModel_ShouldReturnCorrectEmissions()
+    {
+        // Arrange
+        var model = _fixture.Create<EmissionGetByDateModel>();
+
+        var emission = _fixture.Build<Emission>()
+            .With(x => x.Date, model.Date)
+            .Create();
+        
+        _emissions.Add(emission);
+        SetDataToContext(_emissions.AsQueryable(), _concentrations.AsQueryable());
+
+        var viewModelList = new List<EmissionViewModel>()
+        {
+            new EmissionViewModel()
+            {
+                Id = emission.Id,
+                Date = emission.Date,
+                Concentrations = emission.Concentrations
+            }
+        };
+        
+        _mapper.Setup(x => x.Map<List<EmissionViewModel>>(It.IsAny<List<Emission>>())).Returns(viewModelList);
+        
+        var controller = new EmissionController(_dbContext.Object, _mapper.Object, _service);
+        
+        // Act
+        var result = await controller.GetEmissionByDate(model) as OkObjectResult;
+        
+        // Assert
+        result!.Value.Should().Be(viewModelList);
+        
+        _mapper.Verify(x => x.Map<List<EmissionViewModel>>(It.IsAny<List<Emission>>()), Times.Once);
+        _dbContext.Verify(x => x.Emissions, Times.Once);
+    }
+    
+    [Test]
+    public async Task GetConcentrationByDate_WithConcentrationGetByDateModel_ShouldReturnCorrectConcentrations()
+    {
+        // Arrange
+        var model = _fixture.Create<ConcentrationGetByDateModel>();
+
+        var concentration = _fixture.Build<Concentration>()
+            .With(x => x.Date, model.Date)
+            .Create();
+        
+        _concentrations.Add(concentration);
+        SetDataToContext(_emissions.AsQueryable(), _concentrations.AsQueryable());
+
+        var viewModelList = new List<ConcentrationViewModel>()
+        {
+            new ConcentrationViewModel()
+            {
+                EmissionId = concentration.EmissionId,
+                Date = concentration.Date,
+                Type = concentration.Type,
+                Concentrations = concentration.Concentrations,
+                DangerZoneLength = concentration.DangerZoneLength,
+                DangerZoneWidth = concentration.DangerZoneWidth
+            }
+        };
+        
+        _mapper.Setup(x => x.Map<List<ConcentrationViewModel>>(It.IsAny<List<Concentration>>())).Returns(viewModelList);
+        
+        var controller = new EmissionController(_dbContext.Object, _mapper.Object, _service);
+        
+        // Act
+        var result = await controller.GetConcentrationByDate(model) as OkObjectResult;
+        
+        // Assert
+        result!.Value.Should().Be(viewModelList);
+        
+        _mapper.Verify(x => x.Map<List<ConcentrationViewModel>>(It.IsAny<List<Concentration>>()), Times.Once);
+        _dbContext.Verify(x => x.Concentrations, Times.Once);
+    }
+    
+    [Test]
+    public async Task GetConcentrationByType_WithConcentrationGetByTypeModel_ShouldReturnCorrectConcentrations()
+    {
+        // Arrange
+        var model = _fixture.Create<ConcentrationGetByTypeModel>();
+
+        var concentration = _fixture.Build<Concentration>()
+            .With(x => x.Type, model.Type)
+            .Create();
+        
+        _concentrations.Add(concentration);
+        SetDataToContext(_emissions.AsQueryable(), _concentrations.AsQueryable());
+
+        var viewModelList = new List<ConcentrationViewModel>()
+        {
+            new ConcentrationViewModel()
+            {
+                EmissionId = concentration.EmissionId,
+                Date = concentration.Date,
+                Type = concentration.Type,
+                Concentrations = concentration.Concentrations,
+                DangerZoneLength = concentration.DangerZoneLength,
+                DangerZoneWidth = concentration.DangerZoneWidth
+            }
+        };
+        
+        _mapper.Setup(x => x.Map<List<ConcentrationViewModel>>(It.IsAny<List<Concentration>>())).Returns(viewModelList);
+        
+        var controller = new EmissionController(_dbContext.Object, _mapper.Object, _service);
+        
+        // Act
+        var result = await controller.GetConcentrationByType(model) as OkObjectResult;
+        
+        // Assert
+        result!.Value.Should().Be(viewModelList);
+        
+        _mapper.Verify(x => x.Map<List<ConcentrationViewModel>>(It.IsAny<List<Concentration>>()), Times.Once);
+        _dbContext.Verify(x => x.Concentrations, Times.Once);
+    }
 
     private void SetDataToContext(IQueryable<Emission> emissions, IQueryable<Concentration> concentrations)
     {

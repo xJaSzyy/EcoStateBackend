@@ -125,39 +125,6 @@ public class EmissionController : ControllerBase
     }
 
     /// <summary>
-    /// Метод расчета концентраций твердых частиц при случайных входных данных
-    /// </summary>
-    /// <returns></returns>
-    [HttpGet("concentration-rnd")]
-    public async Task<IActionResult> GetRandomConcentration()
-    {
-        var model = new EmissionCalculateModel()
-        {
-            EjectedTemp = RandomDouble(235, 265),
-            AirTemp = RandomDouble(-30, -20),
-            AvgExitSpeed = RandomDouble(15, 25),
-            DiameterSource = RandomDouble(1, 7),
-            HeightSource = RandomDouble(13, 65),
-            TempStratificationRatio = CoefficientRegion.SouthernPart,
-            SedimentationRateRatio = CoefficientDegreePurification.High,
-            WindSpeed = RandomDouble(0, 13)
-        };
-
-        _service.Setup(model);
-
-        var calculateConcentration = _service.CalculateConcentration(ConcentrationType.SP);
-        
-        var result = new ConcentrationRandomViewModel()
-        {
-            DangerZoneLength = calculateConcentration.DangerZoneLength,
-            DangerZoneWidth = calculateConcentration.DangerZoneWidth,
-            Concentrations = calculateConcentration.Concentrations
-        };
-
-        return Ok(result);
-    }
-
-    /// <summary>
     /// Метод получения данных о концентрации в конкретную дату
     /// </summary>
     /// <param name="model"></param>
@@ -187,12 +154,6 @@ public class EmissionController : ControllerBase
         var result = _mapper.Map<List<ConcentrationViewModel>>(concentrations);
         
         return Ok(result);
-    }
-
-    private static double RandomDouble(double min, double max)
-    {
-        Random random = new Random();
-        return min + random.NextDouble() * (max - min);
     }
 }
 
