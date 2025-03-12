@@ -17,6 +17,8 @@ services:
       - ${WEATHER_SETTING_API_KEY}
       - ${WEATHER_SETTING_BASE_URL}
       - ${WEATHER_SETTING_UNITS}
+      - ${AUTH_SETTING_SECRET_KEY}
+      - ${AUTH_SETTING_EXPIRES}
     networks:
       - test
   

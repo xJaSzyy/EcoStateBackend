@@ -35,14 +35,10 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddTransient<IEmissionService, EmissionService>();
 builder.Services.AddTransient<IUserService, UserService>();
 
-builder.Services.Configure<WeatherSettings>(options =>
-{
-    options.ApiKey = Environment.GetEnvironmentVariable("WeatherSettings__ApiKey")!;
-    options.BaseUrl = Environment.GetEnvironmentVariable("WeatherSettings__BaseUrl")!;
-    options.Units = Environment.GetEnvironmentVariable("WeatherSettings__Units")!;
-});
-builder.Services.AddSwagger();
+builder.Services.AddWeather();
 builder.Services.AddAuth(builder.Configuration);
+
+builder.Services.AddSwagger();
 builder.Services.AddHttpClient();
 
 var app = builder.Build();

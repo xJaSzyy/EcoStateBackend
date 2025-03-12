@@ -7,17 +7,29 @@ using Microsoft.OpenApi.Models;
 
 namespace EcoState.Extensions;
 
+/// <summary>
+/// DependencyInjection
+/// </summary>
 public static class DependencyInjection
 {
-    public static void AddAuth(this IServiceCollection serviceCollection,
+    /// <summary>
+    /// DI для аутентификации
+    /// </summary>
+    /// <param name="services"></param>
+    /// <param name="configuration"></param>
+    public static void AddAuth(this IServiceCollection services,
         IConfiguration configuration)
     {
-        serviceCollection.Configure<AuthSettings>(configuration.GetSection("AuthSettings"));
+        services.Configure<AuthSettings>(options =>
+        {
+            options.SecretKey = Environment.GetEnvironmentVariable("AuthSettings__SecretKey")!;
+            options.Expires = TimeSpan.Parse(Environment.GetEnvironmentVariable("AuthSettings__Expires")!);
+        });
         
         var authSettings = configuration.GetSection(nameof(AuthSettings))
             .Get<AuthSettings>();
         
-        serviceCollection.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(o =>
+        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(o =>
         {
             o.TokenValidationParameters = new TokenValidationParameters()
             {
@@ -25,14 +37,18 @@ public static class DependencyInjection
                 ValidateAudience = false,
                 ValidateLifetime = true,
                 ValidateIssuerSigningKey = true,
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(authSettings.SecretKey))
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(authSettings!.SecretKey))
             };
         });
     }
 
-    public static void AddSwagger(this IServiceCollection serviceCollection)
+    /// <summary>
+    /// DI для сваггера
+    /// </summary>
+    /// <param name="services"></param>
+    public static void AddSwagger(this IServiceCollection services)
     {
-        serviceCollection.AddSwaggerGen(options =>
+        services.AddSwaggerGen(options =>
         {
             var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
             var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
@@ -60,6 +76,20 @@ public static class DependencyInjection
                     new List<string>()
                 }
             });
+        });
+    }
+
+    /// <summary>
+    /// DI для погоды
+    /// </summary>
+    /// <param name="services"></param>
+    public static void AddWeather(this IServiceCollection services)
+    {
+        services.Configure<WeatherSettings>(options =>
+        {
+            options.ApiKey = Environment.GetEnvironmentVariable("WeatherSettings__ApiKey")!;
+            options.BaseUrl = Environment.GetEnvironmentVariable("WeatherSettings__BaseUrl")!;
+            options.Units = Environment.GetEnvironmentVariable("WeatherSettings__Units")!;
         });
     }
 }
