@@ -14,27 +14,31 @@ public class EmissionServiceTest
     [Test]
     public void CalculateConcentrationList_ShouldCalculateCorrectly()
     {
-        //Arrange
-        var expected = _emissionViewModel;
-
         //Act
         _service.Setup(_calculateModel);
         var actual = _service.CalculateEmission();
 
         //Assert
+        actual.Concentrations = actual.Concentrations.Take(5).ToList();
+        foreach (var concentration in actual.Concentrations)
+        {
+            concentration.Concentrations = concentration.Concentrations.Take(5).ToList();
+        }
+
+        actual.Should().BeEquivalentTo(_emissionViewModel);
     }
     
     [Test]
     public void CalculateConcentration_WithConcentrationType_ShouldCalculateCorrectly()
     {
-        //Arrange
-        var expected = _concentrationViewModel;
-
         //Act
         _service.Setup(_calculateModel);
         var actual = _service.CalculateConcentration(ConcentrationType.SP);
 
         //Assert
+        actual.Concentrations = actual.Concentrations.Take(5).ToList();
+
+        actual.Should().BeEquivalentTo(_concentrationViewModel);
     }
 
     #region TestData

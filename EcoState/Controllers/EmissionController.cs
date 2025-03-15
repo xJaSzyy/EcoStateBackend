@@ -22,9 +22,9 @@ public class EmissionController : ControllerBase
     /// <summary>
     /// Конструктор
     /// </summary>
-    /// <param name="dbContext"></param>
-    /// <param name="mapper"></param>
-    /// <param name="service"></param>
+    /// <param name="dbContext">ApplicationDbContext</param>
+    /// <param name="mapper">IMapper</param>
+    /// <param name="service">Интерфейс сервиса выбросов</param>
     public EmissionController(ApplicationDbContext dbContext, IMapper mapper, IEmissionService service)
     {
         _dbContext = dbContext;

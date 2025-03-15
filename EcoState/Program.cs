@@ -29,17 +29,16 @@ builder.Configuration
     .AddJsonFile("appsettings.json")
     .AddEnvironmentVariables();
 
-builder.Configuration.AddEnvironmentVariables();
-
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseNpgsql(Environment.GetEnvironmentVariable("ConnectionStrings__DefaultConnection")));
 
 builder.Services.AddTransient<IEmissionService, EmissionService>();
 builder.Services.AddTransient<IUserService, UserService>();
 
-builder.Services.Configure<WeatherSettings>(builder.Configuration.GetSection("WeatherSettings"));
-builder.Services.AddSwagger();
+builder.Services.AddWeather();
 builder.Services.AddAuth(builder.Configuration);
+
+builder.Services.AddSwagger();
 builder.Services.AddHttpClient();
 
 var app = builder.Build();
@@ -50,10 +49,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-// ТОЛЬКО ДЛЯ РАЗРАБОТКИ
 app.UseCors("AllowAll");
-
-//app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();

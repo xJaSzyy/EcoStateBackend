@@ -20,6 +20,13 @@ public class WeatherController : ControllerBase
     private readonly IOptions<WeatherSettings> _options;
     private readonly IHttpClientFactory _httpClientFactory;
 
+    /// <summary>
+    /// Конструктор
+    /// </summary>
+    /// <param name="dbContext">ApplicationDbContext</param>
+    /// <param name="mapper">IMapper</param>
+    /// <param name="options">IOptions</param>
+    /// <param name="httpClientFactory">IHttpClientFactory</param>
     public WeatherController(ApplicationDbContext dbContext, IMapper mapper, IOptions<WeatherSettings> options, IHttpClientFactory httpClientFactory)
     {
         _dbContext = dbContext;
@@ -28,6 +35,11 @@ public class WeatherController : ControllerBase
         _httpClientFactory = httpClientFactory;
     }
 
+    /// <summary>
+    /// Метод получения текущей погоды
+    /// </summary>
+    /// <param name="city">Название города</param>
+    /// <returns></returns>
     [HttpGet("currentWeather-get")]
     public async Task<IActionResult> GetCurrentWeather([FromQuery] string city)
     {
@@ -69,6 +81,11 @@ public class WeatherController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Метод получения погоды из БД по дате
+    /// </summary>
+    /// <param name="model">Модель получения погоды</param>
+    /// <returns></returns>
     [HttpGet("weather-get")]
     public async Task<IActionResult> GetWeather(WeatherGetModel model)
     {
@@ -79,6 +96,11 @@ public class WeatherController : ControllerBase
         return Ok(result);
     }
 
+    /// <summary>
+    /// Метод сохранения погоды в БД
+    /// </summary>
+    /// <param name="model">Модель сохранения погоды</param>
+    /// <returns></returns>
     [EnumAuthorize(Role.Admin)]
     [HttpPost("weather-save")]
     public async Task<IActionResult> SaveWeather(WeatherSaveModel model)

@@ -212,19 +212,16 @@ public class EmissionService : IEmissionService
         ConcentrationMasses().TryGetValue(2, out var massNo);
         ConcentrationMasses().TryGetValue(3, out var massNo2);
         ConcentrationMasses().TryGetValue(4, out var massCo2);
-        ConcentrationMasses().TryGetValue(5, out var massSp);
         
         var concentrationsSo2 = GetNormalSurfaceConcentration(x, massSo2); 
         var concentrationsNo = GetNormalSurfaceConcentration(x, massNo); 
         var concentrationsNo2 = GetNormalSurfaceConcentration(x, massNo2); 
         var concentrationsCo2 = GetNormalSurfaceConcentration(x, massCo2); 
-        var concentrationsSp = GetNormalSurfaceConcentration(x, massSp);
         
-        var dangerZoneParametersSo2 = CalculateDangerZoneParameters(concentrationsSo2);
-        var dangerZoneParametersNo = CalculateDangerZoneParameters(concentrationsNo);
-        var dangerZoneParametersNo2 = CalculateDangerZoneParameters(concentrationsNo2);
-        var dangerZoneParametersCo2 = CalculateDangerZoneParameters(concentrationsCo2);
-        var dangerZoneParametersSp = CalculateDangerZoneParameters(concentrationsSp);
+        var dangerZoneParametersSo2 = CalculateDangerZoneParameters(concentrationsSo2, massSo2);
+        var dangerZoneParametersNo = CalculateDangerZoneParameters(concentrationsNo, massNo);
+        var dangerZoneParametersNo2 = CalculateDangerZoneParameters(concentrationsNo2, massNo2);
+        var dangerZoneParametersCo2 = CalculateDangerZoneParameters(concentrationsCo2, massCo2);
 
         var result = new EmissionViewModel
         {
@@ -234,32 +231,34 @@ public class EmissionService : IEmissionService
                 {
                     Type = ConcentrationType.SO2, Concentrations = concentrationsSo2, 
                     DangerZoneWidth = dangerZoneParametersSo2.DangerZoneWidth, 
-                    DangerZoneLength = dangerZoneParametersSo2.DangerZoneLength
+                    DangerZoneLength = dangerZoneParametersSo2.DangerZoneLength,
+                    DangerZoneColorHex = "#70B2E2",
+                    DangerZoneAngle = -6
                 },
                 new Concentration()
                 {
                     Type = ConcentrationType.NO, Concentrations = concentrationsNo, 
                     DangerZoneWidth = dangerZoneParametersNo.DangerZoneWidth, 
-                    DangerZoneLength = dangerZoneParametersNo.DangerZoneLength
+                    DangerZoneLength = dangerZoneParametersNo.DangerZoneLength,
+                    DangerZoneColorHex = "#FDB64E",
+                    DangerZoneAngle = 4
                 },
                 new Concentration()
                 { 
                         Type = ConcentrationType.NO2, Concentrations = concentrationsNo2, 
                         DangerZoneWidth = dangerZoneParametersNo2.DangerZoneWidth, 
-                        DangerZoneLength = dangerZoneParametersNo2.DangerZoneLength
+                        DangerZoneLength = dangerZoneParametersNo2.DangerZoneLength,
+                        DangerZoneColorHex = "#CBE5AF",
+                        DangerZoneAngle = -6
                 },
                 new Concentration()
                 {
                     Type = ConcentrationType.CO2, Concentrations = concentrationsCo2, 
                     DangerZoneWidth = dangerZoneParametersCo2.DangerZoneWidth, 
-                    DangerZoneLength = dangerZoneParametersCo2.DangerZoneLength
+                    DangerZoneLength = dangerZoneParametersCo2.DangerZoneLength,
+                    DangerZoneColorHex = "#AC6BAD",
+                    DangerZoneAngle = 8
                 },
-                new Concentration()
-                {
-                    Type = ConcentrationType.SP, Concentrations = concentrationsSp, 
-                    DangerZoneWidth = dangerZoneParametersSp.DangerZoneWidth, 
-                    DangerZoneLength = dangerZoneParametersSp.DangerZoneLength
-                }
             }
         };
 
@@ -281,20 +280,22 @@ public class EmissionService : IEmissionService
 
         var concentrations = GetNormalSurfaceConcentration(x, m);
 
-        var dangerZoneParameters = CalculateDangerZoneParameters(concentrations);
+        var dangerZoneParameters = CalculateDangerZoneParameters(concentrations, m);
         
         var result = new ConcentrationViewModel()
         {
             Type = type,
             DangerZoneLength = dangerZoneParameters.DangerZoneLength,
             DangerZoneWidth = dangerZoneParameters.DangerZoneWidth,
-            Concentrations = concentrations
+            DangerZoneColorHex = dangerZoneParameters.DangerZoneColorHex,
+            Concentrations = concentrations,
+            DangerZoneAngle = 0
         };
 
         return result;
     }
 
-    private DangerZoneParameters CalculateDangerZoneParameters(List<double> concentrations)
+    private DangerZoneParameters CalculateDangerZoneParameters(List<double> concentrations, double mass)
     {
         var maxIndex = int.MinValue;
         var maxDistance = double.MinValue;
@@ -339,13 +340,41 @@ public class EmissionService : IEmissionService
 
         var windSpeedCoeff =  _windSpeed != 0  ? WindAverageSpeed / _windSpeed : WindAverageSpeed; // коэффицент скорости ветра, влияющий на ширину выброса
         
-        var dangerZoneLength = minDistance;
-        var dangerZoneWidth = Math.Round((minDistance - maxDistance) * 2 * windSpeedCoeff, 2);
+        var dangerZoneLength = minDistance / Math.Sqrt(Math.Sqrt(mass));
+        var dangerZoneWidth = Math.Round((minDistance - maxDistance) * 2 * windSpeedCoeff, 2) * Math.Sqrt(mass);
+
+        var pm = concentrations[maxIndex] * 1000;
+        string colorHex;
+        if (pm <= 9.0)
+        {
+            colorHex = "#ABD162";
+        }
+        else if (pm <= 35.4)
+        {
+            colorHex = "#F8D461";
+        }
+        else if (pm <= 55.4)
+        {
+            colorHex = "#FB9956";
+        }
+        else if (pm <= 125.4)
+        {
+            colorHex = "#F6686A";
+        }
+        else if (pm <= 225.4)
+        {
+            colorHex = "#A47DB8";
+        }
+        else
+        {
+            colorHex = "#A07785";
+        }
         
         return new DangerZoneParameters()
         {
             DangerZoneLength = dangerZoneLength,
-            DangerZoneWidth = dangerZoneWidth
+            DangerZoneWidth = dangerZoneWidth,
+            DangerZoneColorHex = colorHex
         };
     }
 
@@ -376,4 +405,9 @@ public class DangerZoneParameters
     /// Ширина зоны выброса
     /// </summary>
     public double DangerZoneWidth { get; set; }
+    
+    /// <summary>
+    /// Цвет зоны выброса
+    /// </summary>
+    public string DangerZoneColorHex { get; set; } = null!;
 }
