@@ -212,19 +212,16 @@ public class EmissionService : IEmissionService
         ConcentrationMasses().TryGetValue(2, out var massNo);
         ConcentrationMasses().TryGetValue(3, out var massNo2);
         ConcentrationMasses().TryGetValue(4, out var massCo2);
-        ConcentrationMasses().TryGetValue(5, out var massSp);
         
         var concentrationsSo2 = GetNormalSurfaceConcentration(x, massSo2); 
         var concentrationsNo = GetNormalSurfaceConcentration(x, massNo); 
         var concentrationsNo2 = GetNormalSurfaceConcentration(x, massNo2); 
         var concentrationsCo2 = GetNormalSurfaceConcentration(x, massCo2); 
-        var concentrationsSp = GetNormalSurfaceConcentration(x, massSp);
         
         var dangerZoneParametersSo2 = CalculateDangerZoneParameters(concentrationsSo2, massSo2);
         var dangerZoneParametersNo = CalculateDangerZoneParameters(concentrationsNo, massNo);
         var dangerZoneParametersNo2 = CalculateDangerZoneParameters(concentrationsNo2, massNo2);
         var dangerZoneParametersCo2 = CalculateDangerZoneParameters(concentrationsCo2, massCo2);
-        var dangerZoneParametersSp = CalculateDangerZoneParameters(concentrationsSp, massSp);
 
         var result = new EmissionViewModel
         {
@@ -235,36 +232,33 @@ public class EmissionService : IEmissionService
                     Type = ConcentrationType.SO2, Concentrations = concentrationsSo2, 
                     DangerZoneWidth = dangerZoneParametersSo2.DangerZoneWidth, 
                     DangerZoneLength = dangerZoneParametersSo2.DangerZoneLength,
-                    DangerZoneColorHex = dangerZoneParametersSo2.DangerZoneColorHex
+                    DangerZoneColorHex = "#70B2E2",
+                    DangerZoneAngle = -6
                 },
                 new Concentration()
                 {
                     Type = ConcentrationType.NO, Concentrations = concentrationsNo, 
                     DangerZoneWidth = dangerZoneParametersNo.DangerZoneWidth, 
                     DangerZoneLength = dangerZoneParametersNo.DangerZoneLength,
-                    DangerZoneColorHex = dangerZoneParametersNo.DangerZoneColorHex
+                    DangerZoneColorHex = "#FDB64E",
+                    DangerZoneAngle = 4
                 },
                 new Concentration()
                 { 
                         Type = ConcentrationType.NO2, Concentrations = concentrationsNo2, 
                         DangerZoneWidth = dangerZoneParametersNo2.DangerZoneWidth, 
                         DangerZoneLength = dangerZoneParametersNo2.DangerZoneLength,
-                        DangerZoneColorHex = dangerZoneParametersNo2.DangerZoneColorHex
+                        DangerZoneColorHex = "#CBE5AF",
+                        DangerZoneAngle = -6
                 },
                 new Concentration()
                 {
                     Type = ConcentrationType.CO2, Concentrations = concentrationsCo2, 
                     DangerZoneWidth = dangerZoneParametersCo2.DangerZoneWidth, 
                     DangerZoneLength = dangerZoneParametersCo2.DangerZoneLength,
-                    DangerZoneColorHex = dangerZoneParametersCo2.DangerZoneColorHex
+                    DangerZoneColorHex = "#AC6BAD",
+                    DangerZoneAngle = 8
                 },
-                new Concentration()
-                {
-                    Type = ConcentrationType.SP, Concentrations = concentrationsSp, 
-                    DangerZoneWidth = dangerZoneParametersSp.DangerZoneWidth, 
-                    DangerZoneLength = dangerZoneParametersSp.DangerZoneLength,
-                    DangerZoneColorHex = dangerZoneParametersSp.DangerZoneColorHex
-                }
             }
         };
 
@@ -294,7 +288,8 @@ public class EmissionService : IEmissionService
             DangerZoneLength = dangerZoneParameters.DangerZoneLength,
             DangerZoneWidth = dangerZoneParameters.DangerZoneWidth,
             DangerZoneColorHex = dangerZoneParameters.DangerZoneColorHex,
-            Concentrations = concentrations
+            Concentrations = concentrations,
+            DangerZoneAngle = 0
         };
 
         return result;
@@ -345,7 +340,7 @@ public class EmissionService : IEmissionService
 
         var windSpeedCoeff =  _windSpeed != 0  ? WindAverageSpeed / _windSpeed : WindAverageSpeed; // коэффицент скорости ветра, влияющий на ширину выброса
         
-        var dangerZoneLength = minDistance / Math.Sqrt(mass);
+        var dangerZoneLength = minDistance / Math.Sqrt(Math.Sqrt(mass));
         var dangerZoneWidth = Math.Round((minDistance - maxDistance) * 2 * windSpeedCoeff, 2) * Math.Sqrt(mass);
 
         var pm = concentrations[maxIndex] * 1000;

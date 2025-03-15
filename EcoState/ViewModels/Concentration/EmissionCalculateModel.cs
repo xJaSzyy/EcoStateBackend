@@ -23,19 +23,19 @@ public class EmissionCalculateModel
     /// <summary>
     /// Средняя скорость выхода ГВС из устья источника выброса, м/с
     /// </summary>
-    [Range(15, 25)]
+    [Range(15, 30)]
     public double AvgExitSpeed { get; set; }
 
     /// <summary>
     /// Высота источника выброса, м.
     /// </summary>
-    [Range(13, 65)]
+    [Range(13, 150)]
     public double HeightSource { get; set; }
 
     /// <summary>
     /// Диаметр устья источника, м.
     /// </summary>
-    [Range(1, 7)]
+    [Range(1, 10)]
     public double DiameterSource { get; set; }
 
     /// <summary>
