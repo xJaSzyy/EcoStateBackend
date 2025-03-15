@@ -17,6 +17,12 @@ public class UserController : ControllerBase
     private readonly IMapper _mapper;
     private readonly IUserService _service;
 
+    /// <summary>
+    /// Конструктор
+    /// </summary>
+    /// <param name="dbContext">ApplicationDbContext</param>
+    /// <param name="mapper">IMapper</param>
+    /// <param name="service">Интерфейс сервиса пользователей</param>
     public UserController(ApplicationDbContext dbContext, IMapper mapper, IUserService service)
     {
         _dbContext = dbContext;
@@ -24,6 +30,11 @@ public class UserController : ControllerBase
         _service = service;
     }
 
+    /// <summary>
+    /// Метод получения пользователя из БД по ID
+    /// </summary>
+    /// <param name="model">Модель получения пользователя</param>
+    /// <returns></returns>
     [HttpGet("user-get")]
     public async Task<IActionResult> GetUser([FromBody] UserGetModel model)
     {
@@ -39,6 +50,10 @@ public class UserController : ControllerBase
         return Ok(result);
     }
     
+    /// <summary>
+    /// Метод получения всех пользователей из БД
+    /// </summary>
+    /// <returns></returns>
     [HttpGet("user-getAll")]
     public async Task<IActionResult> GetAllUsers()
     {
@@ -49,6 +64,11 @@ public class UserController : ControllerBase
         return Ok(result);
     }
     
+    /// <summary>
+    /// Метод удаления пользователя из БД по ID
+    /// </summary>
+    /// <param name="model">Модель удаления пользователя</param>
+    /// <returns></returns>
     [EnumAuthorize(Role.Admin)]
     [HttpPost("user-delete")]
     public async Task<IActionResult> DeleteUser([FromBody] UserDeleteModel model)
@@ -68,6 +88,11 @@ public class UserController : ControllerBase
         return Ok(result);
     }
 
+    /// <summary>
+    /// Метод изменения пользователя из БД по ID
+    /// </summary>
+    /// <param name="model">Модель обновления пользователя</param>
+    /// <returns></returns>
     [EnumAuthorize(Role.Admin)]
     [HttpPost("user-update")]
     public async Task<IActionResult> UpdateUser([FromBody] UserUpdateModel model)
@@ -92,6 +117,11 @@ public class UserController : ControllerBase
         return Ok(result);
     }
 
+    /// <summary>
+    /// Метод входа пользователя в систему
+    /// </summary>
+    /// <param name="model">Модель входа</param>
+    /// <returns></returns>
     [HttpPost("user-login")]
     public async Task<IActionResult> Login([FromBody] LoginModel model)
     {
@@ -100,6 +130,11 @@ public class UserController : ControllerBase
         return Ok(token);
     }
 
+    /// <summary>
+    /// Модель регистрации пользователя в системе
+    /// </summary>
+    /// <param name="model">Модель регистрации</param>
+    /// <returns></returns>
     [HttpPost("user-register")]
     public async Task<IActionResult> Register([FromBody] RegisterModel model)
     {
