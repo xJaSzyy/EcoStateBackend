@@ -234,31 +234,36 @@ public class EmissionService : IEmissionService
                 {
                     Type = ConcentrationType.SO2, Concentrations = concentrationsSo2, 
                     DangerZoneWidth = dangerZoneParametersSo2.DangerZoneWidth, 
-                    DangerZoneLength = dangerZoneParametersSo2.DangerZoneLength
+                    DangerZoneLength = dangerZoneParametersSo2.DangerZoneLength,
+                    DangerZoneColorHex = dangerZoneParametersSo2.DangerZoneColorHex
                 },
                 new Concentration()
                 {
                     Type = ConcentrationType.NO, Concentrations = concentrationsNo, 
                     DangerZoneWidth = dangerZoneParametersNo.DangerZoneWidth, 
-                    DangerZoneLength = dangerZoneParametersNo.DangerZoneLength
+                    DangerZoneLength = dangerZoneParametersNo.DangerZoneLength,
+                    DangerZoneColorHex = dangerZoneParametersNo.DangerZoneColorHex
                 },
                 new Concentration()
                 { 
                         Type = ConcentrationType.NO2, Concentrations = concentrationsNo2, 
                         DangerZoneWidth = dangerZoneParametersNo2.DangerZoneWidth, 
-                        DangerZoneLength = dangerZoneParametersNo2.DangerZoneLength
+                        DangerZoneLength = dangerZoneParametersNo2.DangerZoneLength,
+                        DangerZoneColorHex = dangerZoneParametersNo2.DangerZoneColorHex
                 },
                 new Concentration()
                 {
                     Type = ConcentrationType.CO2, Concentrations = concentrationsCo2, 
                     DangerZoneWidth = dangerZoneParametersCo2.DangerZoneWidth, 
-                    DangerZoneLength = dangerZoneParametersCo2.DangerZoneLength
+                    DangerZoneLength = dangerZoneParametersCo2.DangerZoneLength,
+                    DangerZoneColorHex = dangerZoneParametersCo2.DangerZoneColorHex
                 },
                 new Concentration()
                 {
                     Type = ConcentrationType.SP, Concentrations = concentrationsSp, 
                     DangerZoneWidth = dangerZoneParametersSp.DangerZoneWidth, 
-                    DangerZoneLength = dangerZoneParametersSp.DangerZoneLength
+                    DangerZoneLength = dangerZoneParametersSp.DangerZoneLength,
+                    DangerZoneColorHex = dangerZoneParametersSp.DangerZoneColorHex
                 }
             }
         };
@@ -288,6 +293,7 @@ public class EmissionService : IEmissionService
             Type = type,
             DangerZoneLength = dangerZoneParameters.DangerZoneLength,
             DangerZoneWidth = dangerZoneParameters.DangerZoneWidth,
+            DangerZoneColorHex = dangerZoneParameters.DangerZoneColorHex,
             Concentrations = concentrations
         };
 
@@ -339,13 +345,41 @@ public class EmissionService : IEmissionService
 
         var windSpeedCoeff =  _windSpeed != 0  ? WindAverageSpeed / _windSpeed : WindAverageSpeed; // коэффицент скорости ветра, влияющий на ширину выброса
         
-        var dangerZoneLength = minDistance;
-        var dangerZoneWidth = Math.Round((minDistance - maxDistance) * 2 * windSpeedCoeff, 2);
+        var dangerZoneLength = minDistance / Math.Sqrt(mass);
+        var dangerZoneWidth = Math.Round((minDistance - maxDistance) * 2 * windSpeedCoeff, 2) * Math.Sqrt(mass);
+
+        var pm = concentrations[maxIndex] * 1000;
+        string colorHex;
+        if (pm <= 9.0)
+        {
+            colorHex = "ABD162";
+        }
+        else if (pm <= 35.4)
+        {
+            colorHex = "F8D461";
+        }
+        else if (pm <= 55.4)
+        {
+            colorHex = "FB9956";
+        }
+        else if (pm <= 125.4)
+        {
+            colorHex = "F6686A";
+        }
+        else if (pm <= 225.4)
+        {
+            colorHex = "A47DB8";
+        }
+        else
+        {
+            colorHex = "A07785";
+        }
         
         return new DangerZoneParameters()
         {
             DangerZoneLength = dangerZoneLength,
-            DangerZoneWidth = dangerZoneWidth
+            DangerZoneWidth = dangerZoneWidth,
+            DangerZoneColorHex = colorHex
         };
     }
 
@@ -376,4 +410,9 @@ public class DangerZoneParameters
     /// Ширина зоны выброса
     /// </summary>
     public double DangerZoneWidth { get; set; }
+    
+    /// <summary>
+    /// Цвет зоны выброса
+    /// </summary>
+    public string DangerZoneColorHex { get; set; } = null!;
 }
