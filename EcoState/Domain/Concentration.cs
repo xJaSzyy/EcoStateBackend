@@ -43,4 +43,9 @@ public class Concentration
     /// Ширина зоны выброса
     /// </summary>
     public double DangerZoneWidth { get; set; }
+    
+    /// <summary>
+    /// Цвет зоны выброса
+    /// </summary>
+    public string DangerZoneColorHex { get; set; } = null!;
 }

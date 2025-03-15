@@ -220,11 +220,11 @@ public class EmissionService : IEmissionService
         var concentrationsCo2 = GetNormalSurfaceConcentration(x, massCo2); 
         var concentrationsSp = GetNormalSurfaceConcentration(x, massSp);
         
-        var dangerZoneParametersSo2 = CalculateDangerZoneParameters(concentrationsSo2);
-        var dangerZoneParametersNo = CalculateDangerZoneParameters(concentrationsNo);
-        var dangerZoneParametersNo2 = CalculateDangerZoneParameters(concentrationsNo2);
-        var dangerZoneParametersCo2 = CalculateDangerZoneParameters(concentrationsCo2);
-        var dangerZoneParametersSp = CalculateDangerZoneParameters(concentrationsSp);
+        var dangerZoneParametersSo2 = CalculateDangerZoneParameters(concentrationsSo2, massSo2);
+        var dangerZoneParametersNo = CalculateDangerZoneParameters(concentrationsNo, massNo);
+        var dangerZoneParametersNo2 = CalculateDangerZoneParameters(concentrationsNo2, massNo2);
+        var dangerZoneParametersCo2 = CalculateDangerZoneParameters(concentrationsCo2, massCo2);
+        var dangerZoneParametersSp = CalculateDangerZoneParameters(concentrationsSp, massSp);
 
         var result = new EmissionViewModel
         {
@@ -281,7 +281,7 @@ public class EmissionService : IEmissionService
 
         var concentrations = GetNormalSurfaceConcentration(x, m);
 
-        var dangerZoneParameters = CalculateDangerZoneParameters(concentrations);
+        var dangerZoneParameters = CalculateDangerZoneParameters(concentrations, m);
         
         var result = new ConcentrationViewModel()
         {
@@ -294,7 +294,7 @@ public class EmissionService : IEmissionService
         return result;
     }
 
-    private DangerZoneParameters CalculateDangerZoneParameters(List<double> concentrations)
+    private DangerZoneParameters CalculateDangerZoneParameters(List<double> concentrations, double mass)
     {
         var maxIndex = int.MinValue;
         var maxDistance = double.MinValue;
