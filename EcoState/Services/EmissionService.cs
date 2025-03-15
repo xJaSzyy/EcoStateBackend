@@ -352,27 +352,27 @@ public class EmissionService : IEmissionService
         string colorHex;
         if (pm <= 9.0)
         {
-            colorHex = "ABD162";
+            colorHex = "#ABD162";
         }
         else if (pm <= 35.4)
         {
-            colorHex = "F8D461";
+            colorHex = "#F8D461";
         }
         else if (pm <= 55.4)
         {
-            colorHex = "FB9956";
+            colorHex = "#FB9956";
         }
         else if (pm <= 125.4)
         {
-            colorHex = "F6686A";
+            colorHex = "#F6686A";
         }
         else if (pm <= 225.4)
         {
-            colorHex = "A47DB8";
+            colorHex = "#A47DB8";
         }
         else
         {
-            colorHex = "A07785";
+            colorHex = "#A07785";
         }
         
         return new DangerZoneParameters()
