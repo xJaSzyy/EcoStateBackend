@@ -31,6 +31,11 @@ public class ConcentrationViewModel
     /// Предельно допустимая концентрация
     /// </summary>
     public double PDK { get; set; }
+    
+    /// <summary>
+    /// Среднее значение из n макисмальных концентраций
+    /// </summary>
+    public double AverageConcentration { get; set; }
 
     /// <summary>
     /// Длина зоны выброса
