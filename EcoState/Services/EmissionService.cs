@@ -357,8 +357,8 @@ public class EmissionService : IEmissionService
 
         var windSpeedCoeff =  _windSpeed != 0  ? WindAverageSpeed / _windSpeed : WindAverageSpeed;
         
-        var dangerZoneLength = minDistance / Math.Sqrt(Math.Sqrt(mass));
-        var dangerZoneWidth = Math.Round((minDistance - maxDistance) * 2 * Math.Sqrt(windSpeedCoeff), 2) * Math.Sqrt(mass);
+        var dangerZoneLength = (minDistance / Math.Sqrt(Math.Sqrt(mass))) * (1 / windSpeedCoeff);
+        var dangerZoneWidth = Math.Round((minDistance - maxDistance) * 2 * windSpeedCoeff, 2) * Math.Sqrt(mass);
 
         var sortedConcentrations = concentrations.OrderByDescending(c => c).Take(5).ToList();
         var avgConcentration = sortedConcentrations.Average();
