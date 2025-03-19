@@ -8,7 +8,7 @@ public class WeatherViewModel
     /// <summary>
     /// Дата и время, в которые была такая погода
     /// </summary>
-    public DateTime Date { get; set; }
+    public DateTimeOffset Date { get; set; }
     
     /// <summary>
     /// Температура

@@ -15,7 +15,7 @@ public class ConcentrationViewModel
     /// <summary>
     /// Дата и время, когда были получены концентрации
     /// </summary>
-    public DateTime Date { get; set; }
+    public DateTimeOffset Date { get; set; }
     
     /// <summary>
     /// Вид частиц

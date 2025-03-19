@@ -22,5 +22,6 @@ public class ConcentrationGetByDateModel
     /// <summary>
     /// Год
     /// </summary>
+    [Range(1999, 2025)]
     public int Year { get; set; }
 }

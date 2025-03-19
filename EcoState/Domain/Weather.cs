@@ -16,7 +16,7 @@ public class Weather
     /// <summary>
     /// Дата
     /// </summary>
-    public DateTime Date { get; set; }
+    public DateTimeOffset Date { get; set; }
     
     /// <summary>
     /// Температура
