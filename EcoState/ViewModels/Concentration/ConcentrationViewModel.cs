@@ -26,6 +26,11 @@ public class ConcentrationViewModel
     /// Концентрации на дистанции некоторой
     /// </summary>
     public List<double> Concentrations { get; set; } = null!;
+    
+    /// <summary>
+    /// Предельно допустимая концентрация
+    /// </summary>
+    public double PDK { get; set; }
 
     /// <summary>
     /// Длина зоны выброса
