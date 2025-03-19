@@ -33,12 +33,12 @@ public class UserController : ControllerBase
     /// <summary>
     /// Метод получения пользователя из БД по ID
     /// </summary>
-    /// <param name="model">Модель получения пользователя</param>
+    /// <param name="id">Идентификатор пользователя</param>
     /// <returns></returns>
-    [HttpGet("user-get")]
-    public async Task<IActionResult> GetUser([FromBody] UserGetModel model)
+    [HttpGet("user/{id}")]
+    public async Task<IActionResult> GetUser(int id)
     {
-        var user = _dbContext.Users.FirstOrDefault(x => x.Id == model.Id);
+        var user = _dbContext.Users.FirstOrDefault(x => x.Id == id);
         
         if (user == null)
         {
@@ -54,7 +54,7 @@ public class UserController : ControllerBase
     /// Метод получения всех пользователей из БД
     /// </summary>
     /// <returns></returns>
-    [HttpGet("user-getAll")]
+    [HttpGet("user")]
     public async Task<IActionResult> GetAllUsers()
     {
         var userList = _dbContext.Users.ToList();
@@ -67,13 +67,13 @@ public class UserController : ControllerBase
     /// <summary>
     /// Метод удаления пользователя из БД по ID
     /// </summary>
-    /// <param name="model">Модель удаления пользователя</param>
+    /// <param name="id">Идентификатор пользователя</param>
     /// <returns></returns>
     [EnumAuthorize(Role.Admin)]
-    [HttpPost("user-delete")]
-    public async Task<IActionResult> DeleteUser([FromBody] UserDeleteModel model)
+    [HttpDelete("user/{id}")]
+    public async Task<IActionResult> DeleteUser(int id)
     {
-        var user = _dbContext.Users.FirstOrDefault(x => x.Id == model.Id);
+        var user = _dbContext.Users.FirstOrDefault(x => x.Id == id);
 
         if (user == null)
         {
@@ -94,7 +94,7 @@ public class UserController : ControllerBase
     /// <param name="model">Модель обновления пользователя</param>
     /// <returns></returns>
     [EnumAuthorize(Role.Admin)]
-    [HttpPost("user-update")]
+    [HttpPut("user")]
     public async Task<IActionResult> UpdateUser([FromBody] UserUpdateModel model)
     {
         var user = _dbContext.Users.FirstOrDefault(x => x.Id == model.Id);
@@ -122,7 +122,7 @@ public class UserController : ControllerBase
     /// </summary>
     /// <param name="model">Модель входа</param>
     /// <returns></returns>
-    [HttpPost("user-login")]
+    [HttpPost("user/login")]
     public async Task<IActionResult> Login([FromBody] LoginModel model)
     {
         var token = _service.Login(model);
@@ -135,7 +135,7 @@ public class UserController : ControllerBase
     /// </summary>
     /// <param name="model">Модель регистрации</param>
     /// <returns></returns>
-    [HttpPost("user-register")]
+    [HttpPost("user/register")]
     public async Task<IActionResult> Register([FromBody] RegisterModel model)
     {
         var user = _service.Register(model);

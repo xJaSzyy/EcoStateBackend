@@ -92,7 +92,7 @@ public class EmissionController : ControllerBase
     /// </summary>
     /// <param name="model">Модель сохранения концентрации</param>
     /// <returns></returns>
-    //[EnumAuthorize(Role.Admin)]
+    [EnumAuthorize(Role.Admin)]
     [HttpPost("concentration/save")]
     public async Task<IActionResult> SaveConcentration(ConcentrationSaveModel model)
     {
