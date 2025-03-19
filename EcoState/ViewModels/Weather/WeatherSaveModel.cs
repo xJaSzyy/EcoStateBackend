@@ -6,11 +6,6 @@ namespace EcoState.ViewModels.Weather;
 public class WeatherSaveModel
 {
     /// <summary>
-    /// Дата и время, в которые была такая погода
-    /// </summary>
-    public DateTime Date { get; set; }
-    
-    /// <summary>
     /// Температура
     /// </summary>
     public float Temperature { get; set; }

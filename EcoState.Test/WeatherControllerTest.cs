@@ -40,14 +40,11 @@ public class WeatherControllerTest
     public async Task GetWeather_WithWeatherGetModel_ShouldReturnCorrectListWeatherViewModel()
     {
         // Arrange
-        var dateTimeNow = DateTime.Now;
-        var weatherGetModel = new WeatherGetModel()
-        {
-            Date = dateTimeNow
-        };
+        var model = _fixture.Create<WeatherGetModel>();
+        var dateTime = new DateTime(model.Year, model.Month, model.Day).Date;
 
         var testWeather = _fixture.Build<Weather>()
-            .With(x => x.Date, dateTimeNow)
+            .With(x => x.Date, dateTime)
             .Create();
 
         _testData = new List<Weather>() { testWeather };
@@ -61,7 +58,7 @@ public class WeatherControllerTest
                 WindSpeed = weather.WindSpeed,
                 IconUrl = weather.IconUrl
             })
-            .Where(x => x.Date == dateTimeNow)
+            .Where(x => x.Date == dateTime)
             .ToList();
 
         _mapper.Setup(x => x.Map<List<WeatherViewModel>>(It.IsAny<List<Weather>>()))
@@ -70,13 +67,13 @@ public class WeatherControllerTest
         var controller = GetWeatherController();
         
         // Act
-        var result = await controller.GetWeather(weatherGetModel) as OkObjectResult;
+        var result = await controller.GetWeather(model) as OkObjectResult;
 
         // Assert
         result!.Value.Should().Be(weatherViewModelList);
         foreach (var weather in weatherViewModelList)
         {
-            weather.Date.Should().Be(dateTimeNow);
+            weather.Date.Should().Be(dateTime);
         }
         
         _dbContext.Verify(x => x.Weathers, Times.Once);
@@ -90,7 +87,7 @@ public class WeatherControllerTest
 
         var weather = new Weather()
         {
-            Date = weatherSaveModel.Date,
+            Date = DateTime.UtcNow.Date,
             Temperature = weatherSaveModel.Temperature,
             WindDirection = weatherSaveModel.WindDirection,
             WindSpeed = weatherSaveModel.WindSpeed,
@@ -99,7 +96,7 @@ public class WeatherControllerTest
 
         var weatherViewModel = new WeatherViewModel()
         {
-            Date = weatherSaveModel.Date,
+            Date = weather.Date,
             Temperature = weatherSaveModel.Temperature,
             WindDirection = weatherSaveModel.WindDirection,
             WindSpeed = weatherSaveModel.WindSpeed,

@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace EcoState.ViewModels.Weather;
 
 /// <summary>
@@ -6,7 +8,19 @@ namespace EcoState.ViewModels.Weather;
 public class WeatherGetModel
 {
     /// <summary>
-    /// Дата и время, в которые была такая погода
+    /// День
     /// </summary>
-    public DateTime Date { get; set; }
+    [Range(1, 31)]
+    public int Day { get; set; }
+    
+    /// <summary>
+    /// Месяц
+    /// </summary>
+    [Range(1, 12)]
+    public int Month { get; set; }
+    
+    /// <summary>
+    /// Год
+    /// </summary>
+    public int Year { get; set; }
 }
