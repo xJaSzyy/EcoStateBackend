@@ -22,7 +22,7 @@ public class Concentration
     /// <summary>
     /// Дата
     /// </summary>
-    public DateTime? Date { get; set; }
+    public DateTimeOffset? Date { get; set; }
     
     /// <summary>
     /// Тип концентрации
