@@ -235,42 +235,42 @@ public class EmissionService : IEmissionService
                 new Concentration()
                 {
                     Type = ConcentrationType.SO2, Concentrations = concentrationsSo2,
+                    AverageConcentration = dangerZoneParametersSo2.AverageConcentration,
+                    PDK = pdkSO2,
                     DangerZoneWidth = dangerZoneParametersSo2.DangerZoneWidth,
                     DangerZoneLength = dangerZoneParametersSo2.DangerZoneLength,
                     DangerZoneColorHex = "#70B2E2",
-                    DangerZoneAngle = -6,
-                    PDK = pdkSO2,
-                    AverageConcentration = dangerZoneParametersSo2.AverageConcentration
+                    DangerZoneAngle = -6
                 },
                 new Concentration()
                 {
                     Type = ConcentrationType.NO, Concentrations = concentrationsNo,
+                    AverageConcentration = dangerZoneParametersNo.AverageConcentration,
+                    PDK = pdkNO,
                     DangerZoneWidth = dangerZoneParametersNo.DangerZoneWidth,
                     DangerZoneLength = dangerZoneParametersNo.DangerZoneLength,
                     DangerZoneColorHex = "#FDB64E",
                     DangerZoneAngle = 4,
-                    PDK = pdkNO,
-                    AverageConcentration = dangerZoneParametersNo.AverageConcentration
                 },
                 new Concentration()
                 {
                     Type = ConcentrationType.NO2, Concentrations = concentrationsNo2,
+                    AverageConcentration = dangerZoneParametersNo2.AverageConcentration,
+                    PDK = pdkNO2,
                     DangerZoneWidth = dangerZoneParametersNo2.DangerZoneWidth,
                     DangerZoneLength = dangerZoneParametersNo2.DangerZoneLength,
                     DangerZoneColorHex = "#CBE5AF",
                     DangerZoneAngle = -6,
-                    PDK = pdkNO2,
-                    AverageConcentration = dangerZoneParametersNo2.AverageConcentration
                 },
                 new Concentration()
                 {
                     Type = ConcentrationType.CO2, Concentrations = concentrationsCo2,
+                    AverageConcentration = dangerZoneParametersCo2.AverageConcentration,
+                    PDK = pdkCO2,
                     DangerZoneWidth = dangerZoneParametersCo2.DangerZoneWidth,
                     DangerZoneLength = dangerZoneParametersCo2.DangerZoneLength,
                     DangerZoneColorHex = "#AC6BAD",
                     DangerZoneAngle = 8,
-                    PDK = pdkCO2,
-                    AverageConcentration = dangerZoneParametersCo2.AverageConcentration
                 },
             }
         };
@@ -296,7 +296,7 @@ public class EmissionService : IEmissionService
         var dangerZoneParameters = CalculateDangerZoneParameters(concentrations, m);
 
         PDKValues.TryGetValue(type, out var pdk);
-        
+
         var result = new ConcentrationViewModel()
         {
             Type = type,
@@ -305,8 +305,8 @@ public class EmissionService : IEmissionService
             DangerZoneColorHex = dangerZoneParameters.DangerZoneColorHex,
             DangerZoneAngle = 0,
             Concentrations = concentrations,
+            AverageConcentration = dangerZoneParameters.AverageConcentration,
             PDK = pdk,
-            AverageConcentration = dangerZoneParameters.AverageConcentration
         };
 
         return result;
