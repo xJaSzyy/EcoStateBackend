@@ -13,7 +13,7 @@ public class EmissionViewModel
     /// <summary>
     /// Дата и время, когда были получены концентрации
     /// </summary>
-    public DateTimeOffset Date { get; set; }
+    public DateTime Date { get; set; }
     
     /// <summary>
     /// Концентрации на дистанции некоторой

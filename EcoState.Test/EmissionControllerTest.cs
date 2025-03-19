@@ -163,7 +163,7 @@ public class EmissionControllerTest
         var model = _fixture.Create<EmissionGetByDateModel>();
 
         var emission = _fixture.Build<Emission>()
-            .With(x => x.Date, model.Date)
+            .With(x => x.Date, new DateTime(model.Year, model.Month, model.Day).Date)
             .Create();
         
         _emissions.Add(emission);
@@ -200,7 +200,7 @@ public class EmissionControllerTest
         var model = _fixture.Create<ConcentrationGetByDateModel>();
 
         var concentration = _fixture.Build<Concentration>()
-            .With(x => x.Date, model.Date)
+            .With(x => x.Date, new DateTime(model.Year, model.Month, model.Day).Date)
             .Create();
         
         _concentrations.Add(concentration);
@@ -237,10 +237,10 @@ public class EmissionControllerTest
     public async Task GetConcentrationByType_WithConcentrationGetByTypeModel_ShouldReturnCorrectConcentrations()
     {
         // Arrange
-        var model = _fixture.Create<ConcentrationGetByTypeModel>();
+        var concentrationType = _fixture.Create<ConcentrationType>();
 
         var concentration = _fixture.Build<Concentration>()
-            .With(x => x.Type, model.Type)
+            .With(x => x.Type, concentrationType)
             .Create();
         
         _concentrations.Add(concentration);
@@ -264,7 +264,7 @@ public class EmissionControllerTest
         var controller = new EmissionController(_dbContext.Object, _mapper.Object, _service);
         
         // Act
-        var result = await controller.GetConcentrationByType(model) as OkObjectResult;
+        var result = await controller.GetConcentrationByType(concentrationType) as OkObjectResult;
         
         // Assert
         result!.Value.Should().Be(viewModelList);

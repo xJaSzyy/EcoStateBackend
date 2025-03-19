@@ -75,7 +75,7 @@ public class EmissionController : ControllerBase
         var emission = new Emission()
         {
             Id = Guid.NewGuid(),
-            Date = DateTimeOffset.UtcNow.Date,
+            Date = DateTime.UtcNow.Date,
             Concentrations = concentrations
         };
         
@@ -98,7 +98,7 @@ public class EmissionController : ControllerBase
     {
         var concentration = _mapper.Map<Concentration>(model);
         concentration.Id = Guid.NewGuid();
-        concentration.Date = DateTimeOffset.UtcNow.Date;
+        concentration.Date = DateTime.UtcNow.Date;
 
         _dbContext.Concentrations.Add(concentration);
         await _dbContext.SaveChangesAsync();

@@ -16,7 +16,7 @@ public class Emission
     /// <summary>
     /// Дата
     /// </summary>
-    public DateTimeOffset Date { get; set; }
+    public DateTime Date { get; set; }
     
     /// <summary>
     /// Концентрации
