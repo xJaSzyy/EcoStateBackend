@@ -89,7 +89,6 @@ public class EmissionControllerTest
         
         var viewModel = new EmissionViewModel()
         {
-            Id = Guid.NewGuid(),
             Date = DateTime.UtcNow,
             Concentrations = concentrations
         };

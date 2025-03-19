@@ -107,7 +107,6 @@ public class WeatherController : ControllerBase
     public async Task<IActionResult> SaveWeather(WeatherSaveModel model)
     {
         var weather = _mapper.Map<Weather>(model);
-        weather.Id = Guid.NewGuid();
         weather.Date = DateTime.UtcNow.Date;
         
         _dbContext.Weathers.Add(weather);

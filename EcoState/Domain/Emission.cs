@@ -11,7 +11,7 @@ public class Emission
     /// Идентификатор
     /// </summary>
     [Key]
-    public Guid Id { get; set; }
+    public int Id { get; set; }
     
     /// <summary>
     /// Дата

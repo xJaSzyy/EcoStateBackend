@@ -12,12 +12,12 @@ public class Concentration
     /// Идентификатор
     /// </summary>
     [Key]
-    public Guid Id { get; set; }
+    public int Id { get; set; }
     
     /// <summary>
     /// Идентификатор выброса
     /// </summary>
-    public Guid? EmissionId { get; set; }
+    public int? EmissionId { get; set; }
     
     /// <summary>
     /// Дата

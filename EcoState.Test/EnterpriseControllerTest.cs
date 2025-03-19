@@ -139,7 +139,7 @@ public class EnterpriseControllerTest
         // Arrange
         var model = new EnterpriseUpdateModel()
         {
-            Id = Guid.NewGuid(),
+            Id = _fixture.Create<int>(),
             Name = "NewName"
         };
         var testEnterprise = _fixture.Build<Enterprise>()
