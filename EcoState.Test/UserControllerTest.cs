@@ -41,10 +41,10 @@ public class UserControllerTest
     public async Task GetUser_WithUserGetModel_ShouldGetCorrectUser()
     {
         // Arrange
-        var model = _fixture.Create<UserGetModel>();
+        var id = _fixture.Create<int>();
 
         var user = _fixture.Build<User>()
-            .With(x => x.Id, model.Id)
+            .With(x => x.Id, id)
             .Create();
 
         var userViewModel = new UserViewModel()
@@ -65,7 +65,7 @@ public class UserControllerTest
         var controller = new UserController(_dbContext.Object, _mapper.Object, _service.Object);
 
         // Act
-        var result = await controller.GetUser(model) as OkObjectResult;
+        var result = await controller.GetUser(id) as OkObjectResult;
 
         // Assert
         _dbContext.Verify(x => x.Users, Times.Once);
@@ -77,12 +77,12 @@ public class UserControllerTest
     public async Task GetUser_WithUserGetModel_ShouldNotFoundUser()
     {
         // Arrange
-        var model = _fixture.Create<UserGetModel>();
+        var id = _fixture.Create<int>();
         
         var controller = new UserController(_dbContext.Object, _mapper.Object, _service.Object);
 
         // Act
-        var result = await controller.GetUser(model) as OkObjectResult;
+        var result = await controller.GetUser(id) as OkObjectResult;
 
         // Assert
         _dbContext.Verify(x => x.Users, Times.Once);
@@ -127,7 +127,7 @@ public class UserControllerTest
         // Arrange
         _testData = _fixture.Create<List<User>>();
 
-        var model = new UserDeleteModel() { Id = _testData[0].Id };
+        var id =  _testData[0].Id;
 
         var userViewModel = new UserViewModel()
         {
@@ -146,7 +146,7 @@ public class UserControllerTest
         var controller = new UserController(_dbContext.Object, _mapper.Object, _service.Object);
 
         // Act
-        var result = await controller.DeleteUser(model) as OkObjectResult;
+        var result = await controller.DeleteUser(id) as OkObjectResult;
 
         // Assert
         _dbContext.Verify(x => x.Users, Times.Exactly(2));
@@ -159,12 +159,12 @@ public class UserControllerTest
     public async Task DeleteUser_WithUserDeleteModel_ShouldNotFoundUser()
     {
         // Arrange
-        var model = _fixture.Create<UserDeleteModel>();
+        var id = _fixture.Create<int>();
         
         var controller = new UserController(_dbContext.Object, _mapper.Object, _service.Object);
 
         // Act
-        var result = await controller.DeleteUser(model) as OkObjectResult;
+        var result = await controller.DeleteUser(id) as OkObjectResult;
 
         // Assert
         _dbContext.Verify(x => x.Users, Times.Once);

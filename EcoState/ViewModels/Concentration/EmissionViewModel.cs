@@ -8,12 +8,12 @@ public class EmissionViewModel
     /// <summary>
     /// Идентификатор выброса
     /// </summary>
-    public Guid Id { get; set; }
+    public int Id { get; set; }
     
     /// <summary>
     /// Дата и время, когда были получены концентрации
     /// </summary>
-    public DateTime Date { get; set; }
+    public DateTimeOffset Date { get; set; }
     
     /// <summary>
     /// Концентрации на дистанции некоторой

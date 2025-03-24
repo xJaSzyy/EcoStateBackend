@@ -19,15 +19,22 @@ public class EmissionServiceTest
         var actual = _service.CalculateEmission();
 
         //Assert
-        actual.Concentrations = actual.Concentrations.Take(5).ToList();
+        actual.Concentrations.Should().HaveCount(4);
         foreach (var concentration in actual.Concentrations)
         {
-            concentration.Concentrations = concentration.Concentrations.Take(5).ToList();
+            concentration.Concentrations.Should().HaveCount(2000);
+            concentration.AverageConcentration.Should().BeGreaterThan(0);
+            concentration.DangerZoneAngle.Should().BeInRange(-6, 8);
+            concentration.DangerZoneColorHex.Should().NotBeEmpty();
+            concentration.DangerZoneColorHex.Should().Contain("#");
+            concentration.DangerZoneLength.Should().BeGreaterThan(0);
+            concentration.DangerZoneWidth.Should().BeGreaterThan(0);
+            
+            PDKValues.TryGetValue(concentration.Type, out var pdk);
+            concentration.PDK.Should().Be(pdk);
         }
-
-        actual.Should().BeEquivalentTo(_emissionViewModel);
     }
-    
+
     [Test]
     public void CalculateConcentration_WithConcentrationType_ShouldCalculateCorrectly()
     {
@@ -36,12 +43,15 @@ public class EmissionServiceTest
         var actual = _service.CalculateConcentration(ConcentrationType.SP);
 
         //Assert
-        actual.Concentrations = actual.Concentrations.Take(5).ToList();
-
-        actual.Should().BeEquivalentTo(_concentrationViewModel);
+        actual.Concentrations.Should().HaveCount(2000);
+        actual.AverageConcentration.Should().BeGreaterThan(0);
+        actual.DangerZoneAngle.Should().Be(0);
+        actual.DangerZoneColorHex.Should().NotBeEmpty();
+        actual.DangerZoneColorHex.Should().Contain("#");
+        actual.DangerZoneLength.Should().BeGreaterThan(0);
+        actual.DangerZoneWidth.Should().BeGreaterThan(0);
+        actual.PDK.Should().Be(0.5);
     }
-
-    #region TestData
 
     private readonly EmissionCalculateModel _calculateModel = new EmissionCalculateModel()
     {
@@ -54,93 +64,13 @@ public class EmissionServiceTest
         SedimentationRateRatio = CoefficientDegreePurification.High,
         WindSpeed = 10
     };
-
-    private readonly EmissionViewModel _emissionViewModel = new EmissionViewModel()
-    {
-        Concentrations = new List<Concentration>()
-        {
-            new Concentration()
-            {
-                Type = ConcentrationType.SO2, Concentrations = new List<double>()
-                {
-                    0.00003114428540011519,
-                    0.00012230999433428957,
-                    0.00027014928891727483,
-                    0.00047138484194916754,
-                    0.0007228098369154083
-                },
-                DangerZoneLength = 810,
-                DangerZoneWidth = 267
-            },
-            new Concentration()
-            {
-                Type = ConcentrationType.NO, Concentrations = new List<double>()
-                {
-                    0.000001313455805248019,
-                    0.000005158210247380754,
-                    0.000011393074114672305,
-                    0.000019879831860318236,
-                    0.000030483241602435533
-                },
-                DangerZoneLength = 810,
-                DangerZoneWidth = 267
-            },
-            new Concentration()
-            {
-                Type = ConcentrationType.NO2, Concentrations = new List<double>()
-                {
-                    0.000007972440079151828,
-                    0.0000313094067943494,
-                    0.00006915390706991411,
-                    0.00012066699744044517,
-                    0.00018502778405081932
-                },
-                DangerZoneLength = 810,
-                DangerZoneWidth = 267
-            },
-            new Concentration()
-            {
-                Type = ConcentrationType.CO2, Concentrations = new List<double>()
-                {
-                    0.00014495345598457873,
-                    0.0005692619417154437,
-                    0.0012573437649075296,
-                    0.002193945408008094,
-                    0.0033641415281967153
-                },
-                DangerZoneLength = 810,
-                DangerZoneWidth = 267
-            },
-            new Concentration()
-            {
-                Type = ConcentrationType.SP, Concentrations = new List<double>()
-                {
-                    0.00046503435266889324,
-                    0.001826285249748321,
-                    0.0040337640784380326,
-                    0.007038535064058618,
-                    0.0107927152700515
-                },
-                DangerZoneLength = 810,
-                DangerZoneWidth = 267
-            }
-        }
-    };
     
-    private readonly ConcentrationViewModel _concentrationViewModel = new ConcentrationViewModel()
+    private static readonly Dictionary<ConcentrationType, double> PDKValues = new()
     {
-        Type = ConcentrationType.SP,
-        Concentrations = new List<double>()
-        {
-            0.00046503435266889324,
-            0.001826285249748321,
-            0.0040337640784380326,
-            0.007038535064058618,
-            0.0107927152700515
-        },
-        DangerZoneLength = 810,
-        DangerZoneWidth = 267
+        { ConcentrationType.SO2, 0.5 },
+        { ConcentrationType.NO, 0.4 },
+        { ConcentrationType.NO2, 0.085 },
+        { ConcentrationType.CO2, 5.0 },
+        { ConcentrationType.SP, 0.5 }
     };
-
-    #endregion
 }

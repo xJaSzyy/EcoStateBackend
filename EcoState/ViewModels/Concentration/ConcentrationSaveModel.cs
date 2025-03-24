@@ -8,11 +8,6 @@ namespace EcoState.ViewModels.Concentration;
 public class ConcentrationSaveModel
 {
     /// <summary>
-    /// Дата и время, когда были получены концентрации
-    /// </summary>
-    public DateTime Date { get; set; }
-    
-    /// <summary>
     /// Вид частиц
     /// </summary>
     public ConcentrationType Type { get; set; }
@@ -23,6 +18,16 @@ public class ConcentrationSaveModel
     public List<double> Concentrations { get; set; } = null!;
 
     /// <summary>
+    /// Предельно допустимая концентрация
+    /// </summary>
+    public double PDK { get; set; }
+    
+    /// <summary>
+    /// Среднее значение из n макисмальных концентраций
+    /// </summary>
+    public double AverageConcentration { get; set; }
+    
+    /// <summary>
     /// Длина зоны выброса
     /// </summary>
     public double DangerZoneLength { get; set; }
@@ -31,4 +36,14 @@ public class ConcentrationSaveModel
     /// Ширина зоны выброса
     /// </summary>
     public double DangerZoneWidth { get; set; }
+    
+    /// <summary>
+    /// Цвет зоны выброса
+    /// </summary>
+    public string DangerZoneColorHex { get; set; } = null!;
+    
+    /// <summary>
+    /// Угол смещения зоны выброса
+    /// </summary>
+    public double DangerZoneAngle { get; set; }
 }

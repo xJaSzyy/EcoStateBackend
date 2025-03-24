@@ -40,7 +40,7 @@ public class WeatherController : ControllerBase
     /// </summary>
     /// <param name="city">Название города</param>
     /// <returns></returns>
-    [HttpGet("currentWeather-get")]
+    [HttpGet("weather/current")]
     public async Task<IActionResult> GetCurrentWeather([FromQuery] string city)
     {
         var httpClient = _httpClientFactory.CreateClient();
@@ -66,7 +66,7 @@ public class WeatherController : ControllerBase
 
             var result = new WeatherViewModel
             {
-                Date = DateTime.UtcNow,
+                Date = DateTime.UtcNow.Date,
                 Temperature = (float)weatherResponse!.MainData.Temp,
                 WindSpeed = (float)weatherResponse.WindData.Speed,
                 WindDirection = weatherResponse.WindData.Deg,
@@ -86,10 +86,11 @@ public class WeatherController : ControllerBase
     /// </summary>
     /// <param name="model">Модель получения погоды</param>
     /// <returns></returns>
-    [HttpGet("weather-get")]
+    [HttpGet("weather")]
     public async Task<IActionResult> GetWeather(WeatherGetModel model)
     {
-        var weathers = _dbContext.Weathers.Where(x => x.Date == model.Date).ToList();
+        var targetDate = new DateTime(model.Year, model.Month, model.Day).Date;
+        var weathers = _dbContext.Weathers.Where(x => x.Date == targetDate.Date).ToList();
 
         var result = _mapper.Map<List<WeatherViewModel>>(weathers);
 
@@ -102,11 +103,11 @@ public class WeatherController : ControllerBase
     /// <param name="model">Модель сохранения погоды</param>
     /// <returns></returns>
     [EnumAuthorize(Role.Admin)]
-    [HttpPost("weather-save")]
+    [HttpPost("weather")]
     public async Task<IActionResult> SaveWeather(WeatherSaveModel model)
     {
         var weather = _mapper.Map<Weather>(model);
-        weather.Id = Guid.NewGuid();
+        weather.Date = DateTime.UtcNow.Date;
         
         _dbContext.Weathers.Add(weather);
         await _dbContext.SaveChangesAsync();

@@ -10,12 +10,17 @@ public class ConcentrationViewModel
     /// <summary>
     /// Идентификатор выброса
     /// </summary>
-    public Guid? EmissionId { get; set; } 
+    public int Id { get; set; }
+    
+    /// <summary>
+    /// Идентификатор выброса
+    /// </summary>
+    public int? EmissionId { get; set; } 
     
     /// <summary>
     /// Дата и время, когда были получены концентрации
     /// </summary>
-    public DateTime? Date { get; set; }
+    public DateTimeOffset Date { get; set; }
     
     /// <summary>
     /// Вид частиц
@@ -26,6 +31,16 @@ public class ConcentrationViewModel
     /// Концентрации на дистанции некоторой
     /// </summary>
     public List<double> Concentrations { get; set; } = null!;
+    
+    /// <summary>
+    /// Предельно допустимая концентрация
+    /// </summary>
+    public double PDK { get; set; }
+    
+    /// <summary>
+    /// Среднее значение из n макисмальных концентраций
+    /// </summary>
+    public double AverageConcentration { get; set; }
 
     /// <summary>
     /// Длина зоны выброса

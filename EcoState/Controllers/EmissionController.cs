@@ -37,7 +37,7 @@ public class EmissionController : ControllerBase
     /// </summary>
     /// <param name="model">Модель расчета концентраций выброса</param>
     /// <returns></returns>
-    [HttpGet("emission-calc")]
+    [HttpGet("emission/calculate")]
     public async Task<IActionResult> CalculateEmission(EmissionCalculateModel model)
     {
         _service.Setup(model);
@@ -53,7 +53,7 @@ public class EmissionController : ControllerBase
     /// <param name="model">Модель расчета концентраций выброса</param>
     /// <param name="concentration">Вид частиц</param>
     /// <returns></returns>
-    [HttpGet("concentraion-calc")]
+    [HttpGet("concentration/calculate")]
     public async Task<IActionResult> CalculateConcentration(EmissionCalculateModel model, ConcentrationType concentration)
     {
         _service.Setup(model);
@@ -69,13 +69,12 @@ public class EmissionController : ControllerBase
     /// <param name="concentrations">Список концентраций</param>
     /// <returns></returns>
     [EnumAuthorize(Role.Admin)]
-    [HttpPost("emission-save")]
+    [HttpPost("emission/save")]
     public async Task<IActionResult> SaveEmission([FromBody] List<Concentration> concentrations)
     {
         var emission = new Emission()
         {
-            Id = Guid.NewGuid(),
-            Date = DateTime.UtcNow,
+            Date = DateTime.UtcNow.Date,
             Concentrations = concentrations
         };
         
@@ -93,11 +92,11 @@ public class EmissionController : ControllerBase
     /// <param name="model">Модель сохранения концентрации</param>
     /// <returns></returns>
     [EnumAuthorize(Role.Admin)]
-    [HttpPost("concentration-save")]
+    [HttpPost("concentration/save")]
     public async Task<IActionResult> SaveConcentration(ConcentrationSaveModel model)
     {
         var concentration = _mapper.Map<Concentration>(model);
-        concentration.Id = Guid.NewGuid();
+        concentration.Date = DateTime.UtcNow.Date;
 
         _dbContext.Concentrations.Add(concentration);
         await _dbContext.SaveChangesAsync();
@@ -112,12 +111,13 @@ public class EmissionController : ControllerBase
     /// </summary>
     /// <param name="model">Модель получения выброса по дате</param>
     /// <returns></returns>
-    [HttpGet("emission-getByDate")]
+    [HttpGet("emission/date")]
     public async Task<IActionResult> GetEmissionByDate(EmissionGetByDateModel model)
     {
+        var targetDate = new DateTime(model.Year, model.Month, model.Day).Date;
         var emissions = _dbContext.Emissions
             .Include(c => c.Concentrations)
-            .Where(x => x.Date == model.Date).ToList();
+            .Where(x => x.Date == targetDate.Date).ToList();
         
         var result = _mapper.Map<List<EmissionViewModel>>(emissions);
         
@@ -129,11 +129,13 @@ public class EmissionController : ControllerBase
     /// </summary>
     /// <param name="model"></param>
     /// <returns></returns>
-    [HttpGet("concentraion-getByDate")]
+    [HttpGet("concentration/date")]
     public async Task<IActionResult> GetConcentrationByDate(ConcentrationGetByDateModel model)
     {
+        var targetDate = new DateTime(model.Year, model.Month, model.Day).Date;
         var concentrations = _dbContext.Concentrations
-            .Where(x => x.Date == model.Date).ToList();
+            .Where(x => x.Date == targetDate.Date)
+            .ToList();
         
         var result = _mapper.Map<List<ConcentrationViewModel>>(concentrations);
         
@@ -143,13 +145,13 @@ public class EmissionController : ControllerBase
     /// <summary>
     /// Метод получения данных о концентрациях по типу концентрации
     /// </summary>
-    /// <param name="model"></param>
+    /// <param name="type">Вид частиц</param>
     /// <returns></returns>
-    [HttpGet("concentraion-getByType")]
-    public async Task<IActionResult> GetConcentrationByType(ConcentrationGetByTypeModel model)
+    [HttpGet("concentration/type/{type}")]
+    public async Task<IActionResult> GetConcentrationByType(ConcentrationType type)
     {
         var concentrations = _dbContext.Concentrations
-            .Where(x => x.Type == model.Type).ToList();
+            .Where(x => x.Type == type).ToList();
         
         var result = _mapper.Map<List<ConcentrationViewModel>>(concentrations);
         

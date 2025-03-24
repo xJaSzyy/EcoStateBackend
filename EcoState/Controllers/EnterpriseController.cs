@@ -32,7 +32,7 @@ public class EnterpriseController: ControllerBase
     /// </summary>
     /// <param name="model">Модель добавления предприятия</param>
     /// <returns></returns>
-    [HttpPost("enterprise-add")]
+    [HttpPost("enterprise")]
     public async Task<IActionResult> AddEnterprise(EnterpriseAddModel model)
     {
         var enterprise = _mapper.Map<Enterprise>(model);
@@ -49,7 +49,7 @@ public class EnterpriseController: ControllerBase
     /// Метод получения всех предприятий
     /// </summary>
     /// <returns></returns>
-    [HttpGet("enterprise-getAll")]
+    [HttpGet("enterprise")]
     public async Task<IActionResult> GetAllEnterprises()
     {
         var enterprises = _dbContext.Enterprises.ToList();
@@ -64,7 +64,7 @@ public class EnterpriseController: ControllerBase
     /// </summary>
     /// <param name="model">Модель изменения предприятия</param>
     /// <returns></returns>
-    [HttpPost("enterprise-update")]
+    [HttpPut("enterprise")]
     public async Task<IActionResult> UpdateEnterprise(EnterpriseUpdateModel model)
     {
         var enterprise = _dbContext.Enterprises.FirstOrDefault(x => x.Id == model.Id);

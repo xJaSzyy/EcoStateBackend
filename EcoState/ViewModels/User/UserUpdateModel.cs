@@ -10,7 +10,7 @@ public class UserUpdateModel
     /// <summary>
     /// Идентификатор пользователя
     /// </summary>
-    public Guid Id { get; set; }
+    public int Id { get; set; }
     
     /// <summary>
     /// Роль
