@@ -46,12 +46,6 @@ public class EnterpriseControllerTest
         {
             Name = model.Name,
             City = model.City,
-            Lon = model.Lon,
-            Lat = model.Lat,
-            EjectedTemp = model.EjectedTemp,
-            AvgExitSpeed = model.AvgExitSpeed,
-            HeightSource = model.HeightSource,
-            DiameterSource = model.DiameterSource,
             TempStratificationRatio = model.TempStratificationRatio,
             SedimentationRateRatio = model.SedimentationRateRatio
         };
@@ -60,12 +54,6 @@ public class EnterpriseControllerTest
         {
             Name = model.Name,
             City = model.City,
-            Lon = model.Lon,
-            Lat = model.Lat,
-            EjectedTemp = model.EjectedTemp,
-            AvgExitSpeed = model.AvgExitSpeed,
-            HeightSource = model.HeightSource,
-            DiameterSource = model.DiameterSource,
             TempStratificationRatio = model.TempStratificationRatio,
             SedimentationRateRatio = model.SedimentationRateRatio
         };
@@ -104,12 +92,6 @@ public class EnterpriseControllerTest
             {
                 Name = item.Name,
                 City = item.City,
-                Lon = item.Lon,
-                Lat = item.Lat,
-                EjectedTemp = item.EjectedTemp,
-                AvgExitSpeed = item.AvgExitSpeed,
-                HeightSource = item.HeightSource,
-                DiameterSource = item.DiameterSource,
                 TempStratificationRatio = item.TempStratificationRatio,
                 SedimentationRateRatio = item.SedimentationRateRatio
             })
@@ -155,12 +137,6 @@ public class EnterpriseControllerTest
             Id = model.Id,
             Name = model.Name,
             City = testEnterprise.City,
-            Lon = testEnterprise.Lon,
-            Lat = testEnterprise.Lat,
-            EjectedTemp = testEnterprise.EjectedTemp,
-            AvgExitSpeed = testEnterprise.AvgExitSpeed,
-            HeightSource = testEnterprise.HeightSource,
-            DiameterSource = testEnterprise.DiameterSource,
             TempStratificationRatio = testEnterprise.TempStratificationRatio,
             SedimentationRateRatio = testEnterprise.SedimentationRateRatio,
         };
@@ -169,12 +145,6 @@ public class EnterpriseControllerTest
         {
             Name = model.Name,
             City = testEnterprise.City,
-            Lon = testEnterprise.Lon,
-            Lat = testEnterprise.Lat,
-            EjectedTemp = testEnterprise.EjectedTemp,
-            AvgExitSpeed = testEnterprise.AvgExitSpeed,
-            HeightSource = testEnterprise.HeightSource,
-            DiameterSource = testEnterprise.DiameterSource,
             TempStratificationRatio = testEnterprise.TempStratificationRatio,
             SedimentationRateRatio = testEnterprise.SedimentationRateRatio,
         };
@@ -197,6 +167,58 @@ public class EnterpriseControllerTest
         _dbContext.Verify(x => x.Enterprises.Update(It.IsAny<Enterprise>()), Times.Once);
         _dbContext.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
         _mapper.Verify(x => x.Map<EnterpriseViewModel>(testEnterprise), Times.Once);
+    }
+    
+    [Test]
+    public async Task DeleteEnterprise_WithId_ShouldDeleteEnterprise()
+    {
+        // Arrange
+        _testData = _fixture.Create<List<Enterprise>>();
+
+        var id =  _testData[0].Id;
+
+        var enterpriseViewModel = new EnterpriseViewModel()
+        {
+            Id = _testData[0].Id,
+            Name = _testData[0].Name,
+            City = _testData[0].City,
+            TempStratificationRatio = _testData[0].TempStratificationRatio,
+            SedimentationRateRatio = _testData[0].SedimentationRateRatio,
+        };
+
+        _mapper.Setup(x => x.Map<EnterpriseViewModel>(_testData[0]))
+            .Returns(enterpriseViewModel);
+
+        SetDataToContext(_testData.AsQueryable());
+        
+        var controller = new EnterpriseController(_dbContext.Object, _mapper.Object);
+
+        // Act
+        var result = await controller.DeleteEnterprise(id) as OkObjectResult;
+
+        // Assert
+        _dbContext.Verify(x => x.Enterprises, Times.Exactly(2));
+        _dbContext.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
+        _mapper.Verify(x => x.Map<EnterpriseViewModel>(_testData[0]), Times.Once);
+        result!.Value.Should().Be(enterpriseViewModel);
+    }
+    
+    [Test]
+    public async Task DeleteEnterprise_WithId_ShouldNotFoundEnterprise()
+    {
+        // Arrange
+        SetDataToContext(_testData.AsQueryable());
+        
+        var id = _fixture.Create<int>();
+        
+        var controller = new EnterpriseController(_dbContext.Object, _mapper.Object);
+
+        // Act
+        var result = await controller.DeleteEnterprise(id) as OkObjectResult;
+
+        // Assert
+        _dbContext.Verify(x => x.Enterprises, Times.Once);
+        result!.Value.Should().Be("Предприятие не найдено");
     }
 
     private void SetDataToContext(IQueryable<Enterprise> testData)

@@ -122,7 +122,7 @@ public class UserControllerTest
     }
     
     [Test]
-    public async Task DeleteUser_WithUserDeleteModel_ShouldDeleteUser()
+    public async Task DeleteUser_WithId_ShouldDeleteUser()
     {
         // Arrange
         _testData = _fixture.Create<List<User>>();
@@ -156,7 +156,7 @@ public class UserControllerTest
     }
     
     [Test]
-    public async Task DeleteUser_WithUserDeleteModel_ShouldNotFoundUser()
+    public async Task DeleteUser_WithId_ShouldNotFoundUser()
     {
         // Arrange
         var id = _fixture.Create<int>();
