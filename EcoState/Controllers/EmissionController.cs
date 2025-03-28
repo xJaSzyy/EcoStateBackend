@@ -1,3 +1,4 @@
+using System.Net;
 using AutoMapper;
 using EcoState.Context;
 using EcoState.Domain;
@@ -38,6 +39,8 @@ public class EmissionController : ControllerBase
     /// <param name="model">Модель расчета концентраций выброса</param>
     /// <returns></returns>
     [HttpGet("emission/calculate")]
+    [ProducesResponseType(typeof(EmissionViewModel), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public async Task<IActionResult> CalculateEmission(EmissionCalculateModel model)
     {
         _service.Setup(model);
@@ -54,6 +57,8 @@ public class EmissionController : ControllerBase
     /// <param name="concentration">Вид частиц</param>
     /// <returns></returns>
     [HttpGet("concentration/calculate")]
+    [ProducesResponseType(typeof(ConcentrationViewModel), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public async Task<IActionResult> CalculateConcentration(EmissionCalculateModel model, ConcentrationType concentration)
     {
         _service.Setup(model);
@@ -70,6 +75,8 @@ public class EmissionController : ControllerBase
     /// <returns></returns>
     [EnumAuthorize(Role.Admin)]
     [HttpPost("emission/save")]
+    [ProducesResponseType(typeof(EmissionViewModel), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public async Task<IActionResult> SaveEmission([FromBody] List<Concentration> concentrations)
     {
         var emission = new Emission()
@@ -93,6 +100,8 @@ public class EmissionController : ControllerBase
     /// <returns></returns>
     [EnumAuthorize(Role.Admin)]
     [HttpPost("concentration/save")]
+    [ProducesResponseType(typeof(ConcentrationViewModel), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public async Task<IActionResult> SaveConcentration(ConcentrationSaveModel model)
     {
         var concentration = _mapper.Map<Concentration>(model);
@@ -112,6 +121,8 @@ public class EmissionController : ControllerBase
     /// <param name="model">Модель получения выброса по дате</param>
     /// <returns></returns>
     [HttpGet("emission/date")]
+    [ProducesResponseType(typeof(List<EmissionViewModel>), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public async Task<IActionResult> GetEmissionByDate(EmissionGetByDateModel model)
     {
         var targetDate = new DateTime(model.Year, model.Month, model.Day).Date;
@@ -130,6 +141,8 @@ public class EmissionController : ControllerBase
     /// <param name="model"></param>
     /// <returns></returns>
     [HttpGet("concentration/date")]
+    [ProducesResponseType(typeof(List<ConcentrationViewModel>), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public async Task<IActionResult> GetConcentrationByDate(ConcentrationGetByDateModel model)
     {
         var targetDate = new DateTime(model.Year, model.Month, model.Day).Date;
@@ -148,7 +161,9 @@ public class EmissionController : ControllerBase
     /// <param name="type">Вид частиц</param>
     /// <returns></returns>
     [HttpGet("concentration/type/{type}")]
-    public async Task<IActionResult> GetConcentrationByType(ConcentrationType type)
+    [ProducesResponseType(typeof(List<ConcentrationViewModel>), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
+    public async Task<IActionResult> GetConcentrationByType([FromBody] ConcentrationType type)
     {
         var concentrations = _dbContext.Concentrations
             .Where(x => x.Type == type).ToList();

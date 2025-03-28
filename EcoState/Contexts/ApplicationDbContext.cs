@@ -11,6 +11,8 @@ public class ApplicationDbContext : DbContext
     public virtual DbSet<Weather> Weathers { get; set; } = null!;
     public virtual DbSet<Enterprise> Enterprises { get; set; } = null!;
     
+    public virtual DbSet<EmissionSource> EmissionSources { get; set; } = null!;
+    
     public ApplicationDbContext() {  }
     
     public ApplicationDbContext(DbContextOptions options) : base(options)
