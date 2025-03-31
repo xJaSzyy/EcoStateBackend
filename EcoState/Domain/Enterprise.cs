@@ -15,6 +15,11 @@ public class Enterprise
     public int Id { get; set; }
     
     /// <summary>
+    /// Список источников выбросов
+    /// </summary>
+    public List<EmissionSource> EmissionSources { get; set; }
+    
+    /// <summary>
     /// Название
     /// </summary>
     public string Name { get; set; }
