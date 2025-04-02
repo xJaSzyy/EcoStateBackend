@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace EcoState.Domain;
 
@@ -21,6 +22,7 @@ public class EmissionSource
     /// <summary>
     /// Предприятие
     /// </summary>
+    [JsonIgnore]
     public Enterprise Enterprise { get; set; } = null!;
 
     /// <summary>
@@ -52,4 +54,9 @@ public class EmissionSource
     /// Диаметр устья источника, м.
     /// </summary>
     public double DiameterSource { get; set; }
+    
+    /// <summary>
+    /// Последняя концентрация от выброса
+    /// </summary>
+    public double LastConcentration { get; set; }
 }

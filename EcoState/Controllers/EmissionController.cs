@@ -65,6 +65,15 @@ public class EmissionController : ControllerBase
         
         var result = _service.CalculateConcentration(concentration);
         
+        if (model.EmissionSourceId != null)
+        {
+            var emissionSource = _dbContext.EmissionSources.FirstOrDefault(x => x.Id == model.EmissionSourceId);
+            if (emissionSource != null)
+            {
+                emissionSource.LastConcentration = result.AverageConcentration;
+            }
+        }
+        
         return Ok(result);
     }
 

@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using EcoState.Enums;
+using Newtonsoft.Json;
 
 namespace EcoState.Domain;
 
@@ -17,6 +18,7 @@ public class Enterprise
     /// <summary>
     /// Список источников выбросов
     /// </summary>
+    [JsonIgnore]
     public List<EmissionSource> EmissionSources { get; set; }
     
     /// <summary>

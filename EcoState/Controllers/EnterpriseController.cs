@@ -5,6 +5,7 @@ using EcoState.Domain;
 using EcoState.Enums;
 using EcoState.ViewModels.Enterprise;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace EcoState.Controllers;
 
@@ -113,6 +114,48 @@ public class EnterpriseController: ControllerBase
         await _dbContext.SaveChangesAsync();
         
         var result = _mapper.Map<EnterpriseViewModel>(enterprise);
+
+        return Ok(result);
+    }
+    
+    /// <summary>
+    /// Метод получения рейтинга предприятий
+    /// </summary>
+    /// <returns></returns>
+    [HttpDelete("enterprise/rating/{number}")]
+    [ProducesResponseType(typeof(EnterpriseViewModel), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
+    public async Task<IActionResult> GetEnterprisesRating(int number)
+    {
+        var enterprises = _dbContext.Enterprises
+            .Include(x => x.EmissionSources)
+            .ToList();
+
+        var ratings = new Dictionary<Enterprise, double>();
+        foreach (var enterprise in enterprises)
+        {
+            var rate = enterprise.EmissionSources.Average(x => x.LastConcentration);
+            ratings.Add(enterprise, rate);
+        }
+
+        var mostDangerousEnterprises = ratings.OrderByDescending(x => x.Value)
+            .Take(number)
+            .ToList();
+        
+        var result = new List<EnterpriseRatingViewModel>();
+
+        var place = 1;
+        foreach (var keyValuePair in mostDangerousEnterprises)
+        {
+            result.Add(new EnterpriseRatingViewModel()
+            {
+                Id = keyValuePair.Key.Id,
+                Name = keyValuePair.Key.Name,
+                City = keyValuePair.Key.City,
+                Place = place,
+            });
+            place++;
+        }
 
         return Ok(result);
     }
