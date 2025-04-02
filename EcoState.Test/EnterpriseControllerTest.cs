@@ -144,6 +144,7 @@ public class EnterpriseControllerTest
             City = testEnterprise.City,
             TempStratificationRatio = testEnterprise.TempStratificationRatio,
             SedimentationRateRatio = testEnterprise.SedimentationRateRatio,
+            EmissionSources = testEnterprise.EmissionSources
         };
         
         var viewModel = new EnterpriseViewModel()
