@@ -65,7 +65,10 @@ public class EmissionControllerTest
     public async Task CalculateConcentration_WithEmissionCalculateModelAndConcentrationType_ShouldReturnCorrectEmissionViewModel()
     {
         // Arrange
-        var model = _fixture.Create<EmissionCalculateModel>();
+        var model = _fixture.Build<EmissionCalculateModel>()
+            .Without(x => x.EmissionSourceId)
+            .Create();
+        
         var concentrationType = _fixture.Create<ConcentrationType>();
         
         _service.Setup(model);

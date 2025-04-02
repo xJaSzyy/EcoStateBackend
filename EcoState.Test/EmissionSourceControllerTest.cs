@@ -156,7 +156,8 @@ public class EmissionSourceControllerTest
             Lat = testEmissionSource.Lat,
             AvgExitSpeed = testEmissionSource.AvgExitSpeed,
             HeightSource = testEmissionSource.HeightSource,
-            DiameterSource = testEmissionSource.DiameterSource
+            DiameterSource = testEmissionSource.DiameterSource,
+            LastConcentration = testEmissionSource.LastConcentration
         };
         
         var viewModel = new EmissionSourceViewModel()
