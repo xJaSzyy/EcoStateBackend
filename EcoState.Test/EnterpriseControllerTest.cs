@@ -25,6 +25,11 @@ public class EnterpriseControllerTest
     {
         _dbContext = new Mock<ApplicationDbContext>();
         _mapper = new Mock<IMapper>();
+        
+        _fixture.Behaviors.OfType<ThrowingRecursionBehavior>().ToList()
+            .ForEach(b => _fixture.Behaviors.Remove(b));
+
+        _fixture.Behaviors.Add(new OmitOnRecursionBehavior());
     }
 
     [TearDown]

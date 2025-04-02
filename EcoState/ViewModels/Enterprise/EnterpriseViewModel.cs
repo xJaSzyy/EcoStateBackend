@@ -13,6 +13,11 @@ public class EnterpriseViewModel
     public int Id { get; set; }
     
     /// <summary>
+    /// Список источников выбросов
+    /// </summary>
+    public List<Domain.EmissionSource> EmissionSources { get; set; }
+    
+    /// <summary>
     /// Название
     /// </summary>
     public string Name { get; set; }
