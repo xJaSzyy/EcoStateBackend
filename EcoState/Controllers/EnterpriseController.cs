@@ -122,8 +122,8 @@ public class EnterpriseController: ControllerBase
     /// Метод получения рейтинга предприятий
     /// </summary>
     /// <returns></returns>
-    [HttpDelete("enterprise/rating/{number}")]
-    [ProducesResponseType(typeof(EnterpriseViewModel), (int)HttpStatusCode.OK)]
+    [HttpGet("enterprise/rating/{number}")]
+    [ProducesResponseType(typeof(EnterpriseRatingViewModel), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public async Task<IActionResult> GetEnterprisesRating(int number)
     {
@@ -153,6 +153,7 @@ public class EnterpriseController: ControllerBase
                 Name = keyValuePair.Key.Name,
                 City = keyValuePair.Key.City,
                 Place = place,
+                AverageConcentration = keyValuePair.Value
             });
             place++;
         }

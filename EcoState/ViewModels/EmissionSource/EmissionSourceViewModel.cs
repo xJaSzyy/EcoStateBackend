@@ -44,4 +44,9 @@ public class EmissionSourceViewModel
     /// Диаметр устья источника, м.
     /// </summary>
     public double DiameterSource { get; set; }
+    
+    /// <summary>
+    /// Последняя концентрация от выброса
+    /// </summary>
+    public double LastConcentration { get; set; }
 }

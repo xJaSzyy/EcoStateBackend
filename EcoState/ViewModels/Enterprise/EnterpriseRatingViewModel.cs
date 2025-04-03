@@ -24,4 +24,9 @@ public class EnterpriseRatingViewModel
     /// Место в рейтинге
     /// </summary>
     public int Place { get; set; }
+    
+    /// <summary>
+    /// СрЗнач последних концентраций по всем источникам выброса предприятия
+    /// </summary>
+    public double AverageConcentration { get; set; }
 }

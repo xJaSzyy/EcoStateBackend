@@ -71,6 +71,7 @@ public class EmissionController : ControllerBase
             if (emissionSource != null)
             {
                 emissionSource.LastConcentration = result.AverageConcentration;
+                await _dbContext.SaveChangesAsync();
             }
         }
         
