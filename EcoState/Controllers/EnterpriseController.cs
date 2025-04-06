@@ -1,10 +1,11 @@
+using System.Net;
 using AutoMapper;
 using EcoState.Context;
 using EcoState.Domain;
 using EcoState.Enums;
-using EcoState.Interfaces;
 using EcoState.ViewModels.Enterprise;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace EcoState.Controllers;
 
@@ -33,6 +34,8 @@ public class EnterpriseController: ControllerBase
     /// <param name="model">Модель добавления предприятия</param>
     /// <returns></returns>
     [HttpPost("enterprise")]
+    [ProducesResponseType(typeof(EnterpriseViewModel), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public async Task<IActionResult> AddEnterprise(EnterpriseAddModel model)
     {
         var enterprise = _mapper.Map<Enterprise>(model);
@@ -50,6 +53,8 @@ public class EnterpriseController: ControllerBase
     /// </summary>
     /// <returns></returns>
     [HttpGet("enterprise")]
+    [ProducesResponseType(typeof(List<EnterpriseViewModel>), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public async Task<IActionResult> GetAllEnterprises()
     {
         var enterprises = _dbContext.Enterprises.ToList();
@@ -65,6 +70,8 @@ public class EnterpriseController: ControllerBase
     /// <param name="model">Модель изменения предприятия</param>
     /// <returns></returns>
     [HttpPut("enterprise")]
+    [ProducesResponseType(typeof(EnterpriseViewModel), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public async Task<IActionResult> UpdateEnterprise(EnterpriseUpdateModel model)
     {
         var enterprise = _dbContext.Enterprises.FirstOrDefault(x => x.Id == model.Id);
@@ -76,12 +83,6 @@ public class EnterpriseController: ControllerBase
 
         if (model.Name != null) enterprise.Name = model.Name;
         if (model.City != null) enterprise.City = model.City;
-        if (model.Lon != null) enterprise.Lon = (double)model.Lon;
-        if (model.Lat != null) enterprise.Lat = (double)model.Lat;
-        if (model.EjectedTemp != null) enterprise.EjectedTemp = (double)model.EjectedTemp;
-        if (model.AvgExitSpeed != null) enterprise.AvgExitSpeed = (double)model.AvgExitSpeed;
-        if (model.HeightSource != null) enterprise.HeightSource = (double)model.HeightSource;
-        if (model.DiameterSource != null) enterprise.DiameterSource = (double)model.DiameterSource;
         if (model.TempStratificationRatio != null) enterprise.TempStratificationRatio = (CoefficientRegion)model.TempStratificationRatio;
         if (model.SedimentationRateRatio != null) enterprise.SedimentationRateRatio = (CoefficientDegreePurification)model.SedimentationRateRatio;
 
@@ -89,6 +90,73 @@ public class EnterpriseController: ControllerBase
         await _dbContext.SaveChangesAsync();
         
         var result = _mapper.Map<EnterpriseViewModel>(enterprise);
+
+        return Ok(result);
+    }
+    
+    /// <summary>
+    /// Метод удаления предприятия
+    /// </summary>
+    /// <returns></returns>
+    [HttpDelete("enterprise/{id}")]
+    [ProducesResponseType(typeof(EnterpriseViewModel), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
+    public async Task<IActionResult> DeleteEnterprise(int id)
+    {
+        var enterprise = _dbContext.Enterprises.FirstOrDefault(x => x.Id == id);
+
+        if (enterprise == null)
+        {
+            return Ok("Предприятие не найдено");
+        }
+
+        _dbContext.Enterprises.Remove(enterprise);
+        await _dbContext.SaveChangesAsync();
+        
+        var result = _mapper.Map<EnterpriseViewModel>(enterprise);
+
+        return Ok(result);
+    }
+    
+    /// <summary>
+    /// Метод получения рейтинга предприятий
+    /// </summary>
+    /// <returns></returns>
+    [HttpGet("enterprise/rating/{number}")]
+    [ProducesResponseType(typeof(EnterpriseRatingViewModel), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
+    public async Task<IActionResult> GetEnterprisesRating(int number)
+    {
+        var enterprises = _dbContext.Enterprises
+            .Include(x => x.EmissionSources)
+            .ToList();
+
+        var ratings = new Dictionary<Enterprise, double>();
+        foreach (var enterprise in enterprises)
+        {
+            var rate = enterprise.EmissionSources.Average(x => x.LastConcentration);
+            ratings.Add(enterprise, rate);
+        }
+
+        var mostDangerousEnterprises = ratings.OrderByDescending(x => x.Value)
+            .Take(number)
+            .ToList();
+        
+        var result = new List<EnterpriseRatingViewModel>();
+
+        var place = 1;
+        foreach (var keyValuePair in mostDangerousEnterprises)
+        {
+            result.Add(new EnterpriseRatingViewModel()
+            {
+                Id = keyValuePair.Key.Id,
+                Name = keyValuePair.Key.Name,
+                City = keyValuePair.Key.City,
+                Place = place,
+                AverageConcentration = keyValuePair.Value
+            });
+            place++;
+        }
 
         return Ok(result);
     }

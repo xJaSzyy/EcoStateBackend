@@ -10,6 +10,7 @@ public class ApplicationDbContext : DbContext
     public virtual DbSet<User> Users { get; set; } = null!;
     public virtual DbSet<Weather> Weathers { get; set; } = null!;
     public virtual DbSet<Enterprise> Enterprises { get; set; } = null!;
+    public virtual DbSet<EmissionSource> EmissionSources { get; set; } = null!;
     
     public ApplicationDbContext() {  }
     

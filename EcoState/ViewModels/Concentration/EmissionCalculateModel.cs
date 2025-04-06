@@ -52,4 +52,9 @@ public class EmissionCalculateModel
     /// Скорость ветра
     /// </summary>
     public double WindSpeed { get; set; }
+    
+    /// <summary>
+    /// Идентификатор источника выбросов
+    /// </summary>
+    public int? EmissionSourceId { get; set; }
 }

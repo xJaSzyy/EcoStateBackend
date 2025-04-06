@@ -1,6 +1,7 @@
 using AutoMapper;
 using EcoState.Domain;
 using EcoState.ViewModels.Concentration;
+using EcoState.ViewModels.EmissionSource;
 using EcoState.ViewModels.Enterprise;
 using EcoState.ViewModels.User;
 using EcoState.ViewModels.Weather;
@@ -36,6 +37,12 @@ public class EntityMapper : Profile
             .ForAllMembers(o => o.ExplicitExpansion());
         
         CreateMap<Enterprise, EnterpriseViewModel>()
+            .ForAllMembers(o => o.ExplicitExpansion());
+        
+        CreateMap<EmissionSourceAddModel, EmissionSource>()
+            .ForAllMembers(o => o.ExplicitExpansion());
+        
+        CreateMap<EmissionSource, EmissionSourceViewModel>()
             .ForAllMembers(o => o.ExplicitExpansion());
     }
 }

@@ -1,3 +1,4 @@
+using System.Net;
 using AutoMapper;
 using EcoState.Context;
 using EcoState.Domain;
@@ -36,6 +37,8 @@ public class UserController : ControllerBase
     /// <param name="id">Идентификатор пользователя</param>
     /// <returns></returns>
     [HttpGet("user/{id}")]
+    [ProducesResponseType(typeof(UserViewModel), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public async Task<IActionResult> GetUser(int id)
     {
         var user = _dbContext.Users.FirstOrDefault(x => x.Id == id);
@@ -55,6 +58,8 @@ public class UserController : ControllerBase
     /// </summary>
     /// <returns></returns>
     [HttpGet("user")]
+    [ProducesResponseType(typeof(List<UserViewModel>), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public async Task<IActionResult> GetAllUsers()
     {
         var userList = _dbContext.Users.ToList();
@@ -71,6 +76,8 @@ public class UserController : ControllerBase
     /// <returns></returns>
     [EnumAuthorize(Role.Admin)]
     [HttpDelete("user/{id}")]
+    [ProducesResponseType(typeof(UserViewModel), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public async Task<IActionResult> DeleteUser(int id)
     {
         var user = _dbContext.Users.FirstOrDefault(x => x.Id == id);
@@ -95,7 +102,9 @@ public class UserController : ControllerBase
     /// <returns></returns>
     [EnumAuthorize(Role.Admin)]
     [HttpPut("user")]
-    public async Task<IActionResult> UpdateUser([FromBody] UserUpdateModel model)
+    [ProducesResponseType(typeof(UserViewModel), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
+    public async Task<IActionResult> UpdateUser(UserUpdateModel model)
     {
         var user = _dbContext.Users.FirstOrDefault(x => x.Id == model.Id);
 
@@ -123,7 +132,9 @@ public class UserController : ControllerBase
     /// <param name="model">Модель входа</param>
     /// <returns></returns>
     [HttpPost("user/login")]
-    public async Task<IActionResult> Login([FromBody] LoginModel model)
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
+    public async Task<IActionResult> Login(LoginModel model)
     {
         var token = _service.Login(model);
         
@@ -136,7 +147,9 @@ public class UserController : ControllerBase
     /// <param name="model">Модель регистрации</param>
     /// <returns></returns>
     [HttpPost("user/register")]
-    public async Task<IActionResult> Register([FromBody] RegisterModel model)
+    [ProducesResponseType(typeof(UserViewModel), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
+    public async Task<IActionResult> Register(RegisterModel model)
     {
         var user = _service.Register(model);
         

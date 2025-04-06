@@ -1,9 +1,11 @@
+using System.Net;
 using System.Text.Json;
 using AutoMapper;
 using EcoState.Context;
 using EcoState.Domain;
 using EcoState.Extensions;
 using EcoState.Helpers;
+using EcoState.ViewModels.User;
 using EcoState.ViewModels.Weather;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
@@ -41,6 +43,8 @@ public class WeatherController : ControllerBase
     /// <param name="city">Название города</param>
     /// <returns></returns>
     [HttpGet("weather/current")]
+    [ProducesResponseType(typeof(WeatherViewModel), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public async Task<IActionResult> GetCurrentWeather([FromQuery] string city)
     {
         var httpClient = _httpClientFactory.CreateClient();
@@ -87,6 +91,8 @@ public class WeatherController : ControllerBase
     /// <param name="model">Модель получения погоды</param>
     /// <returns></returns>
     [HttpGet("weather")]
+    [ProducesResponseType(typeof(List<WeatherViewModel>), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public async Task<IActionResult> GetWeather(WeatherGetModel model)
     {
         var targetDate = new DateTime(model.Year, model.Month, model.Day).Date;
@@ -104,6 +110,8 @@ public class WeatherController : ControllerBase
     /// <returns></returns>
     [EnumAuthorize(Role.Admin)]
     [HttpPost("weather")]
+    [ProducesResponseType(typeof(WeatherViewModel), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public async Task<IActionResult> SaveWeather(WeatherSaveModel model)
     {
         var weather = _mapper.Map<Weather>(model);
