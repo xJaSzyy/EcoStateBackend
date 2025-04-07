@@ -57,7 +57,9 @@ public class EnterpriseController: ControllerBase
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.InternalServerError)]
     public async Task<IActionResult> GetAllEnterprises()
     {
-        var enterprises = _dbContext.Enterprises.ToList();
+        var enterprises = _dbContext.Enterprises
+            .Include(x => x.EmissionSources)
+            .ToList();
 
         var result = _mapper.Map<List<EnterpriseViewModel>>(enterprises);
 
