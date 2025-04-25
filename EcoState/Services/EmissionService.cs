@@ -365,7 +365,7 @@ public class EmissionService : IEmissionService
         
         var pm = avgConcentration * 1000;
 
-        var colorHex = "#A07785";
+        var colorHex = ColorMap[225.4];
         foreach (var pair in ColorMap)
         {
             if (pm <= pair.Key)
