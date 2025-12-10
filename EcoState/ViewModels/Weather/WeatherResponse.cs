@@ -3,37 +3,58 @@ using System.Text.Json.Serialization;
 namespace EcoState.ViewModels.Weather;
 
 /// <summary>
-/// Запрос к api погоды
+/// Ответ от Open-Meteo API
 /// </summary>
-public class WeatherResponse
+public class OpenMeteoResponse
 {
-    [JsonPropertyName("main")]
-    public MainData MainData { get; set; } = null!;
+    [JsonPropertyName("latitude")]
+    public double Latitude { get; set; }
 
-    [JsonPropertyName("wind")]
-    public WindData WindData { get; set; } = null!;
+    [JsonPropertyName("longitude")]
+    public double Longitude { get; set; }
 
-    [JsonPropertyName("weather")]
-    public List<WeatherData> WeatherData { get; set; } = null!;
+    [JsonPropertyName("timezone")]
+    public string Timezone { get; set; } = null!;
+
+    [JsonPropertyName("timezone_abbreviation")]
+    public string TimezoneAbbreviation { get; set; } = null!;
+
+    [JsonPropertyName("elevation")]
+    public double Elevation { get; set; }
+
+    [JsonPropertyName("current_weather")]
+    public CurrentWeather CurrentWeather { get; set; } = null!;
+
+    [JsonPropertyName("current_weather_units")]
+    public CurrentWeatherUnits CurrentWeatherUnits { get; set; } = null!;
 }
 
-public class MainData
+public class CurrentWeather
 {
-    [JsonPropertyName("temp")]
-    public double Temp { get; set; }
+    [JsonPropertyName("time")]
+    public DateTime Time { get; set; }
+
+    [JsonPropertyName("temperature")]
+    public double Temperature { get; set; }
+
+    [JsonPropertyName("windspeed")]
+    public double WindSpeed { get; set; }
+
+    [JsonPropertyName("winddirection")]
+    public double WindDirection { get; set; }
+
+    [JsonPropertyName("weathercode")]
+    public int WeatherCode { get; set; }
+
+    [JsonPropertyName("is_day")]
+    public int IsDay { get; set; }
 }
 
-public class WindData
+public class CurrentWeatherUnits
 {
-    [JsonPropertyName("speed")]
-    public double Speed { get; set; }
-    
-    [JsonPropertyName("deg")]
-    public int Deg { get; set; }
-}
+    [JsonPropertyName("temperature")]
+    public string TemperatureUnit { get; set; } = null!;
 
-public class WeatherData
-{
-    [JsonPropertyName("icon")]
-    public string Icon { get; set; } = null!;
+    [JsonPropertyName("windspeed")]
+    public string WindSpeedUnit { get; set; } = null!;
 }
